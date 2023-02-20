@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Complex Systems: An Emerging Paradigm &#8212; My Projects and Notes</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.e2363ea40746bee74734a24ffefccd78.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">My Projects and Notes</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Welcome to your Jupyter Book
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../markdown.html">
+   Markdown Files
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../notebooks.html">
+   Content with notebooks
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/blogs/complex_systems_paradigm.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://princejavier.github.io"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#complex-systems">
+   Complex Systems
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#examples-of-complex-systems">
+   Examples of complex systems
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-emerging-study-of-complex-systems">
+   The emerging study of complex systems
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#insights-from-studying-complex-systems">
+   Insights from studying complex systems
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="complex-systems-an-emerging-paradigm">
+<h1>Complex Systems: An Emerging Paradigm<a class="headerlink" href="#complex-systems-an-emerging-paradigm" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="complex-systems">
+<h2>Complex Systems<a class="headerlink" href="#complex-systems" title="Permalink to this headline">¶</a></h2>
+<p>What are complex systems? Melanie Mitchell, computer scientist and author of the widely-acclaimed book Complexity: A Guided Tour, remarked that this “deceptively simple” question is “one of the most difficult questions of all.” Several definitions have been proposed by researchers on complex systems. Physicist Philip Anderson compiled some definitions of complex systems in his paper Complexity Theory and Organization Science. In this paper, he mentioned one definition that a complex system is “one made up of a large number of parts that have many interactions”. Another described a complex organization as “a set of interdependent parts, which together make up a whole that is interdependent with some larger environment.”</p>
+<p>According to Mitchell, a complex system can informally be defined as “a system with large numbers of interacting components, in which the components are relatively simple compared with the system as a whole, in which there is no central control or global communication among the components, and in which the interactions among the components gives rise to complex behavior.” In this definition, “complex behavior” refers to “adaptive,” “life-like,” “intelligent,” and “emergent” behavior, words that although can be hazily understood intuitively, still don’t have precise meanings yet and thus preclude a formal definition of “complex systems.”</p>
+</div>
+<div class="section" id="examples-of-complex-systems">
+<h2>Examples of complex systems<a class="headerlink" href="#examples-of-complex-systems" title="Permalink to this headline">¶</a></h2>
+<p>Following Mitchell’s informal definition, below are some examples that can be considered as complex systems.</p>
+<p>In the field of biology, common examples are ant colonies and fireflies. A multitude of ants can form complex patterns through collective or hive-like intelligence a single or few ants don’t exhibit. Mitchell quoted ecologist Nigel Franks who said, ​“the solitary army ant is behaviorally one of the least sophisticated animals imaginable…If 100 army ants are placed on a flat surface, they will walk around and around in never decreasing circles until they die of exhaustion.” But increase the number of ants and they can behave as some sort of superorganism capable of problem-solving like building bridges to get to a food source. While some fireflies like the Photinus Carolinus are known to simultaneously flash their lights during their mating season. Another example is the human brain. On average, the human brain is composed of 100 billion brain cells called neurons connected to each other forming a total of 1 quadrillion connections. Information gets passed through the network of neurons through combinations of electrical and chemical processes. Through these connections and interactions, consciousness and intelligence emerge. Entire ecosystems are complex systems because they are made up of multitudes of interacting organisms giving rise to emergent patterns in the ecosystem like fluctuations of predator and prey. Similarly, each organism is a complex system made up of many organs. We can drill down further and find that each organ is a complex system made up of many cells, each cell is a complex system made up of organelles, each organelle is a complex system made up of molecules, and so forth.</p>
+<p>We can find complex systems in the field of Earth science as well. The Earth’s crust, for example, is broken up into large and small plates divided by a network of faults. These plates constantly bump into each other constantly shifting the Earth’s landscapes, forming mountains, volcanoes, and generating earthquakes that in turn can cause tsunamis. Climate change emerged out of the complex interactions between the atmosphere, hydrosphere, biosphere, and lithosphere. Human activity caused deforestation, agriculture, and industrialization which then released unprecedented amounts of greenhouse gases to the atmosphere on top of those naturally emitted by volcanoes and hydrothermal vents. These gases then trapped heat from the sun and from the Earth causing oceans to heat up and even causing smaller bodies of water to dry up. Warmer oceans can cause polar ice caps to melt thus increasing sea-water elevations. Other findings show that the problem is exacerbated because the warmer atmosphere causes carbon-emitting microbes in the soil to generate carbon dioxide faster and people to use more electricity that also ties back to higher carbon dioxide emissions.</p>
+<p>An example of a complex system from my personal experience was a mining exploration project where I worked in for a year. The mining exploration project’s goal was to model the underground mineral deposits by extracting and analyzing samples of rocks located hundreds of meters underground. The exploration project employed workers from the towns where it was located as well as from surrounding towns and cities. Economic opportunities opened up due to the workers’ salaries and the influx of workers into the area that created a demand for new businesses like stores and pubs. However, anti-mining sentiment was also emerging from some towns and sometimes, issues like water shortage was being blamed on the exploration project despite being proven to be due to other reasons. Some of the other emerging patterns that I observed were the changes in the stock price of the company that owned the project depending on the exploration project’s activities and changes in government regulations.</p>
+</div>
+<div class="section" id="the-emerging-study-of-complex-systems">
+<h2>The emerging study of complex systems<a class="headerlink" href="#the-emerging-study-of-complex-systems" title="Permalink to this headline">¶</a></h2>
+<p>The idea of complex systems is a new paradigm in understanding the universe. Shifting from the traditional reductionist approach of breaking down systems into smaller elements first and analyzing each one, complex systems approach embraces the entirety of the system by looking at individual elements in the context of other elements and how they interact together to form a whole that is greater than the sum of the parts. Unlike chemistry or biology, the concept of complex systems is still a developing paradigm. There are several proposals to defining the study of complex systems but there is no widely-accepted formalized science of complexity yet.</p>
+<p>Physicist and Nobel laureate Murray Gell-mann coined the term “plectics,” coming from a Greek word that means twisted or braided, to refer to the study that not only encompasses complexity but simplicity as well. Gell-mann observed that the basic pattern in complex systems “is one of complexity emerging from very simple rules, initial order, and the operation, over and over again, of chance. In the case of the whole universe, the fundamental laws of physics constitute those simple rules.” For him, the study of complexity is intertwined and inseparable from the study of simplicity.</p>
+<p>Quoting Gell-mann, he proposed the new field “plectics” to be “the study of simplicity and complexity. It includes the various attempts to define complexity; the study of the roles of simplicity and complexity and of classical and quantum information in the history of the universe; the physics of information; the study of nonlinear dynamics, including chaos theory, strange attractors, and self-similarity in complex nonadaptive systems in physical science; and the study of complex adaptive systems, including prebiotic chemical evolution, biological evolution, the behavior of individual organisms, the functioning of ecosystems, the operation of mammalian immune systems, learning and thinking, the evolution of human languages, the rise and fall of human cultures, the behavior of markets, and the operation of computers that are designed or programmed to evolve strategies — say, for playing games or solving problems.”</p>
+<p>Mitchell, on the other hand, prefers to use “sciences of complexity” to refer to the study of complexity, thus avoiding encapsulating the study of complexity into a single science. The field of complexity can be thought of as a grouping of various sciences working together to uncover principles guiding complex systems to yield new insights about those systems and new methods for analyzing those systems.</p>
+<p>So far, there has been no unified science or unified theory of complexity. Anderson mentioned that Holland and Miller – two giants in the study of complexity – “have likened the present situation to that of evolutionary theory before Fisher developed a mathematical theory of genetic selection.”</p>
+</div>
+<div class="section" id="insights-from-studying-complex-systems">
+<h2>Insights from studying complex systems<a class="headerlink" href="#insights-from-studying-complex-systems" title="Permalink to this headline">¶</a></h2>
+<p>Despite having no formalized “science” or unified theory of complexity yet, six important insights were gleaned from the study of complex systems, as summarized by Anderson.</p>
+<p>First, many dynamical systems – those whose values now determine the value in the future – do not reach a fixed or cyclical equilibrium. In this case, values may fluctuate irregularly.</p>
+<p>Second, some processes that appear completely random may come from deterministic chaotic processes.</p>
+<p>Third, complex system behavior can be sensitive to initial conditions. That is two systems that started almost but not exactly similar may follow “radically divergent paths.”</p>
+<p>Fourth, simple reductionist approaches are insufficient for analyzing complex systems whose elements are interconnected and behave based on other elements in the system. Thus, analyzing each element in isolation will fail to describe emergent properties in the system.</p>
+<p>Fifth, interacting elements given simple rules can give rise to complex emergent behaviors in the system.</p>
+<p>Finally, complex systems tend to “self-organize,” forming complex patterns from an initially random state.</p>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Complex systems are everywhere. Virtually everything is connected to everything else. Ecosystems, societies, organisms, cells, and arguably everything in the known universe can be thought of as a complex system or part of a complex system whose interactions give rise to emergent properties. The paradigm associated with complex systems – that is, looking at systems holistically instead of its individual elements – has been a shift from the reductionist approach, which fails to describe emergent properties from interactions among elements. Despite the lack of a formalized science or study of complexity, the attempt to study it have given us insights that give us a better understanding of complex systems.</p>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./blogs"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+            
+
+
+
+<div class='prev-next-bottom'>
+    
+
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Prince Javier<br/>
+        
+            &copy; Copyright 2021.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  
+  </body>
+</html>

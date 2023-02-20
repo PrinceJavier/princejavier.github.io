@@ -1,0 +1,436 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clustering FIFA World Cup 2018 Players with K-Means &#8212; My Projects and Notes</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.e2363ea40746bee74734a24ffefccd78.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">My Projects and Notes</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Welcome to your Jupyter Book
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../markdown.html">
+   Markdown Files
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../notebooks.html">
+   Content with notebooks
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/cluster_fifa/index.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://princejavier.github.io"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#data-description">
+   Data Description
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exploratory-data-analysis">
+   Exploratory Data Analysis
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#visualizing-on-principal-components">
+   Visualizing on Principal Components
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exploratory-analysis-of-clusters">
+   Exploratory Analysis of Clusters
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#count-of-elements-for-each-cluster">
+     Count of elements for each cluster
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#comparison-of-cluster-attributes">
+     Comparison of Cluster Attributes
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#analysis">
+   Analysis
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#cluster-0-defensive-minded-midfielders-but-not-necessarily-playmakers">
+     Cluster 0: Defensive-minded Midfielders but not necessarily playmakers
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#cluster-1-aggressive-defenders">
+     Cluster 1: Aggressive Defenders
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#cluster-2-midfielders">
+     Cluster 2: Midfielders
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#cluster-3-experienced-offensive-players">
+     Cluster 3: Experienced Offensive Players
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#references-and-acknowledgements">
+   References and Acknowledgements
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="clustering-fifa-world-cup-2018-players-with-k-means">
+<h1>Clustering FIFA World Cup 2018 Players with K-Means<a class="headerlink" href="#clustering-fifa-world-cup-2018-players-with-k-means" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Clustering aims to group a set of items into “clusters”, such that items belonging to a cluster are more similar than those items not belonging to that same cluster. In this report, we attempt to perform unsupervised clustering to FIFA world cup 2018 players based on their statistics.</p>
+<p>We scraped player stats from FIFA’s website. Players were clustered through the k-Means algorithm. The optimal number of clusters was determined to be 4 based on internal validation criteria. Exploring the stats of each cluster, we have identified each cluster to be the following types of players:</p>
+<ol class="simple">
+<li><p>Aggressive Defenders</p></li>
+<li><p>Midfielders</p></li>
+<li><p>Defensive-minded defenders but not necessarily playmakers</p></li>
+<li><p>Experienced Offensive players</p></li>
+</ol>
+</div>
+<div class="section" id="data-description">
+<h2>Data Description<a class="headerlink" href="#data-description" title="Permalink to this headline">¶</a></h2>
+<p>Our experiment made use of player stats from FIFA 2018 world cup players. The dataset is composed of 604 players and 14 attributes per player that was scraped from <a class="reference external" href="https://www.mykhel.com/football/fifa-world-cup-2018-player-stats-l4/">https://www.mykhel.com/football/fifa-world-cup-2018-player-stats-l4/</a>. The following player attributes were selected for this study:</p>
+<ul class="simple">
+<li><p>Matches Played</p></li>
+<li><p>Minutes Played</p></li>
+<li><p>Goals scored</p></li>
+<li><p>Assists</p></li>
+<li><p>Attempts On Target</p></li>
+<li><p>Attempts Off Target</p></li>
+<li><p>Offsides</p></li>
+<li><p>Long Passes completed</p></li>
+<li><p>Medium Passes completed</p></li>
+<li><p>Passes Completed</p></li>
+<li><p>Fouls Committed</p></li>
+<li><p>Fouls Suffered</p></li>
+<li><p>Yellow cards</p></li>
+<li><p>Red Cards</p></li>
+</ul>
+</div>
+<div class="section" id="exploratory-data-analysis">
+<h2>Exploratory Data Analysis<a class="headerlink" href="#exploratory-data-analysis" title="Permalink to this headline">¶</a></h2>
+<p>Below are the histograms showing the number of players vs value per attribute.</p>
+<img src="media/fifa_cluster_hist.png" align="center">
+<p>Unsupervised Clustering
+k -Means Clustering and Internal Validation Metrics
+To determine the optimal number of clusters, we have based our analysis on 3 internal validation metrics:</p>
+<p>Inertia. Corresponds to the sum of squares distances from the centroids of each cluster. Smaller values of inertia indicate better clustering.</p>
+<p>Intracluster to intercluster distance ratio.The ratio of the average distance of randomly-sampled pairs <span class="math notranslate nohighlight">\(P\)</span> that belongs to the same cluster, and the average distance of randomly-sampled pairs <span class="math notranslate nohighlight">\(Q\)</span> that belong to different clusters. Smaller values suggest better clustering. The IID ratio is computed by:</p>
+<img src="media/fifa_cluster_intra_inter.png" align="center">
+<p>Overall Silhouette coefficient. The average of silhouette coefficients of all points. The silhouette coefficient of a point is computed by:</p>
+<img src="media/fifa_cluster_sil.png" align="center">
+<p>where <span class="math notranslate nohighlight">\(Davg^{in}_i\)</span> be the average distance of <span class="math notranslate nohighlight">\(x_i\)</span> to data points within the cluster of <span class="math notranslate nohighlight">\(x_i\)</span>, and <span class="math notranslate nohighlight">\(Dmin^{out}_i\)</span> be the smallest average distance to points other than its own cluster. A value that is closer to 1 indicates better clustering.</p>
+<p>With the goal of minimizing both inertia and IICD score while maximizing the silhouette coefficient. The following can be observed from the plot:</p>
+<img src="media/fifa_cluster_valid.png" align="center">
+<p>Inertia values begin to elbow at  <span class="math notranslate nohighlight">\(k\)</span>=4. After that, only small incremental decreases in inertia values happen as the number of clusters is increased. IICD score dips at 4 clusters, increases at 5, and continuously declines as the number of clusters increase. Although both inertia and IICD score decreases as the number of clusters of increase, the silhouette score is farther from the desired value of 1 as we increase the number of clusters. This suggests that the optimal number of clusters is 4.</p>
+</div>
+<div class="section" id="visualizing-on-principal-components">
+<h2>Visualizing on Principal Components<a class="headerlink" href="#visualizing-on-principal-components" title="Permalink to this headline">¶</a></h2>
+<p>Through Principal Component Analysis (PCA) we are also interested in determining the features that influence the clustering.</p>
+<img src="media/fifa_cluster_pca.png" align="center">
+<p>The result indicates that the 95.53 of the variance can only be explained by 10 principal components. Also, 55.29% of the variation can already be explained by 2 principal components:</p>
+<p>Plotting the transformed points in the first two PCs:</p>
+<img src="media/fifa_cluster_2pcs.png" align="center">
+<p>The plot suggests that the labels can be clearly distinguished. We examined the linear combinations of the features along the two PCs below:</p>
+<img src="media/fifa_cluster_loading1.png" align="center">
+<img src="media/fifa_cluster_loading2.png" align="center">
+</div>
+<div class="section" id="exploratory-analysis-of-clusters">
+<h2>Exploratory Analysis of Clusters<a class="headerlink" href="#exploratory-analysis-of-clusters" title="Permalink to this headline">¶</a></h2>
+<p>We want to extend our analysis by making a collective description of each cluster by examining how do attributes of one cluster compare to the other. We did several visualizations on the stats of each cluster to uncover latent properties.</p>
+<div class="section" id="count-of-elements-for-each-cluster">
+<h3>Count of elements for each cluster<a class="headerlink" href="#count-of-elements-for-each-cluster" title="Permalink to this headline">¶</a></h3>
+<img src="media/fifa_cluster_cluster_count.png" align="center">
+</div>
+<div class="section" id="comparison-of-cluster-attributes">
+<h3>Comparison of Cluster Attributes<a class="headerlink" href="#comparison-of-cluster-attributes" title="Permalink to this headline">¶</a></h3>
+<p>We show the histograms of features color-coded per cluster derived by kMeans:</p>
+<img src="media/fifa_cluster_cluster_hists.png" align="center">
+<p>As another way to visualize the different attributes associated with each cluster, we plotted the boxplots per attribute showing the values for the four clusters.</p>
+<img src="media/fifa_cluster_boxplot.png" align="center">
+<p>We show a heat map showing cluster 1 has low values for almost all attributes except red cards. Cluster 2 has the most number of passes. Cluster 3 has the most goals and assists. And cluster 0 has some offsides and red cards but generally even for all attributes.</p>
+<img src="media/fifa_cluster_heat.png" align="center">
+<p>Finally, we show the radar chart showing the values per attribute for each of the four clusters.</p>
+<img src="media/fifa_cluster_radar.png" align="center">
+</div>
+</div>
+<div class="section" id="analysis">
+<h2>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="cluster-0-defensive-minded-midfielders-but-not-necessarily-playmakers">
+<h3>Cluster 0: Defensive-minded Midfielders but not necessarily playmakers<a class="headerlink" href="#cluster-0-defensive-minded-midfielders-but-not-necessarily-playmakers" title="Permalink to this headline">¶</a></h3>
+<p>Average stats across the board with the most notable being their higher number of offsides and red cards. Their passes and shots are minimal which may mean that they are defensive-minded players. This may also mean that they play defense most of the time to tire out opponents before they launch a quick counter to score a goal. They may be midfielders who are not necessarily playmakers.</p>
+</div>
+<div class="section" id="cluster-1-aggressive-defenders">
+<h3>Cluster 1: Aggressive Defenders<a class="headerlink" href="#cluster-1-aggressive-defenders" title="Permalink to this headline">¶</a></h3>
+<p>This cluster has fewer assists, passes, and goal attempts, the usual stats of a defender. Usually, a defender’s sole responsibility is to help the keeper protect the goal which explains why their stats are high in tackles and interceptions. Almost all the time, defenders commit disciplinary records due to dangerous tackles and fouls. The fouls they committed seem to be serious since they have the fewest number of games played. With them having more assists and passes than shots, coupled with the fact that they have the red cards, they are aggressive defenders.</p>
+</div>
+<div class="section" id="cluster-2-midfielders">
+<h3>Cluster 2: Midfielders<a class="headerlink" href="#cluster-2-midfielders" title="Permalink to this headline">¶</a></h3>
+<p>The second highest in terms of matches played, the highest number of passes and second highest in terms of shots placed, it can mean that they’re midfielders. The role of a midfielder is to distribute the ball and create plays and may take shots if they want to. The players in this cluster are the ones who support/set-up plays because of their high number of passes and multiple attempts on scoring. Since their goals scored is relatively low, they may have either faced good keepers or the quality of their shots might not be too good. It can be noted that their assists are low, so this cluster most probably have strikers whose chances were not converted into goals due to the same reason.</p>
+</div>
+<div class="section" id="cluster-3-experienced-offensive-players">
+<h3>Cluster 3: Experienced Offensive Players<a class="headerlink" href="#cluster-3-experienced-offensive-players" title="Permalink to this headline">¶</a></h3>
+<p>Having the most shots taken, goals scored, and offsides, these are the forward players/those primarily playing offensive roles. They have the fewest red cards, the most number of attempts, and scored the most number of goals. The players in this cluster are mostly strikers due to the following reasons:</p>
+<ul class="simple">
+<li><p>They suffered the most number of fouls, which happens to almost every striker since they typically become targets of defenders to dispossess</p></li>
+<li><p>Their offside counts are also high since it is the strikers that usually commit offsides</p></li>
+<li><p>A high number of attempts and goals since scoring goals are the primary role of a striker.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="references-and-acknowledgements">
+<h2>References and Acknowledgements<a class="headerlink" href="#references-and-acknowledgements" title="Permalink to this headline">¶</a></h2>
+<p>Prof. Christian Alis, lecture and source codes on Representative Based clustering, Crio Sevilla and Dominic Gacad, Futsal varsity players of UA&amp;P for teaching us some technical terms in soccer helping us interpret the stats of the clusters.</p>
+<p>Contributors: Prince Javier and Jayson Yodico</p>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./cluster_fifa"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+            
+
+
+
+<div class='prev-next-bottom'>
+    
+
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Prince Javier<br/>
+        
+            &copy; Copyright 2021.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  
+  </body>
+</html>
