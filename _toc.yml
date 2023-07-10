@@ -4,4 +4,4 @@
 format: jb-book
 root: intro
 chapters:
-- file: notebooks
+- file: thoughts/language_llm.md
