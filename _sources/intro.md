@@ -1,1 +1,1 @@
-What's up
+Hi I'm Prince! Welcome to my WIP website
