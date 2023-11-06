@@ -4,6 +4,6 @@
 format: jb-book
 root: intro
 chapters:
-- file: markdown
-- file: notebooks
-- file: markdown-notebooks
+- file: thoughts/entropy_sim
+- file: thoughts/success_sim
+- file: thoughts/language_llm
