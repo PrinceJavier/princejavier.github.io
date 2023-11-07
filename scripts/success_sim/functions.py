@@ -33,7 +33,7 @@ fig, axs = plt.subplots(2, 2, figsize=(15, 8))
 axs = axs.flatten()
 
 def animate(q):
-    # q = q * 5
+    q = q * 5
     [ax.clear() for ax in axs]
 
     axs[0].set_title(f"Dist of talents for top {100-q}% most successful")
