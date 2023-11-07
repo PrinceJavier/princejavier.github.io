@@ -33,13 +33,13 @@ fig, axs = plt.subplots(2, 2, figsize=(15, 8))
 axs = axs.flatten()
 
 def animate(q):
-    q = q * 5
+    # q = q * 5
     [ax.clear() for ax in axs]
 
-    axs[0].set_title(f"Dist of talents for top {q}% most successful")
-    axs[1].set_title(f"Dist of successes for top {q}% most talented")
-    axs[2].set_title(f"Dist of opportunities for top {q}% most successful")
-    axs[3].set_title(f"Dist of opportunities for top {q}% most talented")
+    axs[0].set_title(f"Dist of talents for top {100-q}% most successful")
+    axs[1].set_title(f"Dist of successes for top {100-q}% most talented")
+    axs[2].set_title(f"Dist of opportunities for top {100-q}% most successful")
+    axs[3].set_title(f"Dist of opportunities for top {100-q}% most talented")
 
     thresh = np.percentile(S, q)
     T_thresh = T[np.argwhere(S > thresh)]
