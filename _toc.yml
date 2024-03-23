@@ -4,6 +4,9 @@
 format: jb-book
 root: intro
 chapters:
+- file: thoughts/kmeans
+- file: thoughts/pca_autoencoder
+- file: thoughts/nn_sine_experiments
 - file: thoughts/entropy_sim
 - file: thoughts/success_sim
 - file: thoughts/language_llm
