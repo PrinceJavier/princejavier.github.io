@@ -4,6 +4,7 @@
 format: jb-book
 root: intro
 chapters:
+- file: thoughts/k_armed_bandit
 - file: thoughts/b_vae
 - file: thoughts/kmeans
 - file: thoughts/pca_autoencoder
