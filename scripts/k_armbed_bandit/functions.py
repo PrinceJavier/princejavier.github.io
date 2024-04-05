@@ -55,7 +55,7 @@ class Bandit:
                  q_delta_std = 0.01,
                  steps = 10000,
                  step_size = "1/N",
-                 random_seed = 42
+                 random_seed = 42,
                  ):
         self.k_arms = k_arms
         self.eps = eps
@@ -128,7 +128,7 @@ class Bandit:
 def plot_learning_curves(stationary_q, Q_init, q_delta_std,
                          k_arms, n_trials, steps,                     
                          step_size, eps,
-                         w = 0, axs=None,
+                         w = 0, axs=None, label = None,
                          ):
 
     R_vals = []
@@ -153,8 +153,11 @@ def plot_learning_curves(stationary_q, Q_init, q_delta_std,
         N_vals += [bandit.N_tracker]
 
 
-    axs[0].plot(moving_average(np.array(R_vals).mean(axis=0), w), label=f'eps = {eps}; step_size = {step_size}')
-    axs[1].plot(moving_average(np.array(A_prop_correct).mean(axis=0), w), label=f'eps = {eps}; step_size = {step_size}')
+    if label is None:
+        f'eps = {eps}; step_size = {step_size}'
+
+    axs[0].plot(moving_average(np.array(R_vals).mean(axis=0), w), label=label)
+    axs[1].plot(moving_average(np.array(A_prop_correct).mean(axis=0), w), label=label)
 
     axs[0].set_title("Average Return")
     axs[1].set_title("Percent Optimal Actions")
