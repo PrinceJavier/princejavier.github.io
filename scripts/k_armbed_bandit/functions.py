@@ -10,13 +10,9 @@ from matplotlib import animation
 from IPython.display import HTML
 
 # generate q*(a)
-def init_q(k=10, random_q_init=True, std=1):
-
+def init_q(k=10, std=1):
     # initialize means of q
-    if random_q_init:
-        q_mu = np.random.normal(0, std, k)
-    elif not random_q_init:
-        q_mu = np.zeros(k)
+    q_mu = np.random.normal(0, std, k)
     return q_mu
 
 # add random walk
@@ -54,7 +50,7 @@ class Bandit:
     def __init__(self, 
                  k_arms, 
                  eps,
-                 random_q_init, 
+                 Q_init, # a list of initial values
                  stationary_q = True,
                  q_delta_std = 0.01,
                  steps = 10000,
@@ -63,7 +59,7 @@ class Bandit:
                  ):
         self.k_arms = k_arms
         self.eps = eps
-        self.random_q_init = random_q_init
+        self.Q_init = Q_init
         self.stationary_q = stationary_q
         self.q_delta_std = q_delta_std
         self.steps = steps
@@ -75,13 +71,14 @@ class Bandit:
         
         # tracker of Q(a) and N(a)
         Q_tracker = np.zeros((self.steps, self.k_arms)) # steps x k arms
+        Q_tracker[0, :] = self.Q_init
         N_tracker = np.zeros((self.steps, self.k_arms)) # steps x k arms 
         R_tracker = []
         A_tracker = []
         A_optimal_tracker = []
 
         # initialize q()
-        self.q_mu = init_q(k=self.k_arms, random_q_init=self.random_q_init, std=1)
+        self.q_mu = init_q(k=self.k_arms, std=1)
 
         for step in range(0, self.steps):
             if not self.stationary_q:
@@ -100,23 +97,26 @@ class Bandit:
             # get reward
             R = get_R(self.q_mu, a, std=1)
 
-            # update Q_tracker and N_tracker
+            # update N_tracker
             N_tracker[step, a] += 1
+
             # copy to next step to persist
             N_tracker[step+1, :] = N_tracker[step, :]
 
             if self.step_size == "1/N":
                 self.step_size = 1 / N_tracker[step, a]
 
-            Q_tracker[step, a] = update_Q(Q_tracker[step, a], R, self.step_size)
             # copy to next step to persist
-            Q_tracker[step+1, :] = Q_tracker[step, :]
+            Q_tracker[step+1, :] = Q_tracker[step, :]                
+
+            # update Q_tracker
+            Q_tracker[step+1, a] = update_Q(Q_tracker[step, a], R, self.step_size)
 
             R_tracker += [R]
             A_tracker += [a]
             A_optimal_tracker += [np.argmax(self.q_mu)] # the correct one
 
-            if step + 1 == self.steps - 1:
+            if step + 1 == self.steps - 2:
                 break
 
         self.Q_tracker = np.array(Q_tracker)
@@ -125,40 +125,36 @@ class Bandit:
         self.A_tracker = np.array(A_tracker)
         self.A_optimal_tracker = np.array(A_optimal_tracker)
 
-def plot_learning_curves(stationary_q, random_q_init, q_delta_std,
-                         k_arms, n_trials, steps,                         
-                         step_sizes = [0.1, "1/N"], eps_list = [0, 0.1, 0.01],
-                         w = 0,
+def plot_learning_curves(stationary_q, Q_init, q_delta_std,
+                         k_arms, n_trials, steps,                     
+                         step_size, eps,
+                         w = 0, axs=None,
                          ):
-    
-    fig, axs = plt.subplots(1, 2, figsize=(12, 4), sharey=False)    
-    for step_size in step_sizes:    
-        for eps in eps_list:
 
-            R_vals = []
-            Q_vals = []
-            N_vals = []
-            A_prop_correct= []
+    R_vals = []
+    Q_vals = []
+    N_vals = []
+    A_prop_correct= []
 
-            for trial in range(n_trials):
-                bandit = Bandit(k_arms, eps=eps,
-                                random_q_init=random_q_init,
-                                stationary_q=stationary_q, 
-                                q_delta_std=q_delta_std,
-                                steps=steps, step_size=step_size,
-                                random_seed=trial,
-                                )
-                bandit.run_bandit()
-                
-                R_vals += [bandit.R_tracker]
-                cnt_correct = (bandit.A_tracker == bandit.A_optimal_tracker)
-                A_prop_correct += [cnt_correct]
-                Q_vals += [bandit.Q_tracker]
-                N_vals += [bandit.N_tracker]
+    for trial in range(n_trials):
+        bandit = Bandit(k_arms, eps=eps,
+                        Q_init=Q_init,
+                        stationary_q=stationary_q, 
+                        q_delta_std=q_delta_std,
+                        steps=steps, step_size=step_size,
+                        random_seed=trial,
+                        )
+        bandit.run_bandit()
+        
+        R_vals += [bandit.R_tracker]
+        cnt_correct = (bandit.A_tracker == bandit.A_optimal_tracker)
+        A_prop_correct += [cnt_correct]
+        Q_vals += [bandit.Q_tracker]
+        N_vals += [bandit.N_tracker]
 
 
-            axs[0].plot(moving_average(np.array(R_vals).mean(axis=0), w), label=f'eps = {eps}; step_size = {step_size}')
-            axs[1].plot(moving_average(np.array(A_prop_correct).mean(axis=0), w), label=f'eps = {eps}; step_size = {step_size}')
+    axs[0].plot(moving_average(np.array(R_vals).mean(axis=0), w), label=f'eps = {eps}; step_size = {step_size}')
+    axs[1].plot(moving_average(np.array(A_prop_correct).mean(axis=0), w), label=f'eps = {eps}; step_size = {step_size}')
 
     axs[0].set_title("Average Return")
     axs[1].set_title("Percent Optimal Actions")
