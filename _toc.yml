@@ -8,33 +8,29 @@ parts:
   - caption: Reinforcement Learning
     numbered: False
     chapters:
-    - file: experiments/k_armed_bandit_1
-    # - file: experiments/k_armed_bandit_2
+    - file: reinforcement_learning/k_armed_bandit_1
+    # - file: reinforcement_learning/k_armed_bandit_2
 
   - caption: Supervised Learning
     numbered: False 
     chapters:    
-    - file: experiments/b_vae
-    - file: experiments/nn_sine_experiments_1
-    # - file: experiments/nn_sine_experiments_2
+    - file: supervised_learning/b_vae
+    - file: supervised_learning/nn_sine_experiments_1
+    # - file: supervised_learning/nn_sine_experiments_2
 
-- caption: Unsupervised Learning
+  - caption: Unsupervised Learning
     numbered: False 
     chapters:    
-    - file: thoughts/kmeans
-    - file: thoughts/pca_autoencoder
+    - file: unsupervised_learning/kmeans
+    - file: unsupervised_learning/pca_autoencoder
 
   - caption: Simulations
     numbered: False
     chapters:
     - file: simulations/entropy_sim
-    - file: simulations/success_sim
+    - file: simulations/success_sim    
 
-  - caption: 
-    numbered: False
-    chapters:    
-
-- caption: Thoughts/Ideas/Opinions
+  - caption: Thoughts/Ideas/Opinions
     numbered: False
     chapters:    
     - file: thoughts/language_llm
