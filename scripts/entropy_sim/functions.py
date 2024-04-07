@@ -7,7 +7,7 @@ rc('animation', html='jshtml')
 rcParams['animation.html'] = 'jshtml'
 
 shape = (40, 40)
-n_iter = 150
+n_iter = 200
 entropies = []
 
 # upper half of matrix is 1 the lower half is 0
