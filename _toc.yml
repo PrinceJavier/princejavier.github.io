@@ -10,7 +10,7 @@ parts:
     chapters:
     - file: reinforcement_learning/k_armed_bandit_1
     - file: reinforcement_learning/k_armed_bandit_2
-    - file: reinforcement_learning/dp_policy_evaluation
+    - file: reinforcement_learning/db_asynchronous_dp
 
   - caption: Supervised Learning
     numbered: False 
