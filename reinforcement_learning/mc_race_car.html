@@ -1,0 +1,897 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Monte Carlo Control &#8212; Prince&#39;s Data Science Blog</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reinforcement_learning/mc_race_car';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Prince's Data Science Blog</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="k_armed_bandit_1.html">K-Armed Bandit Experiments Part 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="k_armed_bandit_2.html">K-Armed Bandit Experiments Part 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="db_asynchronous_dp.html">Asynchronous Dynamic Programming</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Supervised Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../supervised_learning/b_vae.html">Beta-Variational Autoencoder Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supervised_learning/nn_sine_experiments_1.html">Multilayer Perceptron Experiments on Sine Wave Part 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supervised_learning/nn_sine_experiments_2.html">Multilayer Perceptron Experiments on Sine Wave Part 2</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Unsupervised Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unsupervised_learning/kmeans.html">K-Means, Gaussian Mixtures, and the Expectation-Maximization Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unsupervised_learning/pca_autoencoder.html">PCA and Neural Network Autoencoder Connection</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulations</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../simulations/entropy_sim.html">Entropy Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulations/success_sim.html">Simulating Success</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Thoughts/Ideas/Opinions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../thoughts/language_llm.html">On language, LLMs, and why we think certain Egyptian hieroglyphs are about helicopters</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Monte Carlo Control</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="monte-carlo-control">
+<h1>Monte Carlo Control<a class="headerlink" href="#monte-carlo-control" title="Permalink to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Race</span><span class="p">(</span><span class="n">gym</span><span class="o">.</span><span class="n">Env</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                 <span class="n">race_track</span><span class="p">,</span> <span class="c1"># race track grid - 0 for track, 1 for start, 2 for goal, 3 for barrier</span>
+                 <span class="n">velocity_cap</span><span class="p">,</span> <span class="c1"># max absolute value</span>
+                <span class="p">):</span>
+
+        <span class="c1"># entire race track</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">race_track</span> <span class="o">=</span> <span class="n">race_track</span>
+
+        <span class="c1"># get track</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">race_track</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">]</span>        
+
+        <span class="c1"># get starting points</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">race_track</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_coords</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_coords</span><span class="p">]</span>
+        
+        <span class="c1"># get end points</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">race_track</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_coords</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_coords</span><span class="p">]</span>
+
+        <span class="c1"># get barriers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">barriers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">race_track</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">barriers</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">barriers</span><span class="p">]</span>
+
+        <span class="c1"># velocity cap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity_cap</span> <span class="o">=</span> <span class="n">velocity_cap</span>
+
+        <span class="c1"># We have 9 actions, for velocity changes (-1, 0, +1) for each (x, y)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span> <span class="o">=</span> <span class="n">spaces</span><span class="o">.</span><span class="n">Discrete</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The following dictionary maps abstract actions from `self.action_space` to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_action_to_velocity_delta</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="mi">0</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="c1"># (x, y) velocity changes</span>
+                    <span class="mi">1</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                    <span class="mi">2</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="mi">3</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                    <span class="mi">4</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                    <span class="mi">5</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="mi">6</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                    <span class="mi">7</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="mi">8</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="p">}</span>
+        
+        <span class="c1"># back to start at the very beginning and initialize velocity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_back_to_start</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_obs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;agent&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_agent_location</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_get_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;velocity&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_agent_velocity</span><span class="p">,</span>
+                <span class="s2">&quot;next_state&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_agent_next_location</span><span class="p">,</span> <span class="c1"># predicted next location</span>
+                <span class="p">}</span>
+    
+    <span class="c1"># place agent back to start (if barrier is hit) or env is reset</span>
+    <span class="k">def</span> <span class="nf">_back_to_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Choose the agent&#39;s location uniformly at random</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_coords</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_agent_location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_coords</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="c1"># random location on any of the start of the track</span>
+
+        <span class="c1"># agent velocity is </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_agent_velocity</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="c1"># reset to 0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_agent_next_location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_agent_location</span> <span class="c1"># initialize next location</span>
+
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="c1"># We need the following line to seed self.np_random</span>
+        <span class="c1"># this resets the environment?</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_back_to_start</span><span class="p">()</span>
+
+        <span class="n">observation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_obs</span><span class="p">()</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_info</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">observation</span><span class="p">,</span> <span class="n">info</span>
+    
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+        <span class="c1"># Map the action (element of {0,1,2,3...}) to the velocity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity_delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_action_to_velocity_delta</span><span class="p">[</span><span class="n">action</span><span class="p">]</span>
+
+        <span class="c1"># update velocity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_agent_velocity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_agent_velocity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_delta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_agent_velocity</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_agent_velocity</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_delta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># clip velocity so it is never negative? # THIS IS SUTTON&#39;S PROBLEM !!!</span>
+        <span class="c1"># but maybe we can skip this for now to make it more versatile!!</span>
+        <span class="c1"># Cap velocity to have absolute value of &lt;= velocity_cap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_agent_velocity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_agent_velocity</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                       <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity_cap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_cap</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_agent_velocity</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_agent_velocity</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                       <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity_cap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_cap</span><span class="p">)</span>  
+
+        <span class="c1"># velocity must not be (0, 0)</span>
+        <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_agent_velocity</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span> <span class="c1"># excluding 0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_agent_velocity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_action_to_velocity_delta</span><span class="p">[</span><span class="n">action</span><span class="p">])</span> <span class="c1"># just get a random action</span>
+
+        <span class="c1"># anticipate the next location --  THIS IS WHAT WE USE FOR REWARD COMPUTATION</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_agent_next_location</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_agent_location</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_agent_velocity</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">_agent_location</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_agent_velocity</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>        
+
+        <span class="c1"># note not yet terminated</span>
+        <span class="n">terminated</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># if next location is outside the track, then go back to start!!</span>
+        <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_agent_next_location</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">barriers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_back_to_start</span><span class="p">()</span>
+
+        <span class="c1"># if next location is in the Finish Area then awesome -- just make the finish area large</span>
+        <span class="k">elif</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_agent_next_location</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_coords</span><span class="p">:</span>
+            <span class="n">terminated</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># otherwise update location</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_agent_location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_agent_next_location</span>
+
+        <span class="c1"># An episode is done iff the agent has reached the target - in the Finish area</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="c1"># always -1 reward!</span>
+        <span class="n">observation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_obs</span><span class="p">()</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_info</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">info</span>
+    
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">race_track_viz</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">race_track</span><span class="p">)</span>
+        <span class="n">race_track_viz</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_agent_location</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_agent_location</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">4</span>
+
+        <span class="k">return</span> <span class="n">race_track_viz</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h</span> <span class="o">=</span> <span class="mi">120</span>
+<span class="n">w</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">racecar_track</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span> <span class="o">*</span> <span class="mi">3</span>
+
+<span class="n">racecar_track</span><span class="p">[:,</span> <span class="mi">10</span><span class="p">:</span><span class="mi">55</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">racecar_track</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">55</span><span class="p">,</span> <span class="mi">55</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">racecar_track</span><span class="p">[:</span><span class="mi">10</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">racecar_track</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># for i in range(racecar_track.shape[0]):</span>
+<span class="c1">#     for j in range(racecar_track.shape[1]):</span>
+<span class="c1">#         if np.sin(i/20) &lt; np.tan(j/40) + 1 and np.sin(i/20) &gt; np.tan(j/40):</span>
+<span class="c1">#             racecar_track[(i, j)] = 0</span>
+
+<span class="c1">#         if (i-100)**2 + (j-100) **2 &lt; 50**2:</span>
+<span class="c1">#             racecar_track[(i, j)] = 0        </span>
+
+<span class="c1">#         if (i-100)**2 + (j-100) **2 &lt; 30**2:</span>
+<span class="c1">#             racecar_track[(i, j)] = 3</span>
+
+<span class="c1">#         # if np.sin(i/20) &lt; np.tan(j/40) + 1 and np.sin(i/20) &gt; np.tan(j/40):</span>
+
+<span class="c1">#         if j &lt; 40:                            </span>
+<span class="c1">#             racecar_track[(i, j)] = 3</span>
+
+<span class="c1">#         if i &gt; 194:</span>
+<span class="c1">#             racecar_track[(i, j)] = 3</span>
+
+<span class="n">j_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">racecar_track</span><span class="p">[</span><span class="n">h</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">j_finish</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">racecar_track</span><span class="p">[:,</span> <span class="n">w</span><span class="o">-</span><span class="mi">6</span><span class="p">:]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">j_start</span><span class="p">:</span>
+    <span class="n">racecar_track</span><span class="p">[</span><span class="n">h</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:][</span><span class="nb">tuple</span><span class="p">(</span><span class="n">j</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">j_finish</span><span class="p">:</span>
+    <span class="n">racecar_track</span><span class="p">[:,</span> <span class="n">w</span><span class="o">-</span><span class="mi">6</span><span class="p">:][</span><span class="nb">tuple</span><span class="p">(</span><span class="n">j</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">racecar_track</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x320cb1270&gt;
+</pre></div>
+</div>
+<img alt="../_images/fc8e7c9c90faffde6d05e56ec0bd59b19864c6e2b1a5d07635b4aad5699cd3aa.png" src="../_images/fc8e7c9c90faffde6d05e56ec0bd59b19864c6e2b1a5d07635b4aad5699cd3aa.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">Race</span><span class="p">(</span><span class="n">race_track</span><span class="o">=</span><span class="n">racecar_track</span><span class="p">,</span> <span class="n">velocity_cap</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+<span class="n">agent_locs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">))</span>
+    <span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">terminated</span><span class="p">:</span>
+        <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">agent_locs</span> <span class="o">+=</span> <span class="p">[</span><span class="n">env</span><span class="o">.</span><span class="n">_agent_location</span><span class="p">]</span>
+
+<span class="c1"># MC Control</span>
+<span class="n">agent_locs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">agent_locs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">racecar_track</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">agent_locs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">agent_locs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x320c81660&gt;
+</pre></div>
+</div>
+<img alt="../_images/f89d755137dd1a1abe6ad4e716d0ff7d6d9d9ace1884632a0638531ae5769ea5.png" src="../_images/f89d755137dd1a1abe6ad4e716d0ff7d6d9d9ace1884632a0638531ae5769ea5.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MC</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">env</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_Q_C</span><span class="p">(</span><span class="n">init_val</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_Q_C</span><span class="p">(</span><span class="n">init_val</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">init_Q_C</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_val</span><span class="p">):</span>
+
+        <span class="n">actions_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">_action_to_velocity_delta</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">track</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">start_coords</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">end_coords</span>
+
+        <span class="n">state_map</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">actions_list</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">actions_list</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">init_val</span> <span class="o">==</span> <span class="s1">&#39;normal&#39;</span><span class="p">:</span>
+                    <span class="n">Q</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">Q</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">init_val</span> <span class="c1"># optimistic starts</span>
+
+                <span class="n">state_map</span><span class="p">[</span><span class="n">states</span><span class="p">[</span><span class="n">s</span><span class="p">]]</span> <span class="o">=</span> <span class="n">s</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">actions_list</span> <span class="o">=</span> <span class="n">actions_list</span>
+
+        <span class="k">return</span> <span class="n">Q</span><span class="p">,</span> <span class="n">state_map</span>
+
+    <span class="k">def</span> <span class="nf">pi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">eps</span><span class="p">):</span>
+
+        <span class="n">s_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_map</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">s_idx</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span>
+
+        <span class="n">explore</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="n">eps</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">eps</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">explore</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Q</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># greedy. randomly break ties</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">s_idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">s_idx</span><span class="p">,</span> <span class="p">:]))</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">a</span>
+    
+    <span class="k">def</span> <span class="nf">generate_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="n">observation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">_get_obs</span><span class="p">()[</span><span class="s1">&#39;agent&#39;</span><span class="p">]</span> <span class="c1"># initial observation</span>
+        <span class="n">observation</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span>
+
+        <span class="n">S</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pi</span><span class="p">(</span><span class="n">observation</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>
+            <span class="n">A</span> <span class="o">+=</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+            <span class="n">S</span> <span class="o">+=</span> <span class="p">[</span><span class="n">observation</span><span class="p">]</span>
+
+            <span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">observation</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">observation</span><span class="p">[</span><span class="s1">&#39;agent&#39;</span><span class="p">])</span>
+
+            <span class="n">R</span> <span class="o">+=</span> <span class="p">[</span><span class="n">reward</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">terminated</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+                <span class="k">break</span>
+        
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">S</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">S</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">R</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">agent</span> <span class="o">=</span> <span class="n">MC</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+<span class="n">agent</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">pi</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">agent</span><span class="o">.</span><span class="n">pi</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.2</span><span class="p">),</span> <span class="n">agent</span><span class="o">.</span><span class="n">pi</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7 5 2
+1 1 7
+6 6 5
+1 7 0
+3 1 5
+8 1 8
+6 0 8
+1 3 8
+8 1 5
+4 6 4
+8 7 8
+2 3 3
+7 2 4
+3 3 3
+0 8 0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Off-policy MC Control algorithm with weighted sampling</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.90</span>
+<span class="n">eps_b</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">eps_pi</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">steps_tracker</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">agent_checkpoints</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c1"># compute b(A|S) for greedy action for behavior policy</span>
+<span class="n">proba_greedy_b</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">eps_b</span> <span class="o">+</span> <span class="n">eps_b</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">actions_list</span><span class="p">)</span>
+<span class="n">proba_nongreedy_b</span> <span class="o">=</span> <span class="n">eps_b</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">actions_list</span><span class="p">)</span>
+
+<span class="c1"># compute b(A|S) for greedy action for target policy</span>
+<span class="n">proba_greedy_pi</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">eps_pi</span> <span class="o">+</span> <span class="n">eps_pi</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">actions_list</span><span class="p">)</span>
+<span class="n">proba_nongreedy_pi</span> <span class="o">=</span> <span class="n">eps_pi</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">actions_list</span><span class="p">)</span>
+
+<span class="c1"># initialize agent</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">MC</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+<span class="n">agent</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>({&#39;agent&#39;: (109, 43)}, {&#39;velocity&#39;: [0, 0], &#39;next_state&#39;: (109, 43)})
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># greedy pi defined above</span>
+<span class="c1"># loop over many episodes, i = episode</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20000</span><span class="p">):</span>
+    <span class="c1"># b = lambda: epsilon-greedy defined above, b(A|S)</span>
+    <span class="c1"># generate episode using b -&gt; S, A, R which are sequences from 0 to T-1 (for S, A) or T (for R)</span>
+    <span class="n">S</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">generate_trajectory</span><span class="p">(</span><span class="n">eps_b</span><span class="p">)</span> <span class="c1"># follows epsilon-greedy for behavior policy </span>
+
+    <span class="n">G</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># init returns for each episode</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># initi sampling ratio, weighted, for each episode</span>
+    <span class="n">num_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">S</span><span class="p">)</span> <span class="c1"># num steps in episode</span>
+
+    <span class="c1"># run episode until termination</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_steps</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="c1"># reversed from T-1 ... 0</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">G</span> <span class="o">*</span> <span class="n">gamma</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="c1"># this R[t] corresponds to R_{t+1}, yeah confusing I know</span>
+
+        <span class="c1"># C - we basically sum up because of weighted importance sampling, </span>
+        <span class="c1"># if ordinary sampling then C is basically the number of times St has been visited aka C += 1</span>
+        <span class="n">agent</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="n">S</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="n">S</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">+</span> <span class="n">W</span>
+
+        <span class="c1"># the G - Q is the incremental update rule!</span>
+        <span class="n">agent</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">S</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">S</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">+</span> <span class="p">(</span><span class="n">W</span> <span class="o">/</span> <span class="n">agent</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="n">S</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="n">t</span><span class="p">]])</span> <span class="o">*</span> <span class="p">(</span><span class="n">G</span> <span class="o">-</span> <span class="n">agent</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">S</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="n">t</span><span class="p">]])</span>
+        
+        <span class="c1"># only select those A ~ b that are A ~ target pi for greedy</span>
+        <span class="k">if</span> <span class="n">eps_pi</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">A</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">!=</span> <span class="n">agent</span><span class="o">.</span><span class="n">pi</span><span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">eps</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                <span class="k">break</span> <span class="c1"># break inner loop</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># W = W * 1 / b[A[t], S[t]] # probability of greedy action eps=0 is 1</span>
+                <span class="n">W</span> <span class="o">=</span> <span class="n">W</span> <span class="o">*</span> <span class="n">proba_greedy_pi</span> <span class="o">/</span> <span class="n">proba_greedy_b</span> <span class="c1"># here proba_greedy_pi = 1</span>
+
+        <span class="k">elif</span> <span class="n">eps_pi</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">b_selected_greedy_action</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">==</span> <span class="n">agent</span><span class="o">.</span><span class="n">pi</span><span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">eps</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">b_selected_greedy_action</span><span class="p">:</span> <span class="c1"># if A ~ b from trajectory not same as greedy</span>
+                <span class="n">W</span> <span class="o">=</span> <span class="n">W</span> <span class="o">*</span> <span class="n">proba_greedy_pi</span> <span class="o">/</span> <span class="n">proba_nongreedy_b</span> <span class="c1"># we still use proba_greedy_pi in since we assume e-greedy numerator</span>
+
+            <span class="k">elif</span> <span class="n">b_selected_greedy_action</span><span class="p">:</span>
+                <span class="c1"># W = W * 1 / b[A[t], S[t]] # probability of greedy action</span>
+                <span class="n">W</span> <span class="o">=</span> <span class="n">W</span> <span class="o">*</span> <span class="n">proba_greedy_pi</span> <span class="o">/</span> <span class="n">proba_greedy_b</span> <span class="c1"># both used greedy</span>
+
+
+    <span class="c1"># average returns every X timesteps</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">sum_steps</span> <span class="o">=</span> <span class="n">num_steps</span>
+        <span class="n">avg_steps</span> <span class="o">=</span> <span class="n">num_steps</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sum_steps</span> <span class="o">+=</span> <span class="n">num_steps</span>
+        <span class="n">avg_steps</span> <span class="o">=</span> <span class="n">sum_steps</span> <span class="o">/</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">steps_tracker</span> <span class="o">+=</span> <span class="p">[</span><span class="n">num_steps</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">avg_steps</span><span class="p">)</span>
+
+        <span class="c1"># checkpoint</span>
+        <span class="n">agent_checkpoints</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">agent</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 770
+100 1498
+200 3315
+300 810
+400 481
+500 279
+600 552
+700 4693
+800 2621
+900 342
+1000 1430
+1100 84
+1200 480
+1300 101
+1400 2089
+1500 3385
+1600 2471
+1700 570
+1800 3155
+1900 780
+2000 1996
+2100 44
+2200 172
+2300 1443
+2400 158
+2500 248
+</pre></div>
+</div>
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">60</span><span class="p">],</span> <span class="n">line</span> <span class="mi">6</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="c1"># greedy pi defined above</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="c1"># loop over many episodes, i = episode</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20000</span><span class="p">):</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span>     <span class="c1"># b = lambda: epsilon-greedy defined above, b(A|S)</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span>     <span class="c1"># generate episode using b -&gt; S, A, R which are sequences from 0 to T-1 (for S, A) or T (for R)</span>
+<span class="ne">----&gt; </span><span class="mi">6</span>     <span class="n">S</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">generate_trajectory</span><span class="p">(</span><span class="n">eps_b</span><span class="p">)</span> <span class="c1"># follows epsilon-greedy for behavior policy </span>
+<span class="g g-Whitespace">      </span><span class="mi">8</span>     <span class="n">G</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># init returns for each episode</span>
+<span class="g g-Whitespace">      </span><span class="mi">9</span>     <span class="n">W</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># initi sampling ratio, weighted, for each episode</span>
+
+<span class="nn">Cell In[44], line 59,</span> in <span class="ni">MC.generate_trajectory</span><span class="nt">(self, eps)</span>
+<span class="g g-Whitespace">     </span><span class="mi">56</span> <span class="n">A</span> <span class="o">+=</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="g g-Whitespace">     </span><span class="mi">57</span> <span class="n">S</span> <span class="o">+=</span> <span class="p">[</span><span class="n">observation</span><span class="p">]</span>
+<span class="ne">---&gt; </span><span class="mi">59</span> <span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">60</span> <span class="n">observation</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">observation</span><span class="p">[</span><span class="s1">&#39;agent&#39;</span><span class="p">])</span>
+<span class="g g-Whitespace">     </span><span class="mi">62</span> <span class="n">R</span> <span class="o">+=</span> <span class="p">[</span><span class="n">reward</span><span class="p">]</span>
+
+<span class="nn">Cell In[2], line 111,</span> in <span class="ni">Race.step</span><span class="nt">(self, action)</span>
+<span class="g g-Whitespace">    </span><span class="mi">108</span> <span class="n">terminated</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="g g-Whitespace">    </span><span class="mi">110</span> <span class="c1"># if next location is outside the track, then go back to start!!</span>
+<span class="ne">--&gt; </span><span class="mi">111</span> <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_agent_next_location</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">barriers</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">112</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_back_to_start</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">114</span> <span class="c1"># if next location is in the Finish Area then awesome -- just make the finish area large</span>
+
+<span class="ne">KeyboardInterrupt</span>: 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">steps_tracker</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.lines.Line2D at 0x322185690&gt;]
+</pre></div>
+</div>
+<img alt="../_images/1e60793a3e28a8949fe91be1b77da671bd0edb2525ff7c79a640b2a6be315a01.png" src="../_images/1e60793a3e28a8949fe91be1b77da671bd0edb2525ff7c79a640b2a6be315a01.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">S</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">generate_trajectory</span><span class="p">(</span><span class="n">eps</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1076
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">agent_locs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">racecar_track</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">agent_locs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">agent_locs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x321f271c0&gt;
+</pre></div>
+</div>
+<img alt="../_images/db9db4cee4b2bc6086d37f09d83fddaaf87bce27ea37955cc80fb03ebc53dbb0.png" src="../_images/db9db4cee4b2bc6086d37f09d83fddaaf87bce27ea37955cc80fb03ebc53dbb0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">agent_locs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="nb">iter</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">racecar_track</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">agent_locs</span><span class="p">[</span><span class="nb">iter</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">agent_locs</span><span class="p">[</span><span class="nb">iter</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">)</span>    
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">anim</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FuncAnimation</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span>
+                               <span class="n">animate</span><span class="p">,</span>
+                               <span class="n">frames</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> 
+                               <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">HTML</span><span class="p">(</span><span class="n">anim</span><span class="o">.</span><span class="n">to_jshtml</span><span class="p">(</span><span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./reinforcement_learning"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Prince Javier
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
