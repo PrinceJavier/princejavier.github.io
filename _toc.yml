@@ -17,7 +17,7 @@ parts:
     chapters:    
     - file: supervised_learning/b_vae
     - file: supervised_learning/nn_sine_experiments_1
-    # - file: supervised_learning/nn_sine_experiments_2
+    - file: supervised_learning/nn_sine_experiments_2
 
   - caption: Unsupervised Learning
     numbered: False 
