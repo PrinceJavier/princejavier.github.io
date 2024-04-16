@@ -11,6 +11,7 @@ parts:
     - file: reinforcement_learning/k_armed_bandit_1
     - file: reinforcement_learning/k_armed_bandit_2
     - file: reinforcement_learning/db_asynchronous_dp
+    - file: reinforcement_learning/mc_race_car
 
   - caption: Supervised Learning
     numbered: False 
