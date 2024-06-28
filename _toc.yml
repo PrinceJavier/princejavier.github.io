@@ -36,3 +36,4 @@ parts:
     numbered: False
     chapters:    
     - file: thoughts/language_llm
+    - file: thoughts/exponential_tech
