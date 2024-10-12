@@ -16,13 +16,14 @@ parts:
   - caption: Supervised Learning
     numbered: False 
     chapters:    
-    - file: supervised_learning/b_vae
+    - file: supervised_learning/bias_variance    
     - file: supervised_learning/nn_sine_experiments_1
     - file: supervised_learning/nn_sine_experiments_2
 
   - caption: Unsupervised Learning
     numbered: False 
     chapters:    
+    - file: unsupervised_learning/b_vae    
     - file: unsupervised_learning/kmeans
     - file: unsupervised_learning/pca_autoencoder
 
