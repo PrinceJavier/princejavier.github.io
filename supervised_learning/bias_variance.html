@@ -394,16 +394,12 @@ document.write(`
 </div>
 </div>
 <p>We train four models with varying number of hidden neurons. We assume that the number of neurons as the proxy for model flexibility.</p>
-<p>We visualize here the results of 18 trials per model trained for 100 epochs each</p>
+<p>We visualize here some of the results of 20 trials per model trained for 100 epochs each.</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<img alt="../_images/88a9517244458ca1eefe9bd9cd89f281f6e1aad73899114eac1fca0a5d05f3cc.png" src="../_images/88a9517244458ca1eefe9bd9cd89f281f6e1aad73899114eac1fca0a5d05f3cc.png" />
-<img alt="../_images/56212ffaf817fac73ba3d1fc8719e6918a54002eba47910edb3c2e664dc77d1f.png" src="../_images/56212ffaf817fac73ba3d1fc8719e6918a54002eba47910edb3c2e664dc77d1f.png" />
-<img alt="../_images/9e12a94b5dd4b634cf07e253e18d51c79634a1e3f37eab55e4fbaceb31bb1657.png" src="../_images/9e12a94b5dd4b634cf07e253e18d51c79634a1e3f37eab55e4fbaceb31bb1657.png" />
-<img alt="../_images/af839c00456d98354ac99d8deb99258245930affeb7533bb5a9141703198dbaa.png" src="../_images/af839c00456d98354ac99d8deb99258245930affeb7533bb5a9141703198dbaa.png" />
-<img alt="../_images/592f75d9d3c17a8b6fbb8c26b5d39b2d979402ffbcdab3c4225ef3e440083dfa.png" src="../_images/592f75d9d3c17a8b6fbb8c26b5d39b2d979402ffbcdab3c4225ef3e440083dfa.png" />
-<img alt="../_images/fde4b40fd344e9de13b846cf176ce35cc46d84f32c8011e3323628e0097fe008.png" src="../_images/fde4b40fd344e9de13b846cf176ce35cc46d84f32c8011e3323628e0097fe008.png" />
-<img alt="../_images/ff0e8aaa5e112fcd7fc4c9fbaac3bde5bd0a72e6f67d75dd2b3bb572e2500807.png" src="../_images/ff0e8aaa5e112fcd7fc4c9fbaac3bde5bd0a72e6f67d75dd2b3bb572e2500807.png" />
+<img alt="../_images/7ed4f5e87146f5afe41f8e08a2ebb99da27744a94e6c903bbbdb5e0e0a991424.png" src="../_images/7ed4f5e87146f5afe41f8e08a2ebb99da27744a94e6c903bbbdb5e0e0a991424.png" />
+<img alt="../_images/abc5d920289c17af4bcc997583f1dd4e95af94515aec00239e69a764498f2b5a.png" src="../_images/abc5d920289c17af4bcc997583f1dd4e95af94515aec00239e69a764498f2b5a.png" />
+<img alt="../_images/26a0838ccaf29c3762370f73f11c7a5ad165fed06c3a3a27d0942ae95a1e69ed.png" src="../_images/26a0838ccaf29c3762370f73f11c7a5ad165fed06c3a3a27d0942ae95a1e69ed.png" />
 </div>
 </div>
 <p>We find that in this simple example, the higher the number of hidden neurons per layer (proxy for flexibility), the more the model seems to fit the noise. We find that the higher the number of neurons, the lower the squared bias but the higher the variance.</p>
@@ -437,44 +433,50 @@ document.write(`
     <tr>
       <th>0</th>
       <td>2</td>
-      <td>975.316478</td>
-      <td>13.969402</td>
+      <td>888.659074</td>
+      <td>10.074012</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>16</td>
-      <td>119.106269</td>
-      <td>35.902462</td>
+      <td>4</td>
+      <td>786.468786</td>
+      <td>12.236567</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>32</td>
-      <td>58.860907</td>
-      <td>41.729862</td>
+      <td>8</td>
+      <td>395.664149</td>
+      <td>51.209419</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>48</td>
-      <td>77.698426</td>
-      <td>40.024990</td>
+      <td>16</td>
+      <td>131.447519</td>
+      <td>53.966263</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>64</td>
-      <td>74.267053</td>
-      <td>38.466969</td>
+      <td>32</td>
+      <td>56.255673</td>
+      <td>44.687702</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>80</td>
-      <td>84.223969</td>
-      <td>50.063202</td>
+      <td>64</td>
+      <td>64.953263</td>
+      <td>45.984539</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>96</td>
-      <td>93.414220</td>
-      <td>50.083187</td>
+      <td>128</td>
+      <td>63.974081</td>
+      <td>49.437195</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>256</td>
+      <td>71.188427</td>
+      <td>66.924347</td>
     </tr>
   </tbody>
 </table>
@@ -482,7 +484,7 @@ document.write(`
 </div>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<img alt="../_images/08658cb7ffb87a1414da7366783be7944483044b95288ddffeacf7b6114b3e4a.png" src="../_images/08658cb7ffb87a1414da7366783be7944483044b95288ddffeacf7b6114b3e4a.png" />
+<img alt="../_images/28abc0e0c131783ae7e0326dd5fa6e2d0849fa06e51337980bc8f2f11109450f.png" src="../_images/28abc0e0c131783ae7e0326dd5fa6e2d0849fa06e51337980bc8f2f11109450f.png" />
 </div>
 </div>
 </section>
