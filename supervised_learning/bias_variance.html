@@ -1,0 +1,690 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>The Bias-Variance Tradeoff &#8212; Prince&#39;s Data Science Blog</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'supervised_learning/bias_variance';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Multilayer Perceptron Experiments on Sine Wave Part 1" href="nn_sine_experiments_1.html" />
+    <link rel="prev" title="Monte Carlo Control Experiments" href="../reinforcement_learning/mc_race_car.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Prince's Data Science Blog</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/k_armed_bandit_1.html">K-Armed Bandit Experiments Part 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/k_armed_bandit_2.html">K-Armed Bandit Experiments Part 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/db_asynchronous_dp.html">Asynchronous Dynamic Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/mc_race_car.html">Monte Carlo Control Experiments</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Supervised Learning</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">The Bias-Variance Tradeoff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nn_sine_experiments_1.html">Multilayer Perceptron Experiments on Sine Wave Part 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nn_sine_experiments_2.html">Multilayer Perceptron Experiments on Sine Wave Part 2</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Unsupervised Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unsupervised_learning/b_vae.html">Beta-Variational Autoencoder Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unsupervised_learning/kmeans.html">K-Means, Gaussian Mixtures, and the Expectation-Maximization Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unsupervised_learning/pca_autoencoder.html">PCA and Neural Network Autoencoder Connection</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulations</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../simulations/entropy_sim.html">Entropy Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulations/success_sim.html">Simulating Success</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Thoughts/Ideas/Opinions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../thoughts/language_llm.html">On language, LLMs, and why we think certain Egyptian hieroglyphs are about helicopters</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>The Bias-Variance Tradeoff</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-intro-to-statistical-learning">Quick Intro to Statistical Learning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mean-squared-error">Mean Squared Error</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bias-variance-trade-off">Bias-Variance Trade-off</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#relation-to-model-flexibility">Relation to Model Flexibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiments">Experiments</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="the-bias-variance-tradeoff">
+<h1>The Bias-Variance Tradeoff<a class="headerlink" href="#the-bias-variance-tradeoff" title="Permalink to this heading">#</a></h1>
+<p>October 13, 2024</p>
+<section id="quick-intro-to-statistical-learning">
+<h2>Quick Intro to Statistical Learning<a class="headerlink" href="#quick-intro-to-statistical-learning" title="Permalink to this heading">#</a></h2>
+<p>In statistical learning, we assume that we are given a set of <span class="math notranslate nohighlight">\(n\)</span> datapoints <span class="math notranslate nohighlight">\(\{x_i, y_i\}_{i=1}^n\)</span> that are iid (independent and identically distributed) and sampled from <span class="math notranslate nohighlight">\((x_i, y_i) \sim \text{P}_{X,Y}\)</span>. We call this the “train set.” We use this set to learn a model <span class="math notranslate nohighlight">\(\hat{f}(x)\)</span> tha approximates the “true” mapping <span class="math notranslate nohighlight">\(f(x): X \rightarrow Y.\)</span> We assume that all other data within the support of our distribution <span class="math notranslate nohighlight">\(P_{XY}\)</span> but outside our training data are also iid. We call this set “test set.”</p>
+<p>We assume the general form of the “true” mapping <span class="math notranslate nohighlight">\(f(x): X \rightarrow Y\)</span> as:</p>
+<p><span class="math notranslate nohighlight">\(Y = f(x) + \epsilon\)</span></p>
+<p><span class="math notranslate nohighlight">\(f(x)\)</span> is what we want to estimate while <span class="math notranslate nohighlight">\(\epsilon\)</span> is the “irreducible error” that are caused by inherent noise or factors that are unobserved or unmeasured. This is fine since we cannot practically expect to have access to all the variables that affect our “response” or “output” variable <span class="math notranslate nohighlight">\(Y\)</span>. But it’s important that <span class="math notranslate nohighlight">\(\epsilon\)</span> has a mean of 0 and is indipendent of <span class="math notranslate nohighlight">\(X\)</span>, <span class="math notranslate nohighlight">\(Y\)</span>, or <span class="math notranslate nohighlight">\(f(X)\)</span> so that it does not introduce any systematic errors or bias in the system.</p>
+<p>Our goal is to use our train set to learn <span class="math notranslate nohighlight">\(\hat{f}(x)\)</span> such that it is close to the true function <span class="math notranslate nohighlight">\(f(x)\)</span>. What about the irreducible noise <span class="math notranslate nohighlight">\(\epsilon\)</span>? We want to avoid learning it because it does not inform us of the mapping <span class="math notranslate nohighlight">\(X \rightarrow Y\)</span>.</p>
+</section>
+<section id="mean-squared-error">
+<h2>Mean Squared Error<a class="headerlink" href="#mean-squared-error" title="Permalink to this heading">#</a></h2>
+<p>We focus on predicting a quantitative response variable or output <span class="math notranslate nohighlight">\(Y\)</span> from input variables <span class="math notranslate nohighlight">\(X\)</span>. This task is called “regression.” One way to compute the goodness of fit of our approximation <span class="math notranslate nohighlight">\(\hat{f}(x)\)</span> to <span class="math notranslate nohighlight">\(f(x)\)</span> is the expected value of the squared loss, which we call error or risk:</p>
+<p><span class="math notranslate nohighlight">\(\text{Error}(\hat{f}) = \mathbb{E}[(\hat{f}(x)) - f(x))^2]\)</span></p>
+<p>Where the expectation is computed over the underlying true distribution. However, in practice, we don’t have access to the true distribution. We are only given the training data. So how do we estimate this error?</p>
+<p>Given that we have <span class="math notranslate nohighlight">\(n\)</span> training data, the error can be estimated by what’s called the “Mean Squared Error” (MSE):</p>
+<p><span class="math notranslate nohighlight">\(\text{MSE}(\hat{f}) = \frac{1}{n}\sum_{i=1}^n((\hat{f}(x_i) - y_i)^2)\)</span></p>
+<p>where <span class="math notranslate nohighlight">\(y_i = f(x_i) + \epsilon\)</span> is the ground truth output variable.</p>
+<p>Now if we compute the MSE on the train set, we call it train error, while if we compute it on the test set, we call it test error. In general, the train error is higher than the test error. In the case where the train error goes down while the test error goes up, we say that we are “overfitting.”</p>
+<p>Our goal is to find a model <span class="math notranslate nohighlight">\(\hat{f}(x)\)</span> that minimizes the error (or its approximate MSE) on the test set (not the train set).</p>
+</section>
+<section id="bias-variance-trade-off">
+<h2>Bias-Variance Trade-off<a class="headerlink" href="#bias-variance-trade-off" title="Permalink to this heading">#</a></h2>
+<p>It turns out, there’s a fundamental relationship between two metrics in statistical learning: the bias-variance trade-off. Let’s first look at the formula relating the (expected) test error (which is what we care about) to the bias and variance of our learned model <span class="math notranslate nohighlight">\(\hat{f}(x)\)</span>:</p>
+<p><span class="math notranslate nohighlight">\(\mathbb{E}[(\hat{f}(x)) - f(x))^2] = \text{bias}^2 + \text{variance} + \text{var}(\epsilon)\)</span></p>
+<p>Where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\text{bias}^2 := \mathbb{E}[(\mathbb{E}[\hat{f}(x)] - f(x))^2]\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\text{variance} := \mathbb{E}[(\hat{f}(x) - \mathbb{E}[\hat{f}(x)])^2]\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\text{var}(\epsilon)\)</span> is just the variance of the irreducible error (noise). We don’t need to think about this</p></li>
+</ul>
+<p>Essentially, this tells us that we can decompose the expected error into bias and variance terms. The bias is how different the expected learned model is from the ground truth mapping <span class="math notranslate nohighlight">\(f(x)\)</span>(assuming we train multiple times on different training data). The variance is a measure of how different our models are from each other (how spread out).</p>
+<p>Ideally we want both bias and variance to be 0. In which case the expected error is essentially the irreducible error. However, we almost never reach this state. (This is a consequence of relying on a limited dataset and not having access to the true underlying data distribution and it’s generally non-trivial to separate the noise <span class="math notranslate nohighlight">\(\epsilon\)</span> from the systematic mapping <span class="math notranslate nohighlight">\(f(x)\)</span>). What happens instead is we trade-off bias for variance or vice versa. The best we can do in most cases if find the right balance between these two that minimizes the expected error.</p>
+<p>How do we compute these?</p>
+<p>First, we need to have access to the ground truth underlying mapping <span class="math notranslate nohighlight">\(Y = f(X) + \epsilon\)</span>. Note that the bias-variance trade-off cannot be computed directly in practice since we don’t know <span class="math notranslate nohighlight">\(f(X)\)</span> which is what we’re trying to model in the first place. So this gives us a mental model and theoretical understanding about managing model flexibility to balance bias and variance. We will go back to model flexibility later.</p>
+<p>Now, imagine having say <span class="math notranslate nohighlight">\(k\)</span> different independently-built train sets of <span class="math notranslate nohighlight">\(n\)</span> samples each, with each set sampled iid from a fixed underlying distribution <span class="math notranslate nohighlight">\(P_{XY}\)</span>. Now imagine drawing another set for testing from the same distribution. We shall fix the test set.</p>
+<p>Now, we fit a model <span class="math notranslate nohighlight">\(\hat{f}(x)\)</span> on each of the <span class="math notranslate nohighlight">\(k\)</span> train sets thus giving us a set of <span class="math notranslate nohighlight">\(k\)</span> fitted models. We can then approximate the expected value <span class="math notranslate nohighlight">\(\mathbb{E}[\hat{f}(x)] \approx \frac{1}{k}\sum_{i=1}^k(\hat{f}(x_k))\)</span> at <span class="math notranslate nohighlight">\(x\)</span> over the <span class="math notranslate nohighlight">\(k\)</span> training datasets. Now we can see how to compute the bias and variance from here (sorry, tinamad mag-explain).</p>
+</section>
+<section id="relation-to-model-flexibility">
+<h2>Relation to Model Flexibility<a class="headerlink" href="#relation-to-model-flexibility" title="Permalink to this heading">#</a></h2>
+<p>Model flexibility is how much the model aligns with our training data. Linear regression has low flexibility because it will only fit a line even if the underlying function has curves. Meanwhile, a highly complex neural network can fit non-linear (curvy or wavy) relations between <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span>. However, if the model is too complex, it’s possible the model ends up fitting on the uninformative irreducible error <span class="math notranslate nohighlight">\(\epsilon\)</span> - in which case, overfitting happens. We want to find a sweet spot in terms of model flexibility where we reduce the “reducible error” <span class="math notranslate nohighlight">\((\hat{f}(x)) - f(x))^2\)</span> while discarding <span class="math notranslate nohighlight">\(\epsilon\)</span>.</p>
+<p>Intuitively, the more flexible the model, the mode “degrees of freedom” it has to fit the training data. But in doing so, it may be already fitting on the irreducible error. This will give us worse test set performance. Vapnik et al. provided a way to quantify the lower bound of the difference between the MSE based on the train set and the true expected error across all possible data in the underlying data distribution. Essentially, the more complex the model, the larger the lower bound of the difference between the train MSE and true expected error (See Vapnik et al on discussion about the VC dimension and its connection to model complexity).</p>
+<p>This is why there are many strategies that aim to balance too low vs too high flexibility such as regularization and architectural modifications.</p>
+<p>How is model flexibility is related to the bias-variance trade-off?</p>
+<p>It turns out that the lower the flexibility of the model, the harder it is to reduce the reducible error between the fitted function and the underlying true function. But if your model is too flexible, it may fit the noise such that sure we may reduce the bias since we’re now able to fit the complicated function, but it may introduce more variance since we run the risk of overfitting on the noise of our train set. If we change train sets, we expect to learn another kind of function that is quite different from the first one.</p>
+</section>
+<section id="experiments">
+<h2>Experiments<a class="headerlink" href="#experiments" title="Permalink to this heading">#</a></h2>
+<p>We first define a synthetic dataset following <span class="math notranslate nohighlight">\(y = f(x) + \epsilon\)</span>. In our experiment, we use</p>
+<p><span class="math notranslate nohighlight">\(y = log(x) + \epsilon\)</span></p>
+<p>where <span class="math notranslate nohighlight">\(\epsilon \sim N(0, 1)\)</span></p>
+<p>We fix <span class="math notranslate nohighlight">\(x = 1, 2, ..., 50\)</span> and randomly generate <span class="math notranslate nohighlight">\(y\)</span>. The test set is a fixed set of <span class="math notranslate nohighlight">\(\{x_i, y_i\}_{i=1}^{50}\)</span>, while the <span class="math notranslate nohighlight">\(k\)</span> train sets are distinct randomly sampled sets from the same data generating function above.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gen_data</span><span class="p">(</span><span class="n">seed</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">prop</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">f_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">f_x</span> <span class="o">+</span> <span class="n">eps</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
+    <span class="n">f_x</span> <span class="o">=</span> <span class="n">f_x</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">eps</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The test set looks like this.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/faa20e4d15684207681c1a187c5178c588c9196cba097b3987b17cc6a53f8c95.png" src="../_images/faa20e4d15684207681c1a187c5178c588c9196cba097b3987b17cc6a53f8c95.png" />
+</div>
+</div>
+<p>We next define a simple multilayer perceptron (MLP) neural network with batch norm and Kaiming normal initialization. These are pretty standard architectural decisions. I found that the model isn’t able to fit beyond a linear model if batch norm isn’t used.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the neural network model</span>
+<span class="k">class</span> <span class="nc">Net</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">256</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Net</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>    <span class="c1"># Input layer to first hidden layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bn1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>  <span class="c1"># Batch normalization after first hidden layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>   <span class="c1"># First hidden layer to second hidden layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bn2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>  <span class="c1"># Batch normalization after second hidden layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc3</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>    <span class="c1"># Second hidden layer to output layer</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bn1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bn2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc3</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>        
+        <span class="k">return</span> <span class="n">x</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>I just defined a <code class="docutils literal notranslate"><span class="pre">Trial</span></code> class just to make experiments easier.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># for ease of trial</span>
+<span class="k">class</span> <span class="nc">Trial</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count_neurons</span><span class="o">=</span><span class="mi">256</span><span class="p">):</span>
+        <span class="c1"># load model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="n">count_neurons</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;mps&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Define loss function and optimizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">num_epochs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="n">X_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;mps&quot;</span><span class="p">)</span> <span class="c1"># add a batch size dimension</span>
+        <span class="n">Y_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;mps&quot;</span><span class="p">)</span> <span class="c1"># add a batch size dimension</span>
+
+        <span class="c1"># Training loop</span>
+        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+            <span class="c1"># Zero the parameter gradients</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            
+            <span class="c1"># Forward pass</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">X_tensor</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">Y_tensor</span><span class="p">)</span>
+            
+            <span class="c1"># Backward pass and optimization</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">visualize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+        <span class="n">X_new_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;mps&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Y_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">X_new_tensor</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$f(x)$&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_pred</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$\hat</span><span class="si">{f}</span><span class="s1">(x)$&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span> <span class="c1"># label = &quot;$Y = f(x) + \epsilon$&quot;)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>We train four models with varying number of hidden neurons: 2, 64, 512, and 1024. We assume that the number of neurons as the proxy for model flexibility.</p>
+<p>We visualize here the results of ten trials per model.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">prop_train</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">k_train</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">X_test</span><span class="p">,</span> <span class="n">f_x_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">eps</span> <span class="o">=</span> <span class="n">gen_data</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">count_neurons</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">1024</span><span class="p">]:</span> <span class="c1"># modifies flexibility</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># used to compute the bias and variance</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">axs</span> <span class="o">=</span> <span class="n">axs</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">k_train</span><span class="p">):</span>
+        <span class="c1"># we pick a different train set iid sampled from P_XY</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">eps</span> <span class="o">=</span> <span class="n">gen_data</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="n">prop_train</span><span class="p">)</span> <span class="c1"># seed &gt; 1 for train</span>
+
+        <span class="n">trial</span> <span class="o">=</span> <span class="n">Trial</span><span class="p">(</span><span class="n">count_neurons</span><span class="o">=</span><span class="n">count_neurons</span><span class="p">)</span>
+        <span class="n">trial</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">num_epochs</span><span class="o">=</span><span class="n">num_epochs</span><span class="p">)</span>
+        <span class="n">trial</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">f_x_test</span><span class="p">,</span> <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+        <span class="c1"># track average squared bias</span>
+        <span class="n">preds</span> <span class="o">+=</span> <span class="p">[</span><span class="n">trial</span><span class="o">.</span><span class="n">Y_pred</span><span class="p">]</span>
+        
+    <span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">count_neurons</span><span class="si">}</span><span class="s2"> Neurons&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>    
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="c1"># compute the bias and variance</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span>
+    <span class="n">mean_preds</span> <span class="o">=</span> <span class="n">preds</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">bias_squared</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">mean_preds</span> <span class="o">-</span> <span class="n">Y_test</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> 
+    <span class="n">variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">preds</span> <span class="o">-</span> <span class="n">mean_preds</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">results</span><span class="p">[</span><span class="n">count_neurons</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">bias_squared</span><span class="p">,</span> <span class="n">variance</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../_images/0842c7d6d1de484d1400ce76eb2c063ae29442e3a7d3bb7fc53f857ea4232bb2.png" src="../_images/0842c7d6d1de484d1400ce76eb2c063ae29442e3a7d3bb7fc53f857ea4232bb2.png" />
+<img alt="../_images/7edea619dbd97a2e231cf718f496baddc10b0cabb7f5ff3dd91aabd3fd1fe446.png" src="../_images/7edea619dbd97a2e231cf718f496baddc10b0cabb7f5ff3dd91aabd3fd1fe446.png" />
+<img alt="../_images/0ea837daecb0d298cf8c47a50d11b538f52268620fd9f67134b62f8cf9cdc1d0.png" src="../_images/0ea837daecb0d298cf8c47a50d11b538f52268620fd9f67134b62f8cf9cdc1d0.png" />
+<img alt="../_images/e8b15492199b980b276ca10d45ae578ed3af78a184669cc8375afa568922249d.png" src="../_images/e8b15492199b980b276ca10d45ae578ed3af78a184669cc8375afa568922249d.png" />
+</div>
+</div>
+<p>We find that in this simple example, the higher the number of hidden neurons per layer (proxy for flexibility), the more the model seems to fit the noise. We find that the higher the number of neurons, the lower the squared bias but the higher the variance.</p>
+<p>This experiment helps illustrate the idea behind the bias-variance trade-off.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>count_neurons</th>
+      <th>bias</th>
+      <th>variance</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2</td>
+      <td>1.248583</td>
+      <td>0.189328</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>64</td>
+      <td>1.263512</td>
+      <td>0.659396</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>512</td>
+      <td>1.129369</td>
+      <td>0.491367</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1024</td>
+      <td>1.139180</td>
+      <td>0.541393</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/b2911b172ef8eef88866c1e1d34fd28acc249ecd74d6bc738bfebe64c609d012.png" src="../_images/b2911b172ef8eef88866c1e1d34fd28acc249ecd74d6bc738bfebe64c609d012.png" />
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./supervised_learning"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../reinforcement_learning/mc_race_car.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Monte Carlo Control Experiments</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="nn_sine_experiments_1.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Multilayer Perceptron Experiments on Sine Wave Part 1</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-intro-to-statistical-learning">Quick Intro to Statistical Learning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mean-squared-error">Mean Squared Error</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bias-variance-trade-off">Bias-Variance Trade-off</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#relation-to-model-flexibility">Relation to Model Flexibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiments">Experiments</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Prince Javier
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
