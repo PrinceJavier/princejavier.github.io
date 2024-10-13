@@ -33,6 +33,11 @@ parts:
     - file: simulations/entropy_sim
     - file: simulations/success_sim    
 
+  - caption: Causal Inference
+    numbered: False 
+    chapters:    
+    - file: causal_inference/ccm_failure_cases
+
   - caption: Thoughts/Ideas/Opinions
     numbered: False
     chapters:    
