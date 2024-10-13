@@ -1,0 +1,1063 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Where Convergent Cross-Mapping Fails &#8212; Prince&#39;s Data Science Blog</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'causal_inference/ccm_failure_cases';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="On language, LLMs, and why we think certain Egyptian hieroglyphs are about helicopters" href="../thoughts/language_llm.html" />
+    <link rel="prev" title="Simulating Success" href="../simulations/success_sim.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Prince's Data Science Blog</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/k_armed_bandit_1.html">K-Armed Bandit Experiments Part 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/k_armed_bandit_2.html">K-Armed Bandit Experiments Part 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/db_asynchronous_dp.html">Asynchronous Dynamic Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/mc_race_car.html">Monte Carlo Control Experiments</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Supervised Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../supervised_learning/bias_variance.html">The Bias-Variance Tradeoff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supervised_learning/nn_sine_experiments_1.html">Multilayer Perceptron Experiments on Sine Wave Part 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supervised_learning/nn_sine_experiments_2.html">Multilayer Perceptron Experiments on Sine Wave Part 2</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Unsupervised Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unsupervised_learning/b_vae.html">Beta-Variational Autoencoder Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unsupervised_learning/kmeans.html">K-Means, Gaussian Mixtures, and the Expectation-Maximization Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unsupervised_learning/pca_autoencoder.html">PCA and Neural Network Autoencoder Connection</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulations</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../simulations/entropy_sim.html">Entropy Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulations/success_sim.html">Simulating Success</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Causal Inference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Where Convergent Cross-Mapping Fails</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Thoughts/Ideas/Opinions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../thoughts/language_llm.html">On language, LLMs, and why we think certain Egyptian hieroglyphs are about helicopters</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Where Convergent Cross-Mapping Fails</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chaotic-models">Chaotic Models</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1">Example 1</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2">Example 2</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-3">Example 3</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chaotic-models-noise">Chaotic Models + Noise</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Example 1</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Example 2</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Example 3</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additive-noise-models">Additive Noise Models</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Example 1</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Example 2</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Example 3</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chaotic-system-in-the-original-ccm-paper-sugihara-et-al-2012">Chaotic System in the Original CCM Paper (Sugihara, et al, 2012)</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="where-convergent-cross-mapping-fails">
+<h1>Where Convergent Cross-Mapping Fails<a class="headerlink" href="#where-convergent-cross-mapping-fails" title="Permalink to this heading">#</a></h1>
+<p>October 13, 2024</p>
+<p>Convergent Cross-mapping (CCM) is a technique for causal inference in dynamical systems. CCM claims to infer cause and effect directionality given two time series <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span>. The <a class="reference external" href="https://www.science.org/doi/10.1126/science.1227079">2012 paper of Sugihara et al</a> introduced CCM and they showed that for a deterministic “coupled” chaotic system where <span class="math notranslate nohighlight">\(X\)</span> influences <span class="math notranslate nohighlight">\(Y\)</span> and vice versa by some degree, CCM is able to infer the strength of effect. (For a more in depth background about CCM and how it works, see Chapter 6 of our online <a class="reference external" href="https://phdinds-aim.github.io/time_series_handbook/06_ConvergentCrossMappingandSugiharaCausality/ccm_sugihara.html">Time Series Handbook</a>.)</p>
+<p>Hundreds of papers have since used CCM to infer causal direction in ecosystems and other natural systems. In our <a class="reference external" href="https://www.sciencedirect.com/science/article/abs/pii/S0378437122005738">2022 paper</a>, we used CCM to infer possible causal relations among factors in a water dam system.</p>
+<p>However, because CCM is built with the assumption of a determinstic coupled chaotic dynamical system, it’s natural to ask, “how applicable is CCM for time series data that come from systems that violate the assumption of CCM?”</p>
+<p>In this article we investigate the ability of CCM to infer directionality between two observed time series variables on different classes of functions:</p>
+<ol class="arabic simple">
+<li><p>Deterministic Chaotic Systems - we investigate the effect of the presence of hidden confounding variables</p></li>
+<li><p>Chaotic Systems with Random Noise - here, the system is no longer fully deterministic.</p></li>
+<li><p>Additive Noise Models (ANMs) - standard model for Structural Causal Models of the form <span class="math notranslate nohighlight">\(Y = f(X) + N_X\)</span> where <span class="math notranslate nohighlight">\(N_X\)</span> is an independent random noise. We use non-linear Gaussian models. Linear Gaussian models have been shown to be unidentifiable (we cannot infer directionality of causation) unless the variances of the noise are all equal. (See the works of Scholkopf, Peters, Janzing, Pearl).</p></li>
+</ol>
+<p>We summarize our findings below.</p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>variable relations</p></th>
+<th class="head"><p>causal graph</p></th>
+<th class="head text-center"><p><span class="math notranslate nohighlight">\(X \rightarrow Y\)</span></p></th>
+<th class="head text-center"><p><span class="math notranslate nohighlight">\(Y \rightarrow X\)</span></p></th>
+<th class="head text-center"><p><span class="math notranslate nohighlight">\(Z \rightarrow X\)</span></p></th>
+<th class="head text-center"><p><span class="math notranslate nohighlight">\(Z \rightarrow Y\)</span></p></th>
+<th class="head text-center"><p><span class="math notranslate nohighlight">\(X \rightarrow Z\)</span></p></th>
+<th class="head text-center"><p><span class="math notranslate nohighlight">\(Y \rightarrow Z\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>chaotic (deterministic)</p></td>
+<td><p><span class="math notranslate nohighlight">\(X \perp Y, Z_t \rarr X_{t+1}, Z_t \rarr Y_{t+2}\)</span></p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✔</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>chaotic (deterministic)</p></td>
+<td><p><span class="math notranslate nohighlight">\(X_t \rarr Y_{t+1}\)</span>, <span class="math notranslate nohighlight">\(Y_t \rarr X_{t+1}, X_t \rarr X_{t+1}\)</span>, <span class="math notranslate nohighlight">\(Y_t \rarr Y_{t+1}\)</span></p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>chaotic (deterministic)</p></td>
+<td><p><span class="math notranslate nohighlight">\(X_t \rarr Y_{t+1}\)</span>, <span class="math notranslate nohighlight">\(Y_t \rarr X_{t+1}\)</span></p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>chaotic (w/ noise)</p></td>
+<td><p><span class="math notranslate nohighlight">\(X \perp Y, Z_t \rarr X_{t+1}, Z_t \rarr Y_{t+2}\)</span></p></td>
+<td class="text-center"><p>✘</p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✘</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>chaotic (w/ noise)</p></td>
+<td><p><span class="math notranslate nohighlight">\(X_t \rarr Y_{t+1}\)</span>, <span class="math notranslate nohighlight">\(Y_t \rarr X_{t+1}, X_t \rarr X_{t+1}\)</span>, <span class="math notranslate nohighlight">\(Y_t \rarr Y_{t+1}\)</span></p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p>chaotic (w/ noise)</p></td>
+<td><p><span class="math notranslate nohighlight">\(X_t \rarr Y_{t+1}\)</span>, <span class="math notranslate nohighlight">\(Y_t \rarr X_{t+1}\)</span></p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><p>additive noise model</p></td>
+<td><p><span class="math notranslate nohighlight">\(X \perp Y, Z_t \rarr X_{t+1}, Z_t \rarr Y_{t+2}\)</span></p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✘</p></td>
+<td class="text-center"><p>✘</p></td>
+<td class="text-center"><p>✘</p></td>
+<td class="text-center"><p>✘</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>additive noise model</p></td>
+<td><p><span class="math notranslate nohighlight">\(X_t \rarr Y_{t+1}\)</span>, <span class="math notranslate nohighlight">\(Y_t \rarr X_{t+1}, X_t \rarr X_{t+1}\)</span>, <span class="math notranslate nohighlight">\(Y_t \rarr Y_{t+1}\)</span></p></td>
+<td class="text-center"><p>✘</p></td>
+<td class="text-center"><p>✘</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+</tr>
+<tr class="row-even"><td><p>9</p></td>
+<td><p>additive noise model</p></td>
+<td><p><span class="math notranslate nohighlight">\(X_t \rarr Y_{t+1}\)</span>, <span class="math notranslate nohighlight">\(Y_t \rarr X_{t+1}\)</span></p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>✔</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+<td class="text-center"><p>NA</p></td>
+</tr>
+</tbody>
+</table>
+<p>We find that in the presence of a confounding variable in a chaotic system, CCM was able to infer the right causal directions.</p>
+<p>However, <strong>once small Gaussian noise (standard deviation = 0.015) is added to the variables at each timestep, CCM fails to infer the right relationships between some variables</strong> (item 4 in the table)</p>
+<p>Similarly, <strong>CCM fails to consistently infer the right causal relations if they are in the form of Additive Noise Models (ANMs).</strong></p>
+<p>These results tell us that we should be careful when using CCM especially when the relations among variables do not follow a fully deterministic chaotic system. (We have yet to check for more kinds of causal graphs to investigate if CCM fails for some causal graphs even if chaotic.)</p>
+<section id="chaotic-models">
+<h2>Chaotic Models<a class="headerlink" href="#chaotic-models" title="Permalink to this heading">#</a></h2>
+<p>First we define our chaotic system builder. The chaotic function follows this form:</p>
+<p><span class="math notranslate nohighlight">\(A = A  (r - r  A - \beta  B)\)</span></p>
+<p>Where <span class="math notranslate nohighlight">\(\beta\)</span> is the strength of effect of <span class="math notranslate nohighlight">\(B\)</span> on <span class="math notranslate nohighlight">\(A\)</span></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">chaotic_func</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">A</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">r</span> <span class="o">*</span> <span class="n">A</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="example-1">
+<h3>Example 1<a class="headerlink" href="#example-1" title="Permalink to this heading">#</a></h3>
+<p>We define a coupled chaotic function among three time series <span class="math notranslate nohighlight">\(X\)</span>, <span class="math notranslate nohighlight">\(Y\)</span>, and <span class="math notranslate nohighlight">\(Z\)</span>. But only <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span> are observed. We visualize below the relationships among the variables. In this case, <span class="math notranslate nohighlight">\(Z_t \rightarrow X_{t+1}\)</span> and <span class="math notranslate nohighlight">\(Z_t \rightarrow Y_{t+2}\)</span> but there is no causal relation between <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span>.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/c5eaa6e58c14524f68d0a518e3bc43b515073967ce8bae9ed84d3023ebd139c9.png" src="../_images/c5eaa6e58c14524f68d0a518e3bc43b515073967ce8bae9ed84d3023ebd139c9.png" />
+</div>
+</div>
+<p>We define a determinsitic coupled chaotic system as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Based on Supplementary Materials https://www.science.org/doi/10.1126/science.1227079</span>
+<span class="c1"># params</span>
+<span class="n">r_x</span> <span class="o">=</span> <span class="mf">3.4</span>
+<span class="n">r_y</span> <span class="o">=</span> <span class="mf">3.6</span>
+<span class="n">r_z</span> <span class="o">=</span> <span class="mf">3.8</span>
+<span class="n">B_xy</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c1"># effect on x given y (effect of y on x)</span>
+<span class="n">B_yx</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c1"># effect on y given x (effect of x on y)</span>
+<span class="n">B_yz</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="c1"># effect of z on y</span>
+<span class="n">B_xz</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="c1"># effect of z on x</span>
+
+<span class="n">X0</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># initial val following Sugihara et al</span>
+<span class="n">Y0</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># initial val following Sugihara et al</span>
+<span class="n">Z0</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">t</span> <span class="o">=</span> <span class="mi">2000</span> <span class="c1"># time steps</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">X0</span><span class="p">,</span> <span class="n">X0</span><span class="p">]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="n">Y0</span><span class="p">,</span> <span class="n">Y0</span><span class="p">]</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="p">[</span><span class="n">Z0</span><span class="p">,</span> <span class="n">Z0</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">Z_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r_z</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>    
+    <span class="n">X_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Z</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_x</span><span class="p">,</span> <span class="n">B_xz</span><span class="p">)</span>
+    <span class="n">Y_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Z</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">r_y</span><span class="p">,</span> <span class="n">B_yz</span><span class="p">)</span>
+    <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X_</span><span class="p">)</span>
+    <span class="n">Y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Y_</span><span class="p">)</span>
+    <span class="n">Z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Z_</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/86a5a1dff7d0ad22560b5d4ab11f4c403f1782d84be390b7424ac4b7e0fe416c.png" src="../_images/86a5a1dff7d0ad22560b5d4ab11f4c403f1782d84be390b7424ac4b7e0fe416c.png" />
+</div>
+</div>
+<p>Here, we see clearly that there is no convergence of cross-mapping correlations. In this case, CCM correctly inferred that there is no causal link between <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span>.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/e4e333ebae4f690a35ee7e474e6940c357c303236c6619ac2a74cafc52dbb648.png" src="../_images/e4e333ebae4f690a35ee7e474e6940c357c303236c6619ac2a74cafc52dbb648.png" />
+</div>
+</div>
+<p>Can CCM infer that <span class="math notranslate nohighlight">\(Z \rightarrow X\)</span>? We can see below that yes, it can.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/f5924ac3c8dc07e6d569411a1fe35132107c8a36f0c18c9fd29c11b4b71a73a0.png" src="../_images/f5924ac3c8dc07e6d569411a1fe35132107c8a36f0c18c9fd29c11b4b71a73a0.png" />
+</div>
+</div>
+<p>Similarly, CCM can infer that <span class="math notranslate nohighlight">\(Z \rightarrow Y\)</span></p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/b5fe3c00ec4d8e947fe641bf372a07e4fee7ec8bdbdf947ac5aa31fa94cb4b3b.png" src="../_images/b5fe3c00ec4d8e947fe641bf372a07e4fee7ec8bdbdf947ac5aa31fa94cb4b3b.png" />
+</div>
+</div>
+</section>
+<section id="example-2">
+<h3>Example 2<a class="headerlink" href="#example-2" title="Permalink to this heading">#</a></h3>
+<p>In this case, <span class="math notranslate nohighlight">\(X_t \rightarrow Y_{t+1}\)</span> and <span class="math notranslate nohighlight">\(Y_t \rightarrow X_{t+1}\)</span> but also <span class="math notranslate nohighlight">\(X_t \rightarrow X_{t+1}\)</span> and <span class="math notranslate nohighlight">\(Y_t \rightarrow Y_{t+1}\)</span>. We make the effect of <span class="math notranslate nohighlight">\(X\)</span> on <span class="math notranslate nohighlight">\(Y\)</span> stronger than <span class="math notranslate nohighlight">\(Y\)</span> on <span class="math notranslate nohighlight">\(X\)</span>.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/adae8b78290dba5960714b41a11454648bd712cbe1350f07e708c70ec3149587.png" src="../_images/adae8b78290dba5960714b41a11454648bd712cbe1350f07e708c70ec3149587.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># params</span>
+<span class="n">r_x</span> <span class="o">=</span> <span class="mf">3.4</span>
+<span class="n">r_y</span> <span class="o">=</span> <span class="mf">3.6</span>
+<span class="n">B_xy</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># effect on x given y (effect of y on x)</span>
+<span class="n">B_yx</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="c1"># effect on y given x (effect of x on y)</span>
+
+<span class="n">X0</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># initial val following Sugihara et al</span>
+<span class="n">Y0</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># initial val following Sugihara et al</span>
+<span class="n">t</span> <span class="o">=</span> <span class="mi">2000</span> <span class="c1"># time steps</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">X0</span><span class="p">]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="n">Y0</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">X_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_x</span><span class="p">,</span> <span class="n">B_xy</span><span class="p">)</span>
+    <span class="n">Y_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_y</span><span class="p">,</span> <span class="n">B_yx</span><span class="p">)</span>
+    <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X_</span><span class="p">)</span>
+    <span class="n">Y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Y_</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/c1f2cde7020e6e60010dc455838ef705359605f3ac8275b2863481a62c471046.png" src="../_images/c1f2cde7020e6e60010dc455838ef705359605f3ac8275b2863481a62c471046.png" />
+</div>
+</div>
+<p>Here we find that CCM was able to correctly infer the feedback loop and also the order of strength of effect, where <span class="math notranslate nohighlight">\(X\)</span> has stronger effect on <span class="math notranslate nohighlight">\(Y\)</span></p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/48dfa6cadf35115f75ec3ac3cee51d62cf3bda4b7eecd9f66e539580716e56aa.png" src="../_images/48dfa6cadf35115f75ec3ac3cee51d62cf3bda4b7eecd9f66e539580716e56aa.png" />
+</div>
+</div>
+</section>
+<section id="example-3">
+<h3>Example 3<a class="headerlink" href="#example-3" title="Permalink to this heading">#</a></h3>
+<p>Here, we keep <span class="math notranslate nohighlight">\(X_t \rightarrow Y_{t+1}\)</span> and <span class="math notranslate nohighlight">\(Y_t \rightarrow X_{t+1}\)</span> but we remove <span class="math notranslate nohighlight">\(X_t \rightarrow X_{t+1}\)</span> and <span class="math notranslate nohighlight">\(Y_t \rightarrow Y_{t+1}\)</span>. We make the effect of <span class="math notranslate nohighlight">\(X\)</span> on <span class="math notranslate nohighlight">\(Y\)</span> stronger than <span class="math notranslate nohighlight">\(Y\)</span> on <span class="math notranslate nohighlight">\(X\)</span>.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/4c377dc27f971a4d06421487a095e4680738c5e8abe14a4fbacc47159f77824b.png" src="../_images/4c377dc27f971a4d06421487a095e4680738c5e8abe14a4fbacc47159f77824b.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># params</span>
+<span class="n">r_x</span> <span class="o">=</span> <span class="mf">3.4</span>
+<span class="n">r_y</span> <span class="o">=</span> <span class="mf">3.6</span>
+<span class="n">B_xy</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># effect on x given y (effect of y on x)</span>
+<span class="n">B_yx</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="c1"># effect on y given x (effect of x on y)</span>
+
+<span class="n">X0</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># initial val following Sugihara et al</span>
+<span class="n">Y0</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># initial val following Sugihara et al</span>
+<span class="n">t</span> <span class="o">=</span> <span class="mi">2000</span> <span class="c1"># time steps</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">X0</span><span class="p">]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="n">Y0</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">X_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_x</span><span class="p">,</span> <span class="n">B_xy</span><span class="p">)</span>
+    <span class="n">Y_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_y</span><span class="p">,</span> <span class="n">B_yx</span><span class="p">)</span>
+    <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X_</span><span class="p">)</span>
+    <span class="n">Y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Y_</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/ed72507b9e06a622615ffd2f5d6c7f5bd2d50a622d55e859ccdabdb9373ccd29.png" src="../_images/ed72507b9e06a622615ffd2f5d6c7f5bd2d50a622d55e859ccdabdb9373ccd29.png" />
+</div>
+</div>
+<p>CCM was able to infer the feedback loop between the two, but was unable to correctly order the causal relation by strength.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/93b86ac5de917c0cdd2011b3b7047491afd9a93b97dedbe1c6bac07f2cf43462.png" src="../_images/93b86ac5de917c0cdd2011b3b7047491afd9a93b97dedbe1c6bac07f2cf43462.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="chaotic-models-noise">
+<h2>Chaotic Models + Noise<a class="headerlink" href="#chaotic-models-noise" title="Permalink to this heading">#</a></h2>
+<p>We conduct the same experiments as above but we add independent random Gaussian noise on each variable.</p>
+<section id="id1">
+<h3>Example 1<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<p>Again, we define a coupled chaotic function among three time series <span class="math notranslate nohighlight">\(X\)</span>, <span class="math notranslate nohighlight">\(Y\)</span>, and <span class="math notranslate nohighlight">\(Z\)</span>. But only <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span> are observed. We visualize below the relationships among the variables. In this case, <span class="math notranslate nohighlight">\(Z_t \rightarrow X_{t+1}\)</span> and <span class="math notranslate nohighlight">\(Z_t \rightarrow Y_{t+2}\)</span> but there is no causal relation between <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span>.</p>
+<p>On top of this, we add random Gaussian noise per variable.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/c5eaa6e58c14524f68d0a518e3bc43b515073967ce8bae9ed84d3023ebd139c9.png" src="../_images/c5eaa6e58c14524f68d0a518e3bc43b515073967ce8bae9ed84d3023ebd139c9.png" />
+</div>
+</div>
+<p>We use the same determinsitic coupled chaotic system as above, but we add a small Gaussian noise.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># params</span>
+<span class="n">r_x</span> <span class="o">=</span> <span class="mf">3.4</span>
+<span class="n">r_y</span> <span class="o">=</span> <span class="mf">3.6</span>
+<span class="n">r_z</span> <span class="o">=</span> <span class="mf">3.8</span>
+<span class="n">B_xy</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c1"># effect on x given y (effect of y on x)</span>
+<span class="n">B_yx</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c1"># effect on y given x (effect of x on y)</span>
+<span class="n">B_yz</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="c1"># effect of z on y</span>
+<span class="n">B_xz</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="c1"># effect of z on x</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">X_std</span> <span class="o">=</span> <span class="mf">0.015</span>
+<span class="n">Y_std</span> <span class="o">=</span> <span class="mf">0.015</span>
+<span class="n">Z_std</span> <span class="o">=</span> <span class="mf">0.015</span>
+
+<span class="n">X0</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># initial val following Sugihara et al</span>
+<span class="n">Y0</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># initial val following Sugihara et al</span>
+<span class="n">Z0</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">t</span> <span class="o">=</span> <span class="mi">2000</span> <span class="c1"># time steps</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">X0</span><span class="p">,</span> <span class="n">X0</span><span class="p">]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="n">Y0</span><span class="p">,</span> <span class="n">Y0</span><span class="p">]</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="p">[</span><span class="n">Z0</span><span class="p">,</span> <span class="n">Z0</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">Z_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r_z</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Z_std</span><span class="p">)</span>   
+    <span class="n">X_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Z</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_x</span><span class="p">,</span> <span class="n">B_xz</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">X_std</span><span class="p">)</span>   
+    <span class="n">Y_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Z</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">r_y</span><span class="p">,</span> <span class="n">B_yz</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Y_std</span><span class="p">)</span>   
+    <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X_</span><span class="p">)</span>
+    <span class="n">Y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Y_</span><span class="p">)</span>
+    <span class="n">Z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Z_</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/f53e0a582a81fa506fff769bee122efcd88206b8196423677bd168a9365caec2.png" src="../_images/f53e0a582a81fa506fff769bee122efcd88206b8196423677bd168a9365caec2.png" />
+</div>
+</div>
+<p>Once we added noise, CCM incorrectly infers that <span class="math notranslate nohighlight">\(X \rightarrow Y\)</span>. So now we see that when the dynamical system is not perfectly determinsitic, CCM fails. (Even when the Gaussian noise has a small standard deviation = 0.015). This may be a problem since we expect real world dynamical systems to have some randomness.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/708a20a9519d4ef7bd730927eb09e08907582fa810731e0bb56c10dfe82b737a.png" src="../_images/708a20a9519d4ef7bd730927eb09e08907582fa810731e0bb56c10dfe82b737a.png" />
+</div>
+</div>
+<p>Can CCM infer that <span class="math notranslate nohighlight">\(Z \rightarrow X\)</span>? We can see below that yes, it still can.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/a51b389d965db44d4645aa96e209b654e3b04f675b5ba88426ce7653b63a43d1.png" src="../_images/a51b389d965db44d4645aa96e209b654e3b04f675b5ba88426ce7653b63a43d1.png" />
+</div>
+</div>
+<p>Similarly, CCM can still infer that <span class="math notranslate nohighlight">\(Z \rightarrow Y\)</span>. But it seems that CCM infers a small <span class="math notranslate nohighlight">\(Y \rightarrow Z\)</span> which is incorrect.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/cc90c4ab85639658569d638e559f9c261738d05bd05eaa33983b6dd124685653.png" src="../_images/cc90c4ab85639658569d638e559f9c261738d05bd05eaa33983b6dd124685653.png" />
+</div>
+</div>
+</section>
+<section id="id2">
+<h3>Example 2<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/adae8b78290dba5960714b41a11454648bd712cbe1350f07e708c70ec3149587.png" src="../_images/adae8b78290dba5960714b41a11454648bd712cbe1350f07e708c70ec3149587.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># params</span>
+<span class="n">r_x</span> <span class="o">=</span> <span class="mf">3.4</span>
+<span class="n">r_y</span> <span class="o">=</span> <span class="mf">3.6</span>
+<span class="n">B_xy</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># effect on x given y (effect of y on x)</span>
+<span class="n">B_yx</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="c1"># effect on y given x (effect of x on y)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">X_std</span> <span class="o">=</span> <span class="mf">0.015</span>
+<span class="n">Y_std</span> <span class="o">=</span> <span class="mf">0.015</span>
+
+<span class="n">X0</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># initial val following Sugihara et al</span>
+<span class="n">Y0</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># initial val following Sugihara et al</span>
+<span class="n">t</span> <span class="o">=</span> <span class="mi">2000</span> <span class="c1"># time steps</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">X0</span><span class="p">]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="n">Y0</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">X_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_x</span><span class="p">,</span> <span class="n">B_xy</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">X_std</span><span class="p">)</span>
+    <span class="n">Y_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_y</span><span class="p">,</span> <span class="n">B_yx</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Y_std</span><span class="p">)</span>
+    <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X_</span><span class="p">)</span>
+    <span class="n">Y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Y_</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/c79068361101dc72c0c517bcb3a49323818fb9b3b2cb241976e79ae0ec240645.png" src="../_images/c79068361101dc72c0c517bcb3a49323818fb9b3b2cb241976e79ae0ec240645.png" />
+</div>
+</div>
+<p>Here we find that CCM was able to correctly infer <span class="math notranslate nohighlight">\(X \rarr Y\)</span> and some weaker <span class="math notranslate nohighlight">\(Y \rarr X\)</span></p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/b2a4f881cdb48f0748a3e11c3fb632f98c178475dbbc13b615cbf88c3d7d8b0f.png" src="../_images/b2a4f881cdb48f0748a3e11c3fb632f98c178475dbbc13b615cbf88c3d7d8b0f.png" />
+</div>
+</div>
+</section>
+<section id="id3">
+<h3>Example 3<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/4c377dc27f971a4d06421487a095e4680738c5e8abe14a4fbacc47159f77824b.png" src="../_images/4c377dc27f971a4d06421487a095e4680738c5e8abe14a4fbacc47159f77824b.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># params</span>
+<span class="n">r_x</span> <span class="o">=</span> <span class="mf">3.4</span>
+<span class="n">r_y</span> <span class="o">=</span> <span class="mf">3.6</span>
+<span class="n">B_xy</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># effect on x given y (effect of y on x)</span>
+<span class="n">B_yx</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="c1"># effect on y given x (effect of x on y)</span>
+
+<span class="n">X_std</span> <span class="o">=</span> <span class="mf">0.015</span>
+<span class="n">Y_std</span> <span class="o">=</span> <span class="mf">0.015</span>
+
+<span class="n">X0</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># initial val following Sugihara et al</span>
+<span class="n">Y0</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># initial val following Sugihara et al</span>
+<span class="n">t</span> <span class="o">=</span> <span class="mi">2000</span> <span class="c1"># time steps</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">X0</span><span class="p">]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="n">Y0</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">X_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_x</span><span class="p">,</span> <span class="n">B_xy</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">X_std</span><span class="p">)</span>
+    <span class="n">Y_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_y</span><span class="p">,</span> <span class="n">B_yx</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Y_std</span><span class="p">)</span>
+    <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X_</span><span class="p">)</span>
+    <span class="n">Y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Y_</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/1ced5bc2672f0f9b1eb72071455546fa9368f58e6d527a9b3828bc64ae4368c6.png" src="../_images/1ced5bc2672f0f9b1eb72071455546fa9368f58e6d527a9b3828bc64ae4368c6.png" />
+</div>
+</div>
+<p>CCM was able to infer the feedback loop between the two, but was unable to correctly order the causal relation by strength.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/0f888716fb78744614afcf59a6c34906d58c3a9d5c7327036d3976f3fd336ad9.png" src="../_images/0f888716fb78744614afcf59a6c34906d58c3a9d5c7327036d3976f3fd336ad9.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="additive-noise-models">
+<h2>Additive Noise Models<a class="headerlink" href="#additive-noise-models" title="Permalink to this heading">#</a></h2>
+<p>Additive Noise Models (ANMs) follow this general mathematical form: <span class="math notranslate nohighlight">\(Y = f(X) + N_X\)</span> where <span class="math notranslate nohighlight">\(N_X\)</span> is independent noise.</p>
+<section id="id4">
+<h3>Example 1<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<p>We still follow the same causal graph as Example 1 in the chaotic function class above. However, instead of a chaotic relationship between variables, we use ANM formulation. Based on the insights above on chaotic models with noise (essentially it no longer becomes chaotic technically since chaotic systems are deterministic), we may hypothesize that CCM will fail on ANMs as well.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/c5eaa6e58c14524f68d0a518e3bc43b515073967ce8bae9ed84d3023ebd139c9.png" src="../_images/c5eaa6e58c14524f68d0a518e3bc43b515073967ce8bae9ed84d3023ebd139c9.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a time series SCM</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">L</span> <span class="o">=</span> <span class="mi">2000</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">X_std</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">Y_std</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">Z_std</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">X_std</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">X_std</span><span class="p">)]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Y_std</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Y_std</span><span class="p">)]</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Z_std</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Z_std</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">+=</span> <span class="p">[</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">Z</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">X_std</span><span class="p">)]</span>
+    <span class="n">Y</span> <span class="o">+=</span> <span class="p">[</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">Z</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Y_std</span><span class="p">)]</span>
+    <span class="n">Z</span> <span class="o">+=</span> <span class="p">[</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">Z</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Z_std</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/7f8fa6f516756b4e814ce2318d8da5e0cc61650b21441554af8f6b37b3b7f6a0.png" src="../_images/7f8fa6f516756b4e814ce2318d8da5e0cc61650b21441554af8f6b37b3b7f6a0.png" />
+</div>
+</div>
+<p>Interestingly, CCM correctly infers that there is not causal link between <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span></p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/424f337a4b411552eae9cb1d3a2c13846e75b6d3239385807daef05fd3389971.png" src="../_images/424f337a4b411552eae9cb1d3a2c13846e75b6d3239385807daef05fd3389971.png" />
+</div>
+</div>
+<p>However, CCM incorrectly infers a weak causal link <span class="math notranslate nohighlight">\(X \rightarrow Z\)</span> which is the opposite of the actual relation for embedding dimension, E=4. For E=2 and E=3, CCM does not infer any causal effect.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/8c9d7cba8b28ffb2082ccbc912bb7934b449dad22640890af4b2d973e8d0d159.png" src="../_images/8c9d7cba8b28ffb2082ccbc912bb7934b449dad22640890af4b2d973e8d0d159.png" />
+</div>
+</div>
+<p>Similarly, CCM incorrectly infers a weak causal link <span class="math notranslate nohighlight">\(Y \rightarrow Z\)</span> for E=4, which is the opposite of the actual relation.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/42633301d436326e9a7f046d3e177a4dc4f2f1b23cbb2f2622b7fa6e30bb14c0.png" src="../_images/42633301d436326e9a7f046d3e177a4dc4f2f1b23cbb2f2622b7fa6e30bb14c0.png" />
+</div>
+</div>
+</section>
+<section id="id5">
+<h3>Example 2<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h3>
+<p>Again this is the same causal graph as Example 2 above, but we use ANMs as the functional relations among variables instead of a chaotic function.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/adae8b78290dba5960714b41a11454648bd712cbe1350f07e708c70ec3149587.png" src="../_images/adae8b78290dba5960714b41a11454648bd712cbe1350f07e708c70ec3149587.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a time series SCM</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">L</span> <span class="o">=</span> <span class="mi">2000</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">X_std</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">Y_std</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">X_std</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">X_std</span><span class="p">)]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Y_std</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Y_std</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">+=</span> <span class="p">[</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">X_std</span><span class="p">)]</span>
+    <span class="n">Y</span> <span class="o">+=</span> <span class="p">[</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Y_std</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/226cd3d2cf489f0b28f1826fac9c02c1bedcb1bf95de6700050e85c40856c08a.png" src="../_images/226cd3d2cf489f0b28f1826fac9c02c1bedcb1bf95de6700050e85c40856c08a.png" />
+</div>
+</div>
+<p>Unfortunately CCM does not infer any causal relation, which is incorrect.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/ad67423c65349a335e9766fabe3740ee893eb16d28b35b19d3beb51676ac431b.png" src="../_images/ad67423c65349a335e9766fabe3740ee893eb16d28b35b19d3beb51676ac431b.png" />
+</div>
+</div>
+</section>
+<section id="id6">
+<h3>Example 3<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
+<p>Here, we make the effect of <span class="math notranslate nohighlight">\(X\)</span> on <span class="math notranslate nohighlight">\(Y\)</span> stronger than <span class="math notranslate nohighlight">\(Y\)</span> on <span class="math notranslate nohighlight">\(X\)</span>.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/4c377dc27f971a4d06421487a095e4680738c5e8abe14a4fbacc47159f77824b.png" src="../_images/4c377dc27f971a4d06421487a095e4680738c5e8abe14a4fbacc47159f77824b.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a time series SCM</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">L</span> <span class="o">=</span> <span class="mi">2000</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">X_std</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">Y_std</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">X_std</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">X_std</span><span class="p">)]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Y_std</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Y_std</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">+=</span> <span class="p">[</span><span class="n">beta</span> <span class="o">*</span> <span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">X_std</span><span class="p">)]</span>
+    <span class="n">Y</span> <span class="o">+=</span> <span class="p">[</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Y_std</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/f72b1eca7bb4dcfbbff186ba47a48dfc08db47758776f37a8e0f3580172d3838.png" src="../_images/f72b1eca7bb4dcfbbff186ba47a48dfc08db47758776f37a8e0f3580172d3838.png" />
+</div>
+</div>
+<p>CCM correctly infers the bidirectional causal relation with a stronger <span class="math notranslate nohighlight">\(X \rightarrow Y\)</span> than <span class="math notranslate nohighlight">\(Y \rightarrow X\)</span></p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/76c145f06ff2c728f4ae90e3bc0e5601157638815d14244066d65ba929fa045f.png" src="../_images/76c145f06ff2c728f4ae90e3bc0e5601157638815d14244066d65ba929fa045f.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="chaotic-system-in-the-original-ccm-paper-sugihara-et-al-2012">
+<h2>Chaotic System in the Original CCM Paper (Sugihara, et al, 2012)<a class="headerlink" href="#chaotic-system-in-the-original-ccm-paper-sugihara-et-al-2012" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># FROM Supplementary Materials https://www.science.org/doi/10.1126/science.1227079</span>
+<span class="c1"># params</span>
+<span class="n">r_x</span> <span class="o">=</span> <span class="mf">3.8</span>
+<span class="n">r_y</span> <span class="o">=</span> <span class="mf">3.5</span>
+<span class="n">B_xy</span> <span class="o">=</span> <span class="mf">0.02</span> <span class="c1"># effect on x given y (effect of y on x)</span>
+<span class="n">B_yx</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># effect on y given x (effect of x on y)</span>
+
+<span class="n">X0</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="c1"># initial val following Sugihara et al</span>
+<span class="n">Y0</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="c1"># initial val following Sugihara et al</span>
+<span class="n">t</span> <span class="o">=</span> <span class="mi">3000</span> <span class="c1"># time steps</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">X0</span><span class="p">]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="n">Y0</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">X_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_x</span><span class="p">,</span> <span class="n">B_xy</span><span class="p">)</span>
+    <span class="n">Y_</span> <span class="o">=</span> <span class="n">chaotic_func</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_y</span><span class="p">,</span> <span class="n">B_yx</span><span class="p">)</span>    
+    <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X_</span><span class="p">)</span>
+    <span class="n">Y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Y_</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/d20db0e1664327abeec0b9dc4a616df03d9f22e59ce00ea75856a22708bc4919.png" src="../_images/d20db0e1664327abeec0b9dc4a616df03d9f22e59ce00ea75856a22708bc4919.png" />
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./causal_inference"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../simulations/success_sim.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Simulating Success</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../thoughts/language_llm.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">On language, LLMs, and why we think certain Egyptian hieroglyphs are about helicopters</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chaotic-models">Chaotic Models</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1">Example 1</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2">Example 2</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-3">Example 3</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chaotic-models-noise">Chaotic Models + Noise</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Example 1</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Example 2</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Example 3</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additive-noise-models">Additive Noise Models</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Example 1</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Example 2</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Example 3</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chaotic-system-in-the-original-ccm-paper-sugihara-et-al-2012">Chaotic System in the Original CCM Paper (Sugihara, et al, 2012)</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Prince Javier
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
