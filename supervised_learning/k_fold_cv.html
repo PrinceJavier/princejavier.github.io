@@ -277,8 +277,9 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#k-fold-cross-validation">k-Fold Cross Validation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#violation-of-the-iid-assumption">Violation of the iid Assumption</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-dataset">Synthetic Dataset</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiments">Experiments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-setup">Experiment Setup</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-questions">Some Questions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-results">Experiment Results</a></li>
 </ul>
             </nav>
         </div>
@@ -309,8 +310,8 @@ document.write(`
 <p>To add high-leverage / outlier points, we randomly select a proportion of samples for each predictor independent of other predictors. Then we multiply those values of <span class="math notranslate nohighlight">\(X_j\)</span> by some multiplier. The responses <span class="math notranslate nohighlight">\(Y_j\)</span> are simply computed using the quadratic model defined above.</p>
 <p>We generated 1 million datapoints, 10,000 of these were randomly selected for the train set, while the rest were used for the test set.</p>
 </section>
-<section id="experiments">
-<h2>Experiments<a class="headerlink" href="#experiments" title="Permalink to this heading">#</a></h2>
+<section id="experiment-setup">
+<h2>Experiment Setup<a class="headerlink" href="#experiment-setup" title="Permalink to this heading">#</a></h2>
 <p>We first checked the reliability of k-fold CV on this dataset. We chose <span class="math notranslate nohighlight">\(k=100\)</span>. We shuffled the train data, then we split into 100 folds/groups. Then we apply k-fold CV, getting a total of 100 MSEs. We then compute the mean of these MSEs and that becomes the k-fold MSE estimate. But we are not concerned with this particular estimate. We are concerned with the reliability of k-fold CV as a method, so we run 100 trials of 100-fold CV. Each trial we get the mean MSE, each of which is an estimate of the test MSE,</p>
 <p><span class="math notranslate nohighlight">\(\hat{\text{MSE}} = \text{mean}({\text{MSE}_{CV}}) \approx \text{MSE}_{test}\)</span>.</p>
 <p>We then analyzed the mean and standard deviation of these estimates and found that the standard deviation of the estimate is low and <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> does not cover the ground truth test MSE. The ground truth test MSE is computed by fitting on the entire train set and testing on the test set.</p>
@@ -320,6 +321,9 @@ document.write(`
 <h2>Some Questions<a class="headerlink" href="#some-questions" title="Permalink to this heading">#</a></h2>
 <p>It seems in this particular toy example with high-leverage points/outliers, we find that doing simple validation split on shuffled data k times may be more reliable than doing the usual k-fold CV. We’ve raised one limitation of k-fold CV above which is that it violates the iid assumption for an estimator, thus we can’t expect the Central Limit Theorem to work, and maybe it’s not an unbiased estimator of test MSE.</p>
 <p>Though we’re not sure how general these results are or if there are flaws in how we set up these experiments.</p>
+</section>
+<section id="experiment-results">
+<h2>Experiment Results<a class="headerlink" href="#experiment-results" title="Permalink to this heading">#</a></h2>
 <p>We define our function as a linear model of <span class="math notranslate nohighlight">\(X_j^2\)</span> predictors with some random noise. In this toy example, we sample the ground truth coefficients from a normal distribution, and we sample <span class="math notranslate nohighlight">\(X\)</span> from a normal distribution as well. A certain proportion of each predictor <span class="math notranslate nohighlight">\(X_j\)</span> is independently chosen and multiplied by a multiplier to serve as high leverage data points.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -652,8 +656,9 @@ Ground truth MSE  53.04536320061062
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#k-fold-cross-validation">k-Fold Cross Validation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#violation-of-the-iid-assumption">Violation of the iid Assumption</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-dataset">Synthetic Dataset</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiments">Experiments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-setup">Experiment Setup</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-questions">Some Questions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-results">Experiment Results</a></li>
 </ul>
   </nav></div>
 
