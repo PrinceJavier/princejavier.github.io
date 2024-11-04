@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>k-Fold Cross-Validation Work in the Presence of Outliers and High Leverage Samples? &#8212; Prince&#39;s Data Science Blog</title>
+    <title>k-Fold Cross-Validation Experiments with Outliers and High Leverage Samples &#8212; Prince&#39;s Data Science Blog</title>
   
   
   
@@ -61,6 +61,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'supervised_learning/k_fold_cv';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -154,7 +156,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="bias_variance.html">The Bias-Variance Tradeoff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nn_sine_experiments_1.html">Multilayer Perceptron Experiments on Sine Wave Part 1</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nn_sine_experiments_2.html">Multilayer Perceptron Experiments on Sine Wave Part 2</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">k-Fold Cross-Validation Work in the Presence of Outliers and High Leverage Samples?</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">k-Fold Cross-Validation Experiments with Outliers and High Leverage Samples</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Unsupervised Learning</span></p>
 <ul class="nav bd-sidenav">
@@ -249,7 +251,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -260,11 +264,23 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>k-Fold Cross-Validation Work in the Presence of Outliers and High Leverage Samples?</h1>
+    <h1>k-Fold Cross-Validation Experiments with Outliers and High Leverage Samples</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#k-fold-cross-validation">k-Fold Cross Validation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#violation-of-the-iid-assumption">Violation of the iid Assumption</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-dataset">Synthetic Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiments">Experiments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-questions">Some Questions</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -274,16 +290,37 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="k-fold-cross-validation-work-in-the-presence-of-outliers-and-high-leverage-samples">
-<h1>k-Fold Cross-Validation Work in the Presence of Outliers and High Leverage Samples?<a class="headerlink" href="#k-fold-cross-validation-work-in-the-presence-of-outliers-and-high-leverage-samples" title="Permalink to this heading">#</a></h1>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-</pre></div>
-</div>
-</div>
-</div>
+  <section class="tex2jax_ignore mathjax_ignore" id="k-fold-cross-validation-experiments-with-outliers-and-high-leverage-samples">
+<h1>k-Fold Cross-Validation Experiments with Outliers and High Leverage Samples<a class="headerlink" href="#k-fold-cross-validation-experiments-with-outliers-and-high-leverage-samples" title="Permalink to this heading">#</a></h1>
+<section id="k-fold-cross-validation">
+<h2>k-Fold Cross Validation<a class="headerlink" href="#k-fold-cross-validation" title="Permalink to this heading">#</a></h2>
+<p>When selecting models or model hyperparameters, we wish to ideally select based on which model performs best on all possible values of the data. However, usually, we are only given training data, which do not cover the full support of our data distribution. k-Fold Cross-Validation (k-fold CV) is a technique for estimating the error we expect on data that go beyond the training data (which we’ll call test set) but still come from the same distribution of the training set.</p>
+<p>However, because of the way k-fold CV works (which is you shuffle then split into k-groups), it’s possible this becomes problematic for estimating the test performance (or error) when we have rare extreme values of input <span class="math notranslate nohighlight">\(X\)</span> (high leverage datapoints) that result in extreme values of response <span class="math notranslate nohighlight">\(Y\)</span> (outliers).</p>
+</section>
+<section id="violation-of-the-iid-assumption">
+<h2>Violation of the iid Assumption<a class="headerlink" href="#violation-of-the-iid-assumption" title="Permalink to this heading">#</a></h2>
+<p>k-fold CV splits the training data in a way that violates the iid (independent, indentically-distributed) assumption when we estimate the error, e.g. MSE. Why? Because it splits the data into k-folds without replacement. And putting high leverage/outlier points in one validation fold/group essentially removes the probability it gets selected for the other folds. This could potentially limit its applicability as an estimator of test set error.</p>
+</section>
+<section id="synthetic-dataset">
+<h2>Synthetic Dataset<a class="headerlink" href="#synthetic-dataset" title="Permalink to this heading">#</a></h2>
+<p>To test our speculation, we experiment on a synthetic dataset of the form</p>
+<p><span class="math notranslate nohighlight">\(Y = \beta_0 + \beta_1 X_1^2 + \beta_2 X_2^2 ... + \beta_p X_p^2 + \epsilon\)</span></p>
+<p>where <span class="math notranslate nohighlight">\(\epsilon\)</span> is an independent error term taken from a normal distribution <span class="math notranslate nohighlight">\(N(0, 1)\)</span>. Why square the predictors instead of just keep it linear? Making it a simple linear sum will make the problem trivial for a linear regression model, which is the model we use in these experiments. We want to fit a linear model on this quadratic function.</p>
+<p>To add high-leverage / outlier points, we randomly select a proportion of samples for each predictor independent of other predictors. Then we multiply those values of <span class="math notranslate nohighlight">\(X_j\)</span> by some multiplier. The responses <span class="math notranslate nohighlight">\(Y_j\)</span> are simply computed using the quadratic model defined above.</p>
+<p>We generated 1 million datapoints, 10,000 of these were randomly selected for the train set, while the rest were used for the test set.</p>
+</section>
+<section id="experiments">
+<h2>Experiments<a class="headerlink" href="#experiments" title="Permalink to this heading">#</a></h2>
+<p>We first checked the reliability of k-fold CV on this dataset. We chose <span class="math notranslate nohighlight">\(k=100\)</span>. We shuffled the train data, then we split into 100 folds/groups. Then we apply k-fold CV, getting a total of 100 MSEs. We then compute the mean of these MSEs and that becomes the k-fold MSE estimate. But we are not concerned with this particular estimate. We are concerned with the reliability of k-fold CV as a method, so we run 100 trials of 100-fold CV. Each trial we get the mean MSE, each of which is an estimate of the test MSE,</p>
+<p><span class="math notranslate nohighlight">\(\hat{\text{MSE}} = \text{mean}({\text{MSE}_{CV}}) \approx \text{MSE}_{test}\)</span>.</p>
+<p>We then analyzed the mean and standard deviation of these estimates and found that the standard deviation of the estimate is low and <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> does not cover the ground truth test MSE. The ground truth test MSE is computed by fitting on the entire train set and testing on the test set.</p>
+<p>We then speculated an alternative method that does not suffer the iid violation of k-fold CV. The approach is we simply do a simple validation split, but do it 100 times which we’ll call “fold” for consistency. Each time, we shuffle the data and split into 99% training and 1% validation. This no longer violates the iid assumption because each fold does not rob the other folds of the possibility of picking particular datapoints. We then get the mean of the 100 MSEs. Then again, we are concerned with the reliability of the approach, so we ran 100 trials, with each trial computing the mean of 100 MSEs. We then analyzed the distribution of MSEs and found that the <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> now captures the ground truth test MSE.</p>
+</section>
+<section id="some-questions">
+<h2>Some Questions<a class="headerlink" href="#some-questions" title="Permalink to this heading">#</a></h2>
+<p>It seems in this particular toy example with high-leverage points/outliers, we find that doing simple validation split on shuffled data k times may be more reliable than doing the usual k-fold CV. We’ve raised one limitation of k-fold CV above which is that it violates the iid assumption for an estimator, thus we can’t expect the Central Limit Theorem to work, and maybe it’s not an unbiased estimator of test MSE.</p>
+<p>Though we’re not sure how general these results are or if there are flaws in how we set up these experiments.</p>
+<p>We define our function as a linear model of <span class="math notranslate nohighlight">\(X_j^2\)</span> predictors with some random noise. In this toy example, we sample the ground truth coefficients from a normal distribution, and we sample <span class="math notranslate nohighlight">\(X\)</span> from a normal distribution as well. A certain proportion of each predictor <span class="math notranslate nohighlight">\(X_j\)</span> is independently chosen and multiplied by a multiplier to serve as high leverage data points.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define a ground truth generative function</span>
@@ -302,6 +339,7 @@ document.write(`
 </div>
 </div>
 </div>
+<p>We generate 1 million datapoints from our generator. 10,000 are randomly selected to be the training data (from which we will derive the validation sets as well)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">1000000</span>
@@ -319,42 +357,27 @@ document.write(`
 <span class="n">X_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">inds_test</span><span class="p">]</span>
 <span class="n">Y_test</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">inds_test</span><span class="p">]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_test</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Y_train</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y_test</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coefficients:                &quot;</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;len(X_train), len(X_test):   &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_test</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;len (Y_train), len(Y_test):  &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y_train</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y_test</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[ 0.49671415 -0.1382643   0.64768854  1.52302986 -0.23415337]
-10000 990000
-10000 990000
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Coefficients:                 [ 0.49671415 -0.1382643   0.64768854  1.52302986 -0.23415337]
+len(X_train), len(X_test):    10000 990000
+len (Y_train), len(Y_test):   10000 990000
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_train</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
-    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
-    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;X vs Y&quot;</span><span class="p">)</span>
-
-    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_train</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">loglog</span><span class="p">()</span>
-    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;log(Y)&quot;</span><span class="p">)</span>
-    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;log(X)&quot;</span><span class="p">)</span>
-    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;log(X) vs log(Y)&quot;</span><span class="p">)</span>    
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
+<p>We visualize below each <span class="math notranslate nohighlight">\(X_j\)</span> vs <span class="math notranslate nohighlight">\(Y\)</span> in our training data</p>
+<div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<img alt="../_images/61854a3b96b1997b63c095a2079616dc32f5b0030dd2bfb59b300f76a68f5302.png" src="../_images/61854a3b96b1997b63c095a2079616dc32f5b0030dd2bfb59b300f76a68f5302.png" />
+<img alt="../_images/5363e7597d867229f67b829697475668d2d0d92cd1a0eef2d03ba016e959b7ea.png" src="../_images/5363e7597d867229f67b829697475668d2d0d92cd1a0eef2d03ba016e959b7ea.png" />
 </div>
 </div>
+<p>We define 100 k-folds and 100 trials (100-fold each).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># do standard k-fold cross validation</span>
@@ -364,7 +387,14 @@ document.write(`
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<p>We run k-fold CV over many trials using linear regression. Each k-fold CV trial yields an estimate <span class="math notranslate nohighlight">\(\hat{\text{MSE}} = \text{mean}({\text{MSE}_{CV}}) \approx \text{MSE}_{test}\)</span>. Running many trials, we can get a mean and standard deviation of the <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> estimates, which we compare with the ground truth <span class="math notranslate nohighlight">\(MSE_{test}\)</span></p>
+<p>The chart below shows the highly skewed <span class="math notranslate nohighlight">\({\text{MSE}_{CV}}\)</span> values for one trial of k-fold CV. This is due to the presence of high-leverage/outlier points in the training data. But we are not concerned with the distribution of errors in one trial of k-fold CV. We are concerned with the distribution of the estimates <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span></p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">linear_model</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">r2_score</span>
@@ -436,83 +466,38 @@ document.write(`
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <img alt="../_images/422bb8e96ecd541ee812450474ae8069c023114c520d63cf06aa907c956a6253.png" src="../_images/422bb8e96ecd541ee812450474ae8069c023114c520d63cf06aa907c956a6253.png" />
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>        
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">mse_means</span><span class="p">,</span> <span class="n">cumulative</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mse_means</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mse_means</span><span class="p">,</span> <span class="n">showfliers</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MSE Means histogram for </span><span class="si">{</span><span class="n">trials</span><span class="si">}</span><span class="s2"> CV trials&quot;</span><span class="p">)</span>        
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MSEs with outliers for </span><span class="si">{</span><span class="n">trials</span><span class="si">}</span><span class="s2"> CV trials&quot;</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MSEs without outliers for </span><span class="si">{</span><span class="n">trials</span><span class="si">}</span><span class="s2"> CV trials&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>       
-</pre></div>
-</div>
-</div>
+<p>We show below the distribution of <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> from 100 trials</p>
+<div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
 <img alt="../_images/9903cef409112f640668aaffebbe4cf4ee1a609788d4fe7c521689278515afa4.png" src="../_images/9903cef409112f640668aaffebbe4cf4ee1a609788d4fe7c521689278515afa4.png" />
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># compute the mean MSE from cross validation</span>
-<span class="n">mse_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mse_means</span><span class="p">)</span>
-
-<span class="c1"># compute the standard deviation</span>
-<span class="n">mse_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">mse_means</span><span class="p">)</span>
-
-<span class="c1"># compute the true MSE from the test set when trained on the entire train set</span>
-<span class="c1"># Create linear regression object</span>
-<span class="n">regr</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
-
-<span class="c1"># Train the model using the training sets</span>
-<span class="n">regr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
-
-<span class="c1"># Make predictions using the testing set</span>
-<span class="n">y_pred</span> <span class="o">=</span> <span class="n">regr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-
-<span class="n">mse_gt</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mean MSE         &quot;</span><span class="p">,</span> <span class="n">mse_mean</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Std Dev MSE      &quot;</span><span class="p">,</span> <span class="n">mse_std</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ground truth MSE &quot;</span><span class="p">,</span> <span class="n">mse_gt</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
+<p>We computed the ground truth <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span> as well as the mean and standard deviation of <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span>. We find that <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> does not cover <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span></p>
+<div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          63.75660471426123
-Std Dev MSE       0.15955756270713287
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          62.99516870328772
+Std Dev MSE       30.44480934715585
 Ground truth MSE  53.04536320061062
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<p>The problem with k-fold CV is if you have rare outliers/high leverage points, it’s possible they get concentrated in one validation fold/group. And this causes the distribution of errors to be highly skewed. Once these points are chosen in one fold, they’re no longer available for the other folds. Thus each k-fold becomes dependent on others, and no longer iid. This violates the assumption of the Central Limit Theorem and prevents us from computing say the standard error properly (which requires iid samples).</p>
+<p>How might we go around this? What if instead of regular k-fold, we run a simple train-valid set split but run it 100 times, randomizing each time. With this, we make each validation MSE an iid sample because even if we got datapoints <span class="math notranslate nohighlight">\(X_j, Y_j\)</span> the other “folds” of train-valid splits will still have the chance to select them.</p>
+<p>Again, we show below the distribution of <span class="math notranslate nohighlight">\(\text{MSE}_{CV}\)</span> for a single trial (100 validation runs). But we are concerned with the reliability of this estimate, so we run 100 trials.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># the problem with k-fold CV is if you have rare outliers/high leverage points, </span>
-<span class="c1"># it&#39;s possible they get concentrated in one validation fold/group. </span>
-<span class="c1"># And this causes the distribution of errors to be highly skewed.</span>
-<span class="c1"># once these points are chosen in one fold, they&#39;re no longer available for the other folds</span>
-<span class="c1"># thus each k-fold becomes dependent on others, and no longer iid. This prevents us from computing say</span>
-<span class="c1"># the standard error properly (which requires iid samples)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># what if instead of regular k-fold, we run simple train-valid set splits</span>
-<span class="c1"># but run it 100 times, randomizing each time. With this, we make each validation MSE</span>
-<span class="c1"># an iid sample</span>
-
-<span class="n">mse_means</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mse_means</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">mse_stds</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">trials</span><span class="p">):</span>
@@ -573,56 +558,19 @@ Ground truth MSE  53.04536320061062
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <img alt="../_images/e89d5f2376178246bfad1efabc0250acb9b680c9fbcd8548dc8383e0b4e8510e.png" src="../_images/e89d5f2376178246bfad1efabc0250acb9b680c9fbcd8548dc8383e0b4e8510e.png" />
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>        
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">mse_means</span><span class="p">,</span> <span class="n">cumulative</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mse_means</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mse_means</span><span class="p">,</span> <span class="n">showfliers</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MSE Means histogram for </span><span class="si">{</span><span class="n">trials</span><span class="si">}</span><span class="s2"> CV trials&quot;</span><span class="p">)</span>        
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MSEs with outliers for </span><span class="si">{</span><span class="n">trials</span><span class="si">}</span><span class="s2"> CV trials&quot;</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MSEs without outliers for </span><span class="si">{</span><span class="n">trials</span><span class="si">}</span><span class="s2"> CV trials&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>       
-</pre></div>
-</div>
-</div>
+<p>We show below the distribution of <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> from 100 trials</p>
+<div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
 <img alt="../_images/698771966a6edfe02e22484d3f73c26c309951f028053aa9a1d7566fb64decd4.png" src="../_images/698771966a6edfe02e22484d3f73c26c309951f028053aa9a1d7566fb64decd4.png" />
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># compute the mean MSE from cross validation</span>
-<span class="n">mse_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mse_means</span><span class="p">)</span>
-
-<span class="c1"># compute the standard deviation</span>
-<span class="n">mse_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">mse_means</span><span class="p">)</span>
-
-<span class="c1"># compute the true MSE from the test set when trained on the entire train set</span>
-<span class="c1"># Create linear regression object</span>
-<span class="n">regr</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
-
-<span class="c1"># Train the model using the training sets</span>
-<span class="n">regr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
-
-<span class="c1"># Make predictions using the testing set</span>
-<span class="n">y_pred</span> <span class="o">=</span> <span class="n">regr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-
-<span class="n">mse_gt</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mean MSE         &quot;</span><span class="p">,</span> <span class="n">mse_mean</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Std Dev MSE      &quot;</span><span class="p">,</span> <span class="n">mse_std</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ground truth MSE &quot;</span><span class="p">,</span> <span class="n">mse_gt</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
+<p>We find that <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> covers <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>. Is this approach more reliable than conventional k-fold? How general is this result?</p>
+<div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          62.99516870328772
 Std Dev MSE       30.44480934715585
@@ -631,6 +579,7 @@ Ground truth MSE  53.04536320061062
 </div>
 </div>
 </div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -691,6 +640,24 @@ Ground truth MSE  53.04536320061062
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#k-fold-cross-validation">k-Fold Cross Validation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#violation-of-the-iid-assumption">Violation of the iid Assumption</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-dataset">Synthetic Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiments">Experiments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-questions">Some Questions</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
