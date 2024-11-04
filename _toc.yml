@@ -19,6 +19,7 @@ parts:
     - file: supervised_learning/bias_variance    
     - file: supervised_learning/nn_sine_experiments_1
     - file: supervised_learning/nn_sine_experiments_2
+    - file: supervised_learning/k_fold_cv
 
   - caption: Unsupervised Learning
     numbered: False 
