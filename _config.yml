@@ -30,6 +30,9 @@ repository:
 html:
   use_issues_button: false
   use_repository_button: false
+  comments:
+    utterances:
+      repo: "github-org/github-repo"  
 
 sphinx: 
   config: 
