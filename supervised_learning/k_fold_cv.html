@@ -366,7 +366,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 <section id="experiment-setup">
 <h2>Experiment Setup<a class="headerlink" href="#experiment-setup" title="Link to this heading">#</a></h2>
 <p>We first checked the reliability of k-fold CV on this dataset. We chose <span class="math notranslate nohighlight">\(k=100\)</span>. We shuffled the train data, then we split into 100 folds/groups. Then we apply k-fold CV, getting a total of 100 MSEs. We then compute the mean of these MSEs and that becomes the k-fold MSE estimate. But we are not concerned with this particular estimate. We are concerned with the reliability of k-fold CV as a method, so we run 100 trials of 100-fold CV. Each trial we get the mean MSE, each of which is an estimate of the test MSE,</p>
-<p><span class="math notranslate nohighlight">\(\hat{\text{MSE}} = \text{mean}({\text{MSE}_{CV}}) \approx \text{MSE}_{test}\)</span>.</p>
+<p><span class="math notranslate nohighlight">\(\hat{\text{MSE}} = \text{mean}({\text{MSE}_{k}}) \approx \text{MSE}_{test}\)</span>.</p>
 </section>
 <section id="results">
 <h2>Results<a class="headerlink" href="#results" title="Link to this heading">#</a></h2>
