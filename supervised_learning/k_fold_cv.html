@@ -285,6 +285,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">10-fold CV</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">5-fold CV</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-no-outliers">What if no outliers?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-in-hyperparameter-tuning">Use in Hyperparameter Tuning</a></li>
 </ul>
 </li>
 </ul>
@@ -334,8 +335,8 @@ document.write(`
 </section>
 <section id="some-questions">
 <h2>Some Questions<a class="headerlink" href="#some-questions" title="Permalink to this heading">#</a></h2>
-<p>It seems in this particular toy example with high-leverage points/outliers, we find that doing simple validation split on shuffled data k times may be more reliable than doing the usual k-fold CV. We’ve raised one limitation of k-fold CV above which is that it violates the iid assumption for an estimator, thus we can’t expect the Central Limit Theorem to work, and maybe it’s not an unbiased estimator of test MSE.</p>
-<p>Though we’re not sure how general these results are or if there are flaws in how we set up these experiments.</p>
+<p>We find that it seems k-fold CV has low variance, even if it’s far from the true test MSE. Doing simple validation many times and averaging the results yield similar results as k-fold CV but with higher variance. What’s the explanation for these?</p>
+<p>We’re not sure how general these results are or if there are flaws in how we set up these experiments.</p>
 </section>
 <section id="experiment-details">
 <h2>Experiment Details<a class="headerlink" href="#experiment-details" title="Permalink to this heading">#</a></h2>
@@ -735,6 +736,9 @@ Ground truth MSE  6.108880543132803
 </div>
 </div>
 </section>
+<section id="use-in-hyperparameter-tuning">
+<h3>Use in Hyperparameter Tuning<a class="headerlink" href="#use-in-hyperparameter-tuning" title="Permalink to this heading">#</a></h3>
+</section>
 </section>
 </section>
 
@@ -816,6 +820,7 @@ Ground truth MSE  6.108880543132803
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">10-fold CV</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">5-fold CV</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-no-outliers">What if no outliers?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-in-hyperparameter-tuning">Use in Hyperparameter Tuning</a></li>
 </ul>
 </li>
 </ul>
