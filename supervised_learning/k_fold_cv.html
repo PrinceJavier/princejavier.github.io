@@ -579,7 +579,7 @@ len (Y_train), len(Y_test):   10000 990000
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/db6d352ca5625c590497ae3caf35af90bb9da532f8b9332cc29c81e3f2c9f555.png" src="../_images/db6d352ca5625c590497ae3caf35af90bb9da532f8b9332cc29c81e3f2c9f555.png" />
+<img alt="../_images/9903cef409112f640668aaffebbe4cf4ee1a609788d4fe7c521689278515afa4.png" src="../_images/9903cef409112f640668aaffebbe4cf4ee1a609788d4fe7c521689278515afa4.png" />
 </div>
 </div>
 <p>We computed the ground truth <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span> as well as the mean and standard deviation of <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span>. We find that <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> does not cover <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>. However, the estimated <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> has low variance so it speaks about the consistency of the results when using k-fold CV for this problem.</p>
@@ -621,12 +621,9 @@ len (Y_train), len(Y_test):   10000 990000
 </div>
 </details>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          53.35147116518625
-Std Dev MSE       29.67791538389514
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          63.75660471426123
+Std Dev MSE       0.15955756270713287
 Ground truth MSE  53.04536320061062
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>53.04536320061062
 </pre></div>
 </div>
 </div>
@@ -718,21 +715,21 @@ Ground truth MSE  53.04536320061062
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/7b94c353a6bdbcfdad87819b76fe14fce4329d932284f25b1b7395f974cab849.png" src="../_images/7b94c353a6bdbcfdad87819b76fe14fce4329d932284f25b1b7395f974cab849.png" />
+<img alt="../_images/f3c37e85b00829e2fd6345f1cf59ab991319d8b16009b7393b76a533d5522070.png" src="../_images/f3c37e85b00829e2fd6345f1cf59ab991319d8b16009b7393b76a533d5522070.png" />
 </div>
 </div>
 <p>We show below the distribution of <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> from 100 trials</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<img alt="../_images/698771966a6edfe02e22484d3f73c26c309951f028053aa9a1d7566fb64decd4.png" src="../_images/698771966a6edfe02e22484d3f73c26c309951f028053aa9a1d7566fb64decd4.png" />
+<img alt="../_images/c9283d76da045f79ae03c7176b4308d44c7c72d2eacb2688df2a58ea75ac72f4.png" src="../_images/c9283d76da045f79ae03c7176b4308d44c7c72d2eacb2688df2a58ea75ac72f4.png" />
 </div>
 </div>
 <p>We find that <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> covers <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>. But the increased variance means we expect different results each run of 100-“fold” validation.</p>
 <p>Is this approach more reliable than conventional k-fold? How general is this result?</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          62.99516870328772
-Std Dev MSE       30.44480934715585
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          37.47142301010411
+Std Dev MSE       1.4210854715202004e-14
 Ground truth MSE  53.04536320061062
 </pre></div>
 </div>
@@ -757,10 +754,10 @@ Ground truth MSE  53.04536320061062
 <p>We show the results for the alternative approach. We also get more or less the same results, with some increase in the estimated <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span></p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<img alt="../_images/b5674d2eb3a24be9e1d347accde23e1ba18c0233f9ce6d6695708ff18b7a9e54.png" src="../_images/b5674d2eb3a24be9e1d347accde23e1ba18c0233f9ce6d6695708ff18b7a9e54.png" />
-<img alt="../_images/c385891b98ba806efca9bd9fb5a4508a411a490d944db4ce95b1a0586deb08f8.png" src="../_images/c385891b98ba806efca9bd9fb5a4508a411a490d944db4ce95b1a0586deb08f8.png" />
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          65.70430794964277
-Std Dev MSE       30.53296639484907
+<img alt="../_images/1f4061073015d27643006d06885c10b79d699a03f4728f389881782b71686d96.png" src="../_images/1f4061073015d27643006d06885c10b79d699a03f4728f389881782b71686d96.png" />
+<img alt="../_images/12108629eb28931f9c2059796db1886d298c3efd68c873cbe27d24e148d5e31d.png" src="../_images/12108629eb28931f9c2059796db1886d298c3efd68c873cbe27d24e148d5e31d.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          48.73814281743391
+Std Dev MSE       7.105427357601002e-15
 Ground truth MSE  53.04536320061062
 </pre></div>
 </div>
@@ -784,10 +781,10 @@ Ground truth MSE  53.04536320061062
 <p>We show below the results of the alternative approach.</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<img alt="../_images/a018af3a45e68a14586f311d94f61a53d5e68fc720d3cf58526ff9009c262b26.png" src="../_images/a018af3a45e68a14586f311d94f61a53d5e68fc720d3cf58526ff9009c262b26.png" />
-<img alt="../_images/158febbda4bbcae9f22dea7e450cd7a74d610376fa15b26a11818bc7d6c0f8f0.png" src="../_images/158febbda4bbcae9f22dea7e450cd7a74d610376fa15b26a11818bc7d6c0f8f0.png" />
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          63.535512108530845
-Std Dev MSE       28.412100685752357
+<img alt="../_images/d078f2b85d273054c27e261dff0dd812f5f22bf7205c962243d24ce057821d3c.png" src="../_images/d078f2b85d273054c27e261dff0dd812f5f22bf7205c962243d24ce057821d3c.png" />
+<img alt="../_images/201c3423316d3006cb91f385da4fa61e0bc38fc332cf552bdb166b2f210b7b98.png" src="../_images/201c3423316d3006cb91f385da4fa61e0bc38fc332cf552bdb166b2f210b7b98.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          28.81663603726913
+Std Dev MSE       0.0
 Ground truth MSE  53.04536320061062
 </pre></div>
 </div>
@@ -836,10 +833,10 @@ Ground truth MSE  6.108880543132803
 </div>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<img alt="../_images/f0fe80fcff6f7dd0ce0a4e95d9bc1855a66309e740b26a294aab4a8c579b53f9.png" src="../_images/f0fe80fcff6f7dd0ce0a4e95d9bc1855a66309e740b26a294aab4a8c579b53f9.png" />
-<img alt="../_images/8adbb06b8560cf05838b0c7ff1e63e1c7436df05e960e85d21c849d283976a6e.png" src="../_images/8adbb06b8560cf05838b0c7ff1e63e1c7436df05e960e85d21c849d283976a6e.png" />
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          6.43568995376575
-Std Dev MSE       0.17346395707747458
+<img alt="../_images/af32303206e6e9abfa85eb390ad4e2f59581ef2a75d568c2b416596a3d5163fe.png" src="../_images/af32303206e6e9abfa85eb390ad4e2f59581ef2a75d568c2b416596a3d5163fe.png" />
+<img alt="../_images/da6468325113b201c6cf4c618817fd18d0ac21bfcb95838a3adeb1dac9e477d7.png" src="../_images/da6468325113b201c6cf4c618817fd18d0ac21bfcb95838a3adeb1dac9e477d7.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          6.513932692733079
+Std Dev MSE       8.881784197001252e-16
 Ground truth MSE  6.108880543132803
 </pre></div>
 </div>
@@ -965,15 +962,12 @@ len (Y_train), len(Y_test):   10000 990000
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/0e0e4fb86596caaeda8e529e2d70da67ad89334d37df7613bf22231c1d17e88f.png" src="../_images/0e0e4fb86596caaeda8e529e2d70da67ad89334d37df7613bf22231c1d17e88f.png" />
+<img alt="../_images/8df55f9554b27757bc41c23cf0babdcc70ddb86121f91fc8640cb5ea239761d3.png" src="../_images/8df55f9554b27757bc41c23cf0babdcc70ddb86121f91fc8640cb5ea239761d3.png" />
 <img alt="../_images/c25a9af33c4233b443fc448ef63c69eefaffc4dfb1a00311a0320e38af275012.png" src="../_images/c25a9af33c4233b443fc448ef63c69eefaffc4dfb1a00311a0320e38af275012.png" />
 <img alt="../_images/2b775a362de785b7d1ee762449c96ee5cad89bcbd7a4eef39283af86309a6cd3.png" src="../_images/2b775a362de785b7d1ee762449c96ee5cad89bcbd7a4eef39283af86309a6cd3.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          0.7305736586480543
 Std Dev MSE       0.012843940843275855
 Ground truth MSE  0.6389746721462332
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.6389746721462332
 </pre></div>
 </div>
 </div>
@@ -1001,15 +995,12 @@ Ground truth MSE  0.6389746721462332
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/97ebc407c8c9a3d374e237d28d6fad6e72ee7edf5d3b772dab2f58f6da762f1a.png" src="../_images/97ebc407c8c9a3d374e237d28d6fad6e72ee7edf5d3b772dab2f58f6da762f1a.png" />
+<img alt="../_images/813668413b4f49db316145d7a24bcca805d15a0eaafca87b46e98145c688e9e2.png" src="../_images/813668413b4f49db316145d7a24bcca805d15a0eaafca87b46e98145c688e9e2.png" />
 <img alt="../_images/33873ba270703c0df898ba7fe70c4e58365cd191516db0c522a56ab9cd7ee2fb.png" src="../_images/33873ba270703c0df898ba7fe70c4e58365cd191516db0c522a56ab9cd7ee2fb.png" />
 <img alt="../_images/f20a7b00bbafbf41d8d92a15a81be87d784439236d0e021b52f107f7da287b06.png" src="../_images/f20a7b00bbafbf41d8d92a15a81be87d784439236d0e021b52f107f7da287b06.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          0.7382083355193587
 Std Dev MSE       0.012025683367967064
 Ground truth MSE  0.6343301684055197
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.6343301684055197
 </pre></div>
 </div>
 </div>
@@ -1075,9 +1066,6 @@ Std Dev MSE       0.26409296852545755
 Ground truth MSE  33.439163683759844
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>33.439163683759844
-</pre></div>
-</div>
 </div>
 </div>
 <p>We show the results using the second approach with 5 “fold” validation runs. We note the highly variable MSE vs <span class="math notranslate nohighlight">\(k\)</span> curves.</p>
@@ -1108,9 +1096,6 @@ Ground truth MSE  33.439163683759844
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          51.95621758878725
 Std Dev MSE       0.26409296852545755
 Ground truth MSE  33.439163683759844
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>33.439163683759844
 </pre></div>
 </div>
 </div>
