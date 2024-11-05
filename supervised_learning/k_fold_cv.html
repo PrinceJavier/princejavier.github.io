@@ -279,6 +279,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-dataset">Synthetic Dataset</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-setup">Experiment Setup</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#results">Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#take-aways">Take-aways</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-questions">Some Questions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-details">Experiment Details</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fold-cv">100-fold CV</a></li>
@@ -304,7 +305,7 @@ document.write(`
 <section id="k-fold-cross-validation">
 <h2>k-Fold Cross Validation<a class="headerlink" href="#k-fold-cross-validation" title="Permalink to this heading">#</a></h2>
 <p>When selecting models or model hyperparameters, we wish to ideally select based on which model performs best on all possible values of the data. However, usually, we are only given training data, which do not cover the full support of our data distribution. k-Fold Cross-Validation (k-fold CV) is a technique for estimating the error we expect on data that go beyond the training data (which we’ll call test set) but still come from the same distribution of the training set.</p>
-<p>However, because of the way k-fold CV works (which is you shuffle then split into k-groups), it’s possible this becomes problematic for estimating the test performance (or error) when we have rare extreme values of input <span class="math notranslate nohighlight">\(X\)</span> (high leverage datapoints) that result in extreme values of response <span class="math notranslate nohighlight">\(Y\)</span> (outliers).</p>
+<p>However, because of the way k-fold CV works (which is you shuffle then split into k-groups), it’s possible this becomes problematic for estimating the test performance (or error) when we have rare extreme values of input <span class="math notranslate nohighlight">\(X\)</span> (high leverage datapoints) that result in extreme values of response <span class="math notranslate nohighlight">\(Y\)</span> (outliers). We will use “high-leverage points” and “outliers” interchangeably.</p>
 </section>
 <section id="violation-of-the-iid-assumption">
 <h2>Violation of the iid Assumption<a class="headerlink" href="#violation-of-the-iid-assumption" title="Permalink to this heading">#</a></h2>
@@ -330,8 +331,12 @@ document.write(`
 <p>We then speculated an alternative method that does not suffer the iid violation of k-fold CV. The approach is we simply do a simple validation split, but do it 100 times which we’ll call “fold” for consistency. Each time, we shuffle the data and split into 99% training and 1% validation. This no longer violates the iid assumption because each fold does not rob the other folds of the possibility of picking particular datapoints. We then get the mean of the 100 MSEs. Then again, we are concerned with the reliability of the approach, so we ran 100 trials, with each trial computing the mean of 100 MSEs. We then analyzed the distribution of MSEs and found that the <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> now captures the ground truth test MSE.</p>
 <p>However, the new approach has an increased variance such that running any of this 100-“fold” validation to estimate <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> will more likely yield much more varied results.</p>
 <p>We tested on the more realistic 10-fold and 5-fold CV and we get similar results.</p>
-<p>In the absence of outliers, the two approaches still more or less have the same <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}})\)</span>, but the standard deviation (relative to the mean) of the second approach is much lower when there are no outliers vs when there are outliers. One possible take-away is k-fold CV is more “robust” to the presence of outliers, having a narrow standard deviation (over many trials) which speaks about its stability, and hence reliability.</p>
-<p>The second approach is more prone to high variance of predictions, which may not be desirable, despite supposedly being more aligned with the iid assumption when estimating a statistic.</p>
+<p>In the absence of outliers, the two approaches still more or less have the same <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}})\)</span> which overestimate the ground truth <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>. But the standard deviation (relative to the mean) of the second approach is much lower when there are no outliers vs when there are outliers.</p>
+</section>
+<section id="take-aways">
+<h2>Take-aways<a class="headerlink" href="#take-aways" title="Permalink to this heading">#</a></h2>
+<p>Both k-fold CV and our alternative k-validation method seem to be biased estimates of the <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span> in this particular example. However, k-fold CV has much lower variance than the alternative method with or without outliers. This speaks about its stability, and hence reliability.</p>
+<p>The second approach is more prone to high variance of predictions especially in the presence of outliers, which may not be desirable. And despite supposedly being more aligned with the iid assumption when estimating a statistic, it seems to be still a biased estimate of <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>.</p>
 </section>
 <section id="some-questions">
 <h2>Some Questions<a class="headerlink" href="#some-questions" title="Permalink to this heading">#</a></h2>
@@ -738,6 +743,7 @@ Ground truth MSE  6.108880543132803
 </section>
 <section id="use-in-hyperparameter-tuning">
 <h3>Use in Hyperparameter Tuning<a class="headerlink" href="#use-in-hyperparameter-tuning" title="Permalink to this heading">#</a></h3>
+<p>Because linear regression has no hyperparameters, we experiment using kNN regressor instead. We compare the bias and variance of the two</p>
 </section>
 </section>
 </section>
@@ -814,6 +820,7 @@ Ground truth MSE  6.108880543132803
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-dataset">Synthetic Dataset</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-setup">Experiment Setup</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#results">Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#take-aways">Take-aways</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-questions">Some Questions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-details">Experiment Details</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fold-cv">100-fold CV</a></li>
