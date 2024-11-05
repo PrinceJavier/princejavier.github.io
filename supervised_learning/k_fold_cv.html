@@ -833,7 +833,7 @@ Ground truth MSE  53.04536320061062
 </section>
 <section id="what-if-no-outliers">
 <h3>What if no outliers?<a class="headerlink" href="#what-if-no-outliers" title="Link to this heading">#</a></h3>
-<p>We generate data with no outliers. We find that in both validaation approaches, the test MSE is over-estimated. Meanwhile the second approach’s standard deviation, relative to its mean, is much lower than when there are outliers. It seems the second approach is more sensitive to the presence of outliers.</p>
+<p>We generate data with no outliers. We find that in both validaation approaches, the test MSE is over-estimated.</p>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
@@ -871,6 +871,7 @@ Ground truth MSE  6.108880543132803
 </div>
 </div>
 </div>
+<p>Meanwhile the second approach’s standard deviation, relative to its mean, is much lower than when there are outliers. It seems the second approach is more sensitive to the presence of outliers.</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
 <img alt="../_images/af32303206e6e9abfa85eb390ad4e2f59581ef2a75d568c2b416596a3d5163fe.png" src="../_images/af32303206e6e9abfa85eb390ad4e2f59581ef2a75d568c2b416596a3d5163fe.png" />
@@ -1000,6 +1001,16 @@ len (Y_train), len(Y_test):   10000 990000
 </div>
 </div>
 </details>
+<div class="cell_output docutils container">
+<img alt="../_images/74f6bb42a792bc5902a73e56d91a12a8e61e68144774cc6d2039152b7436fbf0.png" src="../_images/74f6bb42a792bc5902a73e56d91a12a8e61e68144774cc6d2039152b7436fbf0.png" />
+<img alt="../_images/c25a9af33c4233b443fc448ef63c69eefaffc4dfb1a00311a0320e38af275012.png" src="../_images/c25a9af33c4233b443fc448ef63c69eefaffc4dfb1a00311a0320e38af275012.png" />
+<img alt="../_images/2b775a362de785b7d1ee762449c96ee5cad89bcbd7a4eef39283af86309a6cd3.png" src="../_images/2b775a362de785b7d1ee762449c96ee5cad89bcbd7a4eef39283af86309a6cd3.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          0.7305736586480543
+Std Dev MSE       0.012843940843275855
+Ground truth MSE  0.6389746721462332
+</pre></div>
+</div>
+</div>
 </div>
 <p>We show the results using the second approach with 5 “fold” validation runs. For the MSE vs k curves, we run 10 trials of this validation approach, and indicate the minimum MSE with a red X in each trial (top charts). The middle charts show the distribution MSE per fold from a single trial of validation run, while the bottom charts show the distribution of the estimated <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> over 100 trials.</p>
 <p>We find that <span class="math notranslate nohighlight">\(k=4\)</span> is the likeliest hyperparameter to be chosen, which is the same as the ground truth value. However, there are still chances to pick <span class="math notranslate nohighlight">\(k=3\)</span></p>
@@ -1023,6 +1034,16 @@ len (Y_train), len(Y_test):   10000 990000
 </div>
 </div>
 </details>
+<div class="cell_output docutils container">
+<img alt="../_images/7d7d4efe7610fa106514c12acef6cc30acdfd2bfb751f95a99ff105447fd4010.png" src="../_images/7d7d4efe7610fa106514c12acef6cc30acdfd2bfb751f95a99ff105447fd4010.png" />
+<img alt="../_images/33873ba270703c0df898ba7fe70c4e58365cd191516db0c522a56ab9cd7ee2fb.png" src="../_images/33873ba270703c0df898ba7fe70c4e58365cd191516db0c522a56ab9cd7ee2fb.png" />
+<img alt="../_images/f20a7b00bbafbf41d8d92a15a81be87d784439236d0e021b52f107f7da287b06.png" src="../_images/f20a7b00bbafbf41d8d92a15a81be87d784439236d0e021b52f107f7da287b06.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          0.7382083355193587
+Std Dev MSE       0.012025683367967064
+Ground truth MSE  0.6343301684055197
+</pre></div>
+</div>
+</div>
 </div>
 </section>
 <section id="with-outliers">
@@ -1044,6 +1065,14 @@ len (Y_train), len(Y_test):   10000 990000
 </div>
 </div>
 </details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Coefficients:                 [ 0.49671415 -0.1382643   0.64768854  1.52302986 -0.23415337]
+len(X_train), len(X_test):    10000 990000
+len (Y_train), len(Y_test):   10000 990000
+</pre></div>
+</div>
+<img alt="../_images/5363e7597d867229f67b829697475668d2d0d92cd1a0eef2d03ba016e959b7ea.png" src="../_images/5363e7597d867229f67b829697475668d2d0d92cd1a0eef2d03ba016e959b7ea.png" />
+</div>
 </div>
 <p>In the presence of outliers, the second approach of T trials of simple validation yields highly variable MSE vs <span class="math notranslate nohighlight">\(k\)</span> curves and can sometimes yield <span class="math notranslate nohighlight">\(k\)</span> values that are widely different from the ground truth optimal value (in this case <span class="math notranslate nohighlight">\(k=1\)</span>).</p>
 <p>Meanwhile, k-fold CV yields a more stable set of MSE vs <span class="math notranslate nohighlight">\(k\)</span> curves and mostly returned <span class="math notranslate nohighlight">\(k=2\)</span> and rarely returned <span class="math notranslate nohighlight">\(k=1\)</span>. It seems in the presence of outliers, k-fold CV is more reliable.</p>
@@ -1068,6 +1097,16 @@ len (Y_train), len(Y_test):   10000 990000
 </div>
 </div>
 </details>
+<div class="cell_output docutils container">
+<img alt="../_images/3fdf3a878bddfa3cb4683a2fd365141a996817ba3750bfb90f6d77125dc119c2.png" src="../_images/3fdf3a878bddfa3cb4683a2fd365141a996817ba3750bfb90f6d77125dc119c2.png" />
+<img alt="../_images/571a3907b10c12f79e1ac5ee3782b5efd7df61e6730f4750ec0c61bee41662de.png" src="../_images/571a3907b10c12f79e1ac5ee3782b5efd7df61e6730f4750ec0c61bee41662de.png" />
+<img alt="../_images/15eb2a0132906c8bfc54a0e2eb69d48c1864fd9b66f65b5d049afffb7b02ad13.png" src="../_images/15eb2a0132906c8bfc54a0e2eb69d48c1864fd9b66f65b5d049afffb7b02ad13.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          51.95621758878725
+Std Dev MSE       0.26409296852545755
+Ground truth MSE  33.439163683759844
+</pre></div>
+</div>
+</div>
 </div>
 <p>We show the results using the second approach with 5 “fold” validation runs. We note the highly variable MSE vs <span class="math notranslate nohighlight">\(k\)</span> curves.</p>
 <div class="cell tag_hide-input docutils container">
@@ -1090,6 +1129,16 @@ len (Y_train), len(Y_test):   10000 990000
 </div>
 </div>
 </details>
+<div class="cell_output docutils container">
+<img alt="../_images/e7354dd44e9f56a43108653103871c9206e9171e63548a26d51892a994406ab4.png" src="../_images/e7354dd44e9f56a43108653103871c9206e9171e63548a26d51892a994406ab4.png" />
+<img alt="../_images/571a3907b10c12f79e1ac5ee3782b5efd7df61e6730f4750ec0c61bee41662de.png" src="../_images/571a3907b10c12f79e1ac5ee3782b5efd7df61e6730f4750ec0c61bee41662de.png" />
+<img alt="../_images/15eb2a0132906c8bfc54a0e2eb69d48c1864fd9b66f65b5d049afffb7b02ad13.png" src="../_images/15eb2a0132906c8bfc54a0e2eb69d48c1864fd9b66f65b5d049afffb7b02ad13.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          51.95621758878725
+Std Dev MSE       0.26409296852545755
+Ground truth MSE  33.439163683759844
+</pre></div>
+</div>
+</div>
 </div>
 </section>
 </section>
