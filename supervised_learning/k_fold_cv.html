@@ -278,8 +278,14 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#violation-of-the-iid-assumption">Violation of the iid Assumption</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-dataset">Synthetic Dataset</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-setup">Experiment Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#results">Results</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-questions">Some Questions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-results">Experiment Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-results">Experiment Results</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fold-cv">100-fold CV</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">10-fold CV</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">5-fold CV</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -314,10 +320,14 @@ document.write(`
 <h2>Experiment Setup<a class="headerlink" href="#experiment-setup" title="Permalink to this heading">#</a></h2>
 <p>We first checked the reliability of k-fold CV on this dataset. We chose <span class="math notranslate nohighlight">\(k=100\)</span>. We shuffled the train data, then we split into 100 folds/groups. Then we apply k-fold CV, getting a total of 100 MSEs. We then compute the mean of these MSEs and that becomes the k-fold MSE estimate. But we are not concerned with this particular estimate. We are concerned with the reliability of k-fold CV as a method, so we run 100 trials of 100-fold CV. Each trial we get the mean MSE, each of which is an estimate of the test MSE,</p>
 <p><span class="math notranslate nohighlight">\(\hat{\text{MSE}} = \text{mean}({\text{MSE}_{CV}}) \approx \text{MSE}_{test}\)</span>.</p>
+</section>
+<section id="results">
+<h2>Results<a class="headerlink" href="#results" title="Permalink to this heading">#</a></h2>
 <p>We then analyzed the mean and standard deviation of these estimates and found that the standard deviation of the estimate is low and <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> does not cover the ground truth test MSE. The ground truth test MSE is computed by fitting on the entire train set and testing on the test set.</p>
 <p>We find that <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> has low variance as an estimator, so running different trials of k-fold CV will more or less yield the same result. So while we will rarely have a case where we will more closely match the <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>, the consistency of the results is an advantage of k-fold CV in this case.</p>
 <p>We then speculated an alternative method that does not suffer the iid violation of k-fold CV. The approach is we simply do a simple validation split, but do it 100 times which we’ll call “fold” for consistency. Each time, we shuffle the data and split into 99% training and 1% validation. This no longer violates the iid assumption because each fold does not rob the other folds of the possibility of picking particular datapoints. We then get the mean of the 100 MSEs. Then again, we are concerned with the reliability of the approach, so we ran 100 trials, with each trial computing the mean of 100 MSEs. We then analyzed the distribution of MSEs and found that the <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> now captures the ground truth test MSE.</p>
 <p>However, the new approach has an increased variance such that running any of this 100-“fold” validation to estimate <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> will more likely yield much more varied results.</p>
+<p>We tested on the more realistic 10-fold and 5-fold CV and we get similar results.</p>
 </section>
 <section id="some-questions">
 <h2>Some Questions<a class="headerlink" href="#some-questions" title="Permalink to this heading">#</a></h2>
@@ -329,7 +339,10 @@ document.write(`
 <p>We define our function as a linear model of <span class="math notranslate nohighlight">\(X_j^2\)</span> predictors with some random noise. In this toy example, we sample the ground truth coefficients from a normal distribution, and we sample <span class="math notranslate nohighlight">\(X\)</span> from a normal distribution as well. A certain proportion of each predictor <span class="math notranslate nohighlight">\(X_j\)</span> is independently chosen and multiplied by a multiplier to serve as high leverage data points.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define a ground truth generative function</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># define a ground truth generative function</span>
 <span class="k">def</span> <span class="nf">gen_func</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1000000</span><span class="p">,</span> <span class="n">n_predictors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">p_leverage</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">mult_leverage</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
     <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
     <span class="n">coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_predictors</span><span class="p">)</span>
@@ -348,24 +361,35 @@ document.write(`
 <p>We generate 1 million datapoints from our generator. 10,000 are randomly selected to be the training data (from which we will derive the validation sets as well)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gen_train_test</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">N_train</span><span class="p">):</span>
+
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">coeffs</span> <span class="o">=</span> <span class="n">gen_func</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">n_predictors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">p_leverage</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">mult_leverage</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">inds</span><span class="p">)</span>
+    <span class="n">inds_train</span> <span class="o">=</span> <span class="n">inds</span><span class="p">[:</span><span class="n">N_train</span><span class="p">]</span>
+    <span class="n">inds_test</span> <span class="o">=</span> <span class="n">inds</span><span class="p">[</span><span class="n">N_train</span><span class="p">:]</span>
+
+    <span class="n">X_train</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">inds_train</span><span class="p">]</span>
+    <span class="n">Y_train</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">inds_train</span><span class="p">]</span>
+
+    <span class="n">X_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">inds_test</span><span class="p">]</span>
+    <span class="n">Y_test</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">inds_test</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coefficients:                &quot;</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;len(X_train), len(X_test):   &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_test</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;len (Y_train), len(Y_test):  &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y_train</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y_test</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">1000000</span>
 <span class="n">N_train</span> <span class="o">=</span> <span class="mi">10000</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">coeffs</span> <span class="o">=</span> <span class="n">gen_func</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">n_predictors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">p_leverage</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">mult_leverage</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-<span class="n">inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">inds</span><span class="p">)</span>
-<span class="n">inds_train</span> <span class="o">=</span> <span class="n">inds</span><span class="p">[:</span><span class="n">N_train</span><span class="p">]</span>
-<span class="n">inds_test</span> <span class="o">=</span> <span class="n">inds</span><span class="p">[</span><span class="n">N_train</span><span class="p">:]</span>
-
-<span class="n">X_train</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">inds_train</span><span class="p">]</span>
-<span class="n">Y_train</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">inds_train</span><span class="p">]</span>
-
-<span class="n">X_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">inds_test</span><span class="p">]</span>
-<span class="n">Y_test</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">inds_test</span><span class="p">]</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coefficients:                &quot;</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;len(X_train), len(X_test):   &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_test</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;len (Y_train), len(Y_test):  &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y_train</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y_test</span><span class="p">))</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="n">gen_train_test</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">N_train</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -383,16 +407,8 @@ len (Y_train), len(Y_test):   10000 990000
 <img alt="../_images/5363e7597d867229f67b829697475668d2d0d92cd1a0eef2d03ba016e959b7ea.png" src="../_images/5363e7597d867229f67b829697475668d2d0d92cd1a0eef2d03ba016e959b7ea.png" />
 </div>
 </div>
-<p>We define 100 k-folds and 100 trials (100-fold each).</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># do standard k-fold cross validation</span>
-<span class="n">k_folds</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">trials</span> <span class="o">=</span> <span class="mi">100</span>
-</pre></div>
-</div>
-</div>
-</div>
+<section id="fold-cv">
+<h3>100-fold CV<a class="headerlink" href="#fold-cv" title="Permalink to this heading">#</a></h3>
 <p>We run k-fold CV over many trials using linear regression. Each k-fold CV trial yields an estimate <span class="math notranslate nohighlight">\(\hat{\text{MSE}} = \text{mean}({\text{MSE}_{CV}}) \approx \text{MSE}_{test}\)</span>. Running many trials, we can get a mean and standard deviation of the <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> estimates, which we compare with the ground truth <span class="math notranslate nohighlight">\(MSE_{test}\)</span></p>
 <p>The chart below shows the highly skewed <span class="math notranslate nohighlight">\({\text{MSE}_{CV}}\)</span> values for one trial of k-fold CV. This is due to the presence of high-leverage/outlier points in the training data. But we are not concerned with the distribution of errors in one trial of k-fold CV. We are concerned with the distribution of the estimates <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span></p>
 <div class="cell tag_hide-input docutils container">
@@ -405,74 +421,89 @@ len (Y_train), len(Y_test):   10000 990000
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">linear_model</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">r2_score</span>
 
-<span class="n">k_folds_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">)),</span> <span class="n">k_folds</span><span class="p">))</span>
-<span class="n">mse_means</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">mse_stds</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">def</span> <span class="nf">run_kfold_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">k_trials</span><span class="p">):</span>
 
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">trials</span><span class="p">):</span>
+    <span class="n">k_folds_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">)),</span> <span class="n">k_folds</span><span class="p">))</span>
+    <span class="n">mse_means</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">mse_stds</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="n">inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">))</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">inds</span><span class="p">)</span>
-    <span class="n">X_train_shuffled</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
-    <span class="n">Y_train_shuffled</span> <span class="o">=</span> <span class="n">Y_train</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">trials</span><span class="p">):</span>
+
+        <span class="n">inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">))</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">inds</span><span class="p">)</span>
+        <span class="n">X_train_shuffled</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
+        <span class="n">Y_train_shuffled</span> <span class="o">=</span> <span class="n">Y_train</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
 
 
-    <span class="n">mse_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">coeffs_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mse_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">coeffs_list</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k_folds</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k_folds</span><span class="p">):</span>
 
-        <span class="n">k_folds_idx_retain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">k_folds</span><span class="p">),</span> <span class="n">k</span><span class="p">)</span>
-        <span class="n">sample_idx_train</span> <span class="o">=</span> <span class="n">k_folds_idx</span><span class="p">[</span><span class="n">k_folds_idx_retain</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-        <span class="n">sample_idx_valid</span> <span class="o">=</span> <span class="n">k_folds_idx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+            <span class="n">k_folds_idx_retain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">k_folds</span><span class="p">),</span> <span class="n">k</span><span class="p">)</span>
+            <span class="n">sample_idx_train</span> <span class="o">=</span> <span class="n">k_folds_idx</span><span class="p">[</span><span class="n">k_folds_idx_retain</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+            <span class="n">sample_idx_valid</span> <span class="o">=</span> <span class="n">k_folds_idx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 
-        <span class="n">X_fold_train</span> <span class="o">=</span> <span class="n">X_train_shuffled</span><span class="p">[</span><span class="n">sample_idx_train</span><span class="p">]</span>
-        <span class="n">X_fold_valid</span> <span class="o">=</span> <span class="n">X_train_shuffled</span><span class="p">[</span><span class="n">sample_idx_valid</span><span class="p">]</span>
+            <span class="n">X_fold_train</span> <span class="o">=</span> <span class="n">X_train_shuffled</span><span class="p">[</span><span class="n">sample_idx_train</span><span class="p">]</span>
+            <span class="n">X_fold_valid</span> <span class="o">=</span> <span class="n">X_train_shuffled</span><span class="p">[</span><span class="n">sample_idx_valid</span><span class="p">]</span>
 
-        <span class="n">Y_fold_train</span> <span class="o">=</span> <span class="n">Y_train_shuffled</span><span class="p">[</span><span class="n">sample_idx_train</span><span class="p">]</span>
-        <span class="n">Y_fold_valid</span> <span class="o">=</span> <span class="n">Y_train_shuffled</span><span class="p">[</span><span class="n">sample_idx_valid</span><span class="p">]</span>
+            <span class="n">Y_fold_train</span> <span class="o">=</span> <span class="n">Y_train_shuffled</span><span class="p">[</span><span class="n">sample_idx_train</span><span class="p">]</span>
+            <span class="n">Y_fold_valid</span> <span class="o">=</span> <span class="n">Y_train_shuffled</span><span class="p">[</span><span class="n">sample_idx_valid</span><span class="p">]</span>
 
-        <span class="c1"># Create linear regression object</span>
-        <span class="n">regr</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
+            <span class="c1"># Create linear regression object</span>
+            <span class="n">regr</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
 
-        <span class="c1"># Train the model using the training sets</span>
-        <span class="n">regr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_fold_train</span><span class="p">,</span> <span class="n">Y_fold_train</span><span class="p">)</span>
+            <span class="c1"># Train the model using the training sets</span>
+            <span class="n">regr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_fold_train</span><span class="p">,</span> <span class="n">Y_fold_train</span><span class="p">)</span>
 
-        <span class="c1"># Make predictions using the testing set</span>
-        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">regr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_fold_valid</span><span class="p">)</span>
+            <span class="c1"># Make predictions using the testing set</span>
+            <span class="n">y_pred</span> <span class="o">=</span> <span class="n">regr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_fold_valid</span><span class="p">)</span>
 
-        <span class="n">coeffs_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">regr</span><span class="o">.</span><span class="n">coef_</span><span class="p">]</span>
-        <span class="n">mse_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">Y_fold_valid</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)]</span>       
+            <span class="n">coeffs_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">regr</span><span class="o">.</span><span class="n">coef_</span><span class="p">]</span>
+            <span class="n">mse_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">Y_fold_valid</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)]</span>       
 
-    <span class="n">coeffs_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coeffs_list</span><span class="p">)</span>
-    <span class="n">mse_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>    
+        <span class="n">coeffs_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coeffs_list</span><span class="p">)</span>
+        <span class="n">mse_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>    
 
-    <span class="c1"># compute the mean MSE from cross validation</span>
-    <span class="n">mse_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>
+        <span class="c1"># compute the mean MSE from cross validation</span>
+        <span class="n">mse_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>
 
-    <span class="c1"># compute the standard deviation</span>
-    <span class="n">mse_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>    
+        <span class="c1"># compute the standard deviation</span>
+        <span class="n">mse_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>    
 
-    <span class="n">mse_means</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mse_mean</span><span class="p">]</span>
-    <span class="n">mse_stds</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mse_std</span><span class="p">]</span>
+        <span class="n">mse_means</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mse_mean</span><span class="p">]</span>
+        <span class="n">mse_stds</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mse_std</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">trial</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>        
-        <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">mse_list</span><span class="p">,</span> <span class="n">cumulative</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trial</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>        
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">mse_list</span><span class="p">,</span> <span class="n">cumulative</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>
-        <span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mse_list</span><span class="p">,</span> <span class="n">showfliers</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mse_list</span><span class="p">,</span> <span class="n">showfliers</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;MSE histogram for 1 CV trial&quot;</span><span class="p">)</span>        
-        <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;MSEs with outliers for 1 CV trial&quot;</span><span class="p">)</span>
-        <span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;MSEs without outliers for 1 CV trial&quot;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>       
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;MSE histogram for 1 CV trial&quot;</span><span class="p">)</span>        
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;MSEs with outliers for 1 CV trial&quot;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;MSEs without outliers for 1 CV trial&quot;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>      
+    
+    <span class="k">return</span> <span class="n">mse_means</span><span class="p">,</span> <span class="n">mse_stds</span>
 </pre></div>
 </div>
 </div>
 </details>
+</div>
+<p>We define 100 k-folds and 100 trials (100-fold each).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># do standard k-fold cross validation</span>
+<span class="n">k_folds</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">trials</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">mse_means</span><span class="p">,</span> <span class="n">mse_stds</span> <span class="o">=</span> <span class="n">run_kfold_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="cell_output docutils container">
 <img alt="../_images/422bb8e96ecd541ee812450474ae8069c023114c520d63cf06aa907c956a6253.png" src="../_images/422bb8e96ecd541ee812450474ae8069c023114c520d63cf06aa907c956a6253.png" />
 </div>
@@ -503,89 +534,158 @@ Ground truth MSE  53.04536320061062
 <span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mse_means</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">mse_stds</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run_kfold2_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">):</span>
+    <span class="n">mse_means</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">mse_stds</span> <span class="o">=</span> <span class="p">[]</span>
 
-<span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">trials</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">trials</span><span class="p">):</span>
 
-    <span class="n">mse_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">coeffs_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mse_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">coeffs_list</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k_folds</span><span class="p">):</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k_folds</span><span class="p">):</span>
 
-        <span class="n">sample_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">))</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">sample_idx</span><span class="p">)</span>
-        <span class="n">train_idx</span> <span class="o">=</span> <span class="n">sample_idx</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">//</span><span class="n">k_folds</span><span class="p">:]</span>
-        <span class="n">valid_idx</span> <span class="o">=</span> <span class="n">sample_idx</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">//</span><span class="n">k_folds</span><span class="p">]</span>
+            <span class="n">sample_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">))</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">sample_idx</span><span class="p">)</span>
+            <span class="n">train_idx</span> <span class="o">=</span> <span class="n">sample_idx</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">//</span><span class="n">k_folds</span><span class="p">:]</span>
+            <span class="n">valid_idx</span> <span class="o">=</span> <span class="n">sample_idx</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">//</span><span class="n">k_folds</span><span class="p">]</span>
 
-        <span class="n">X_fold_train</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="n">train_idx</span><span class="p">]</span>
-        <span class="n">X_fold_valid</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="n">valid_idx</span><span class="p">]</span>
+            <span class="n">X_fold_train</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="n">train_idx</span><span class="p">]</span>
+            <span class="n">X_fold_valid</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="n">valid_idx</span><span class="p">]</span>
 
-        <span class="n">Y_fold_train</span> <span class="o">=</span> <span class="n">Y_train</span><span class="p">[</span><span class="n">train_idx</span><span class="p">]</span>
-        <span class="n">Y_fold_valid</span> <span class="o">=</span> <span class="n">Y_train</span><span class="p">[</span><span class="n">valid_idx</span><span class="p">]</span>
+            <span class="n">Y_fold_train</span> <span class="o">=</span> <span class="n">Y_train</span><span class="p">[</span><span class="n">train_idx</span><span class="p">]</span>
+            <span class="n">Y_fold_valid</span> <span class="o">=</span> <span class="n">Y_train</span><span class="p">[</span><span class="n">valid_idx</span><span class="p">]</span>
 
-        <span class="c1"># Create linear regression object</span>
-        <span class="n">regr</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
+            <span class="c1"># Create linear regression object</span>
+            <span class="n">regr</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
 
-        <span class="c1"># Train the model using the training sets</span>
-        <span class="n">regr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_fold_train</span><span class="p">,</span> <span class="n">Y_fold_train</span><span class="p">)</span>
+            <span class="c1"># Train the model using the training sets</span>
+            <span class="n">regr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_fold_train</span><span class="p">,</span> <span class="n">Y_fold_train</span><span class="p">)</span>
 
-        <span class="c1"># Make predictions using the testing set</span>
-        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">regr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_fold_valid</span><span class="p">)</span>
+            <span class="c1"># Make predictions using the testing set</span>
+            <span class="n">y_pred</span> <span class="o">=</span> <span class="n">regr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_fold_valid</span><span class="p">)</span>
 
-        <span class="n">coeffs_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">regr</span><span class="o">.</span><span class="n">coef_</span><span class="p">]</span>
-        <span class="n">mse_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">Y_fold_valid</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)]</span>       
+            <span class="n">coeffs_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">regr</span><span class="o">.</span><span class="n">coef_</span><span class="p">]</span>
+            <span class="n">mse_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">Y_fold_valid</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)]</span>       
 
-    <span class="n">coeffs_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coeffs_list</span><span class="p">)</span>
-    <span class="n">mse_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>    
+        <span class="n">coeffs_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coeffs_list</span><span class="p">)</span>
+        <span class="n">mse_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>    
 
-    <span class="c1"># compute the mean MSE from cross validation</span>
-    <span class="n">mse_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>
+        <span class="c1"># compute the mean MSE from cross validation</span>
+        <span class="n">mse_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>
 
-    <span class="c1"># compute the standard deviation</span>
-    <span class="n">mse_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>    
+        <span class="c1"># compute the standard deviation</span>
+        <span class="n">mse_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>    
 
-    <span class="n">mse_means</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mse_mean</span><span class="p">]</span>
-    <span class="n">mse_stds</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mse_std</span><span class="p">]</span>
+        <span class="n">mse_means</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mse_mean</span><span class="p">]</span>
+        <span class="n">mse_stds</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mse_std</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">trial</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>        
-        <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">mse_list</span><span class="p">,</span> <span class="n">cumulative</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trial</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>        
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">mse_list</span><span class="p">,</span> <span class="n">cumulative</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>
-        <span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mse_list</span><span class="p">,</span> <span class="n">showfliers</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mse_list</span><span class="p">,</span> <span class="n">showfliers</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;MSE histogram for 1 CV trial&quot;</span><span class="p">)</span>        
-        <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;MSEs with outliers for 1 CV trial&quot;</span><span class="p">)</span>
-        <span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;MSEs without outliers for 1 CV trial&quot;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>       
+            <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;MSE histogram for 1 CV trial&quot;</span><span class="p">)</span>        
+            <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;MSEs with outliers for 1 CV trial&quot;</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;MSEs without outliers for 1 CV trial&quot;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  
+
+    <span class="k">return</span> <span class="n">mse_means</span><span class="p">,</span> <span class="n">mse_stds</span>     
 </pre></div>
 </div>
 </div>
 </details>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># do standard k-fold cross validation</span>
+<span class="n">k_folds</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">trials</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">mse_means</span><span class="p">,</span> <span class="n">mse_stds</span> <span class="o">=</span> <span class="n">run_kfold2_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="cell_output docutils container">
-<img alt="../_images/e89d5f2376178246bfad1efabc0250acb9b680c9fbcd8548dc8383e0b4e8510e.png" src="../_images/e89d5f2376178246bfad1efabc0250acb9b680c9fbcd8548dc8383e0b4e8510e.png" />
+<img alt="../_images/4ac74c866eb3a3350ce0010090f0414e8048bc85e4ae99804de2f622f2b1aa3e.png" src="../_images/4ac74c866eb3a3350ce0010090f0414e8048bc85e4ae99804de2f622f2b1aa3e.png" />
 </div>
 </div>
 <p>We show below the distribution of <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> from 100 trials</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<img alt="../_images/698771966a6edfe02e22484d3f73c26c309951f028053aa9a1d7566fb64decd4.png" src="../_images/698771966a6edfe02e22484d3f73c26c309951f028053aa9a1d7566fb64decd4.png" />
+<img alt="../_images/79e77056d7b7b9e8710ffe8e4b78320b53c5159a25505d611804d20c7821be99.png" src="../_images/79e77056d7b7b9e8710ffe8e4b78320b53c5159a25505d611804d20c7821be99.png" />
 </div>
 </div>
 <p>We find that <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> covers <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>. But the increased variance means we expect different results each run of 100-“fold” validation.</p>
 <p>Is this approach more reliable than conventional k-fold? How general is this result?</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          62.99516870328772
-Std Dev MSE       30.44480934715585
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          61.57271666424927
+Std Dev MSE       30.528911580394013
 Ground truth MSE  53.04536320061062
 </pre></div>
 </div>
 </div>
 </div>
+</section>
+<section id="id1">
+<h3>10-fold CV<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<p>The problem with our experiments above is that our training set is small yet we’re using 100-fold validation. This will make the validation runs correlated since chances are they will share much of the dataset with each other. So now, we experiment on the more realistic 10-fold validation. We still run over 100 trials.</p>
+<p>We show below the results of a sample MSE histogram for one trial of 10-fold CV (top charts) and we show the distribution of values of <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> over 100 trials of 10-fold CV. We find that we get more or less the same result as the 100-fold CV.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/21c52b0811b52cec25129f3666ad3304c4854e8f629e2d882a3a2db55616d4ff.png" src="../_images/21c52b0811b52cec25129f3666ad3304c4854e8f629e2d882a3a2db55616d4ff.png" />
+<img alt="../_images/623ccf0c394c8772fd7def3d9a42f6bf0071c8e657b2bd8108b6457b65a5f9a4.png" src="../_images/623ccf0c394c8772fd7def3d9a42f6bf0071c8e657b2bd8108b6457b65a5f9a4.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          63.974719087827445
+Std Dev MSE       0.6883531568069371
+Ground truth MSE  53.04536320061062
+</pre></div>
+</div>
+</div>
+</div>
+<p>We show the results for the alternative approach. We also get more or less the same results, with some increase in the estimated <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span></p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/b5674d2eb3a24be9e1d347accde23e1ba18c0233f9ce6d6695708ff18b7a9e54.png" src="../_images/b5674d2eb3a24be9e1d347accde23e1ba18c0233f9ce6d6695708ff18b7a9e54.png" />
+<img alt="../_images/c385891b98ba806efca9bd9fb5a4508a411a490d944db4ce95b1a0586deb08f8.png" src="../_images/c385891b98ba806efca9bd9fb5a4508a411a490d944db4ce95b1a0586deb08f8.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          65.70430794964277
+Std Dev MSE       30.53296639484907
+Ground truth MSE  53.04536320061062
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id2">
+<h3>5-fold CV<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<p>There’s no marked changes when we use 5-fold CV. We show below the results of k-fold CV.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/e942923db301150737569bb08085e0ba083de599a14300da76d2285e27a7a41d.png" src="../_images/e942923db301150737569bb08085e0ba083de599a14300da76d2285e27a7a41d.png" />
+<img alt="../_images/1418ff2b356fbfd59861a2f8e63c848714d09ece70bfdfeb7601b5b5b00b7867.png" src="../_images/1418ff2b356fbfd59861a2f8e63c848714d09ece70bfdfeb7601b5b5b00b7867.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          64.47303996932304
+Std Dev MSE       1.1310935713605763
+Ground truth MSE  53.04536320061062
+</pre></div>
+</div>
+</div>
+</div>
+<p>We show below the results of the alternative approach.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/a018af3a45e68a14586f311d94f61a53d5e68fc720d3cf58526ff9009c262b26.png" src="../_images/a018af3a45e68a14586f311d94f61a53d5e68fc720d3cf58526ff9009c262b26.png" />
+<img alt="../_images/158febbda4bbcae9f22dea7e450cd7a74d610376fa15b26a11818bc7d6c0f8f0.png" src="../_images/158febbda4bbcae9f22dea7e450cd7a74d610376fa15b26a11818bc7d6c0f8f0.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          63.535512108530845
+Std Dev MSE       28.412100685752357
+Ground truth MSE  53.04536320061062
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 
@@ -660,8 +760,14 @@ Ground truth MSE  53.04536320061062
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#violation-of-the-iid-assumption">Violation of the iid Assumption</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-dataset">Synthetic Dataset</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-setup">Experiment Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#results">Results</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-questions">Some Questions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-results">Experiment Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-results">Experiment Results</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fold-cv">100-fold CV</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">10-fold CV</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">5-fold CV</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
