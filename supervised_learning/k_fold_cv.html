@@ -286,7 +286,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">10-fold CV</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">5-fold CV</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-no-outliers">What if no outliers?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-in-hyperparameter-tuning">Use in Hyperparameter Tuning</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-in-hyperparameter-tuning">Use in Hyperparameter Tuning</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#without-outliers">Without Outliers</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#with-outliers">With Outliers</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -332,11 +336,12 @@ document.write(`
 <p>However, the new approach has an increased variance such that running any of this 100-“fold” validation to estimate <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> will more likely yield much more varied results.</p>
 <p>We tested on the more realistic 10-fold and 5-fold CV and we get similar results.</p>
 <p>In the absence of outliers, the two approaches still more or less have the same <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}})\)</span> which overestimate the ground truth <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>. But the standard deviation (relative to the mean) of the second approach is much lower when there are no outliers vs when there are outliers.</p>
+<p>Using k-Nearest Neighbors (kNN) regression to investigate the reliability of these two validation approaches to finding the optimal <span class="math notranslate nohighlight">\(k\)</span>, we find that when the data does not contain outliers, the second approach where we do simple random validation T times seems marginally more reliable than k-fold CV. However, we find that in the presence of outliers, simple validation yields high variation in the <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> vs <span class="math notranslate nohighlight">\(k\)</span> charts and yields high variation in the selected optimal <span class="math notranslate nohighlight">\(k\)</span>.</p>
 </section>
 <section id="take-aways">
 <h2>Take-aways<a class="headerlink" href="#take-aways" title="Permalink to this heading">#</a></h2>
-<p>Both k-fold CV and our alternative k-validation method seem to be biased estimates of the <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span> in this particular example. However, k-fold CV has much lower variance than the alternative method with or without outliers. This speaks about its stability, and hence reliability.</p>
-<p>The second approach is more prone to high variance of predictions especially in the presence of outliers, which may not be desirable. And despite supposedly being more aligned with the iid assumption when estimating a statistic, it seems to be still a biased estimate of <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>.</p>
+<p>Using linear regression, both k-fold CV and our alternative k-validation method seem to be biased estimates of the <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span> in this particular example. However, k-fold CV has much lower variance than the alternative method with or without outliers. This speaks about its stability as a method.</p>
+<p>The second approach is more prone to high variance of predictions especially in the presence of outliers, which may not be desirable. And despite supposedly being more aligned with the iid assumption when estimating a statistic, it seems to be still a biased estimate of <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>. In our experiments, it also entails high variability in terms of hyperparameter selection, which is not a problem for k-fold CV.</p>
 </section>
 <section id="some-questions">
 <h2>Some Questions<a class="headerlink" href="#some-questions" title="Permalink to this heading">#</a></h2>
@@ -412,7 +417,34 @@ len (Y_train), len(Y_test):   10000 990000
 </div>
 </div>
 <p>We visualize below each <span class="math notranslate nohighlight">\(X_j\)</span> vs <span class="math notranslate nohighlight">\(Y\)</span> in our training data</p>
-<div class="cell tag_remove-input docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_data</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">):</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_train</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;X_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;X vs Y&quot;</span><span class="p">)</span>
+
+        <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_train</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;X_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">loglog</span><span class="p">()</span>
+        <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;log(Y)&quot;</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;log(X)&quot;</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;log(X) vs log(Y)&quot;</span><span class="p">)</span>    
+        <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+<span class="n">plot_data</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>    
+</pre></div>
+</div>
+</div>
+</details>
 <div class="cell_output docutils container">
 <img alt="../_images/5363e7597d867229f67b829697475668d2d0d92cd1a0eef2d03ba016e959b7ea.png" src="../_images/5363e7597d867229f67b829697475668d2d0d92cd1a0eef2d03ba016e959b7ea.png" />
 </div>
@@ -431,13 +463,13 @@ len (Y_train), len(Y_test):   10000 990000
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">linear_model</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">r2_score</span>
 
-<span class="k">def</span> <span class="nf">run_kfold_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">run_kfold_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
 
     <span class="n">k_folds_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">)),</span> <span class="n">k_folds</span><span class="p">))</span>
     <span class="n">mse_means</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">mse_stds</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">trials</span><span class="p">):</span>
 
         <span class="n">inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">))</span>
@@ -445,10 +477,7 @@ len (Y_train), len(Y_test):   10000 990000
         <span class="n">X_train_shuffled</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
         <span class="n">Y_train_shuffled</span> <span class="o">=</span> <span class="n">Y_train</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
 
-
         <span class="n">mse_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">coeffs_list</span> <span class="o">=</span> <span class="p">[]</span>
-
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k_folds</span><span class="p">):</span>
 
             <span class="n">k_folds_idx_retain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">k_folds</span><span class="p">),</span> <span class="n">k</span><span class="p">)</span>
@@ -462,7 +491,7 @@ len (Y_train), len(Y_test):   10000 990000
             <span class="n">Y_fold_valid</span> <span class="o">=</span> <span class="n">Y_train_shuffled</span><span class="p">[</span><span class="n">sample_idx_valid</span><span class="p">]</span>
 
             <span class="c1"># Create linear regression object</span>
-            <span class="n">regr</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
+            <span class="n">regr</span> <span class="o">=</span> <span class="n">func</span>
 
             <span class="c1"># Train the model using the training sets</span>
             <span class="n">regr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_fold_train</span><span class="p">,</span> <span class="n">Y_fold_train</span><span class="p">)</span>
@@ -470,10 +499,8 @@ len (Y_train), len(Y_test):   10000 990000
             <span class="c1"># Make predictions using the testing set</span>
             <span class="n">y_pred</span> <span class="o">=</span> <span class="n">regr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_fold_valid</span><span class="p">)</span>
 
-            <span class="n">coeffs_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">regr</span><span class="o">.</span><span class="n">coef_</span><span class="p">]</span>
             <span class="n">mse_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">Y_fold_valid</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)]</span>       
 
-        <span class="n">coeffs_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coeffs_list</span><span class="p">)</span>
         <span class="n">mse_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>    
 
         <span class="c1"># compute the mean MSE from cross validation</span>
@@ -485,7 +512,7 @@ len (Y_train), len(Y_test):   10000 990000
         <span class="n">mse_means</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mse_mean</span><span class="p">]</span>
         <span class="n">mse_stds</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mse_std</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">trial</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">trial</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">plot</span><span class="p">:</span>
             <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>        
             <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">mse_list</span><span class="p">,</span> <span class="n">cumulative</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -505,31 +532,101 @@ len (Y_train), len(Y_test):   10000 990000
 </details>
 </div>
 <p>We define 100 k-folds and 100 trials (100-fold each).</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># do standard k-fold cross validation</span>
 <span class="n">k_folds</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="n">trials</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">mse_means</span><span class="p">,</span> <span class="n">mse_stds</span> <span class="o">=</span> <span class="n">run_kfold_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+<span class="n">func</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">mse_means</span><span class="p">,</span> <span class="n">mse_stds</span> <span class="o">=</span> <span class="n">run_kfold_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <img alt="../_images/422bb8e96ecd541ee812450474ae8069c023114c520d63cf06aa907c956a6253.png" src="../_images/422bb8e96ecd541ee812450474ae8069c023114c520d63cf06aa907c956a6253.png" />
 </div>
 </div>
 <p>We show below the distribution of <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> from 100 trials</p>
-<div class="cell tag_remove-input docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_mse_dists</span><span class="p">(</span><span class="n">mse_means</span><span class="p">):</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>        
+    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">mse_means</span><span class="p">,</span> <span class="n">cumulative</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mse_means</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mse_means</span><span class="p">,</span> <span class="n">showfliers</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MSE Means histogram for </span><span class="si">{</span><span class="n">trials</span><span class="si">}</span><span class="s2"> CV trials&quot;</span><span class="p">)</span>        
+    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MSEs with outliers for </span><span class="si">{</span><span class="n">trials</span><span class="si">}</span><span class="s2"> CV trials&quot;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MSEs without outliers for </span><span class="si">{</span><span class="n">trials</span><span class="si">}</span><span class="s2"> CV trials&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>    
+
+<span class="n">plot_mse_dists</span><span class="p">(</span><span class="n">mse_means</span><span class="p">)</span>       
+</pre></div>
+</div>
+</div>
+</details>
 <div class="cell_output docutils container">
-<img alt="../_images/9903cef409112f640668aaffebbe4cf4ee1a609788d4fe7c521689278515afa4.png" src="../_images/9903cef409112f640668aaffebbe4cf4ee1a609788d4fe7c521689278515afa4.png" />
+<img alt="../_images/db6d352ca5625c590497ae3caf35af90bb9da532f8b9332cc29c81e3f2c9f555.png" src="../_images/db6d352ca5625c590497ae3caf35af90bb9da532f8b9332cc29c81e3f2c9f555.png" />
 </div>
 </div>
 <p>We computed the ground truth <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span> as well as the mean and standard deviation of <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span>. We find that <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> does not cover <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>. However, the estimated <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> has low variance so it speaks about the consistency of the results when using k-fold CV for this problem.</p>
-<div class="cell tag_remove-input docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compare_w_test_mse</span><span class="p">(</span><span class="n">mse_means</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+    <span class="c1"># compute the mean MSE from cross validation</span>
+    <span class="n">mse_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mse_means</span><span class="p">)</span>
+
+    <span class="c1"># compute the standard deviation</span>
+    <span class="n">mse_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">mse_means</span><span class="p">)</span>
+
+    <span class="c1"># compute the true MSE from the test set when trained on the entire train set</span>
+    <span class="c1"># Create linear regression object</span>
+    <span class="n">regr</span> <span class="o">=</span> <span class="n">func</span>
+
+    <span class="c1"># Train the model using the training sets</span>
+    <span class="n">regr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+
+    <span class="c1"># Make predictions using the testing set</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">regr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+    <span class="n">mse_gt</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mean MSE         &quot;</span><span class="p">,</span> <span class="n">mse_mean</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Std Dev MSE      &quot;</span><span class="p">,</span> <span class="n">mse_std</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ground truth MSE &quot;</span><span class="p">,</span> <span class="n">mse_gt</span><span class="p">)</span>
+
+
+<span class="n">func</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">compare_w_test_mse</span><span class="p">(</span><span class="n">mse_means</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          63.75660471426123
-Std Dev MSE       0.15955756270713287
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          53.35147116518625
+Std Dev MSE       29.67791538389514
 Ground truth MSE  53.04536320061062
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>53.04536320061062
 </pre></div>
 </div>
 </div>
@@ -544,16 +641,14 @@ Ground truth MSE  53.04536320061062
 <span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run_kfold2_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run_kfold2_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
     <span class="n">mse_means</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">mse_stds</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">trials</span><span class="p">):</span>
 
         <span class="n">mse_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">coeffs_list</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k_folds</span><span class="p">):</span>
 
             <span class="n">sample_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">))</span>
@@ -568,18 +663,15 @@ Ground truth MSE  53.04536320061062
             <span class="n">Y_fold_valid</span> <span class="o">=</span> <span class="n">Y_train</span><span class="p">[</span><span class="n">valid_idx</span><span class="p">]</span>
 
             <span class="c1"># Create linear regression object</span>
-            <span class="n">regr</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
+            <span class="n">regr</span> <span class="o">=</span> <span class="n">func</span>
 
             <span class="c1"># Train the model using the training sets</span>
             <span class="n">regr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_fold_train</span><span class="p">,</span> <span class="n">Y_fold_train</span><span class="p">)</span>
 
             <span class="c1"># Make predictions using the testing set</span>
             <span class="n">y_pred</span> <span class="o">=</span> <span class="n">regr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_fold_valid</span><span class="p">)</span>
-
-            <span class="n">coeffs_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">regr</span><span class="o">.</span><span class="n">coef_</span><span class="p">]</span>
             <span class="n">mse_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">Y_fold_valid</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)]</span>       
 
-        <span class="n">coeffs_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coeffs_list</span><span class="p">)</span>
         <span class="n">mse_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mse_list</span><span class="p">)</span>    
 
         <span class="c1"># compute the mean MSE from cross validation</span>
@@ -591,7 +683,7 @@ Ground truth MSE  53.04536320061062
         <span class="n">mse_means</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mse_mean</span><span class="p">]</span>
         <span class="n">mse_stds</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mse_std</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">trial</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">trial</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">plot</span><span class="p">:</span>
             <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>        
             <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">mse_list</span><span class="p">,</span> <span class="n">cumulative</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -610,17 +702,23 @@ Ground truth MSE  53.04536320061062
 </div>
 </details>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># do standard k-fold cross validation</span>
-<span class="n">k_folds</span> <span class="o">=</span> <span class="mi">100</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k_folds</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="n">trials</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">mse_means</span><span class="p">,</span> <span class="n">mse_stds</span> <span class="o">=</span> <span class="n">run_kfold2_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+<span class="n">func</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">mse_means</span><span class="p">,</span> <span class="n">mse_stds</span> <span class="o">=</span> <span class="n">run_kfold2_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="../_images/e89d5f2376178246bfad1efabc0250acb9b680c9fbcd8548dc8383e0b4e8510e.png" src="../_images/e89d5f2376178246bfad1efabc0250acb9b680c9fbcd8548dc8383e0b4e8510e.png" />
+<img alt="../_images/7b94c353a6bdbcfdad87819b76fe14fce4329d932284f25b1b7395f974cab849.png" src="../_images/7b94c353a6bdbcfdad87819b76fe14fce4329d932284f25b1b7395f974cab849.png" />
 </div>
 </div>
 <p>We show below the distribution of <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> from 100 trials</p>
@@ -698,7 +796,13 @@ Ground truth MSE  53.04536320061062
 </section>
 <section id="what-if-no-outliers">
 <h3>What if no outliers?<a class="headerlink" href="#what-if-no-outliers" title="Permalink to this heading">#</a></h3>
-<div class="cell docutils container">
+<p>We generate data with no outliers. We find that in both validaation approaches, the test MSE is over-estimated. Meanwhile the second approach’s standard deviation, relative to its mean, is much lower than when there are outliers. It seems the second approach is more sensitive to the presence of outliers.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">1000000</span>
 <span class="n">N_train</span> <span class="o">=</span> <span class="mi">10000</span>
@@ -709,6 +813,7 @@ Ground truth MSE  53.04536320061062
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Coefficients:                 [ 0.49671415 -0.1382643   0.64768854  1.52302986 -0.23415337]
 len(X_train), len(X_test):    10000 990000
@@ -743,7 +848,274 @@ Ground truth MSE  6.108880543132803
 </section>
 <section id="use-in-hyperparameter-tuning">
 <h3>Use in Hyperparameter Tuning<a class="headerlink" href="#use-in-hyperparameter-tuning" title="Permalink to this heading">#</a></h3>
-<p>Because linear regression has no hyperparameters, we experiment using kNN regressor instead. We compare the bias and variance of the two</p>
+<section id="without-outliers">
+<h4>Without Outliers<a class="headerlink" href="#without-outliers" title="Permalink to this heading">#</a></h4>
+<p>Because linear regression has no hyperparameters, we experiment using kNN regressor instead. We first analyze the dataset without outliers.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">1000000</span>
+<span class="n">N_train</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">n_predictors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">p_leverage</span><span class="o">=</span><span class="mf">0.000</span><span class="p">,</span> <span class="n">mult_leverage</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="n">gen_train_test</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">N_train</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">plot_data</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Coefficients:                 [ 0.49671415 -0.1382643   0.64768854  1.52302986 -0.23415337]
+len(X_train), len(X_test):    10000 990000
+len (Y_train), len(Y_test):   10000 990000
+</pre></div>
+</div>
+<img alt="../_images/a1aafcf150af48100695e64ea691353e935aeb07297702c9f364a8d687ea290f.png" src="../_images/a1aafcf150af48100695e64ea691353e935aeb07297702c9f364a8d687ea290f.png" />
+</div>
+</div>
+<p>It looks like in both validation approaches, the estimated MSE overestimates the ground truth test MSE. However, in terms of selecting the optimal parameter <span class="math notranslate nohighlight">\(k\)</span>, the second approach where we do simple validation T times, has more variance in its MSE vs k curves. But it has higher chances of picking the correct <span class="math notranslate nohighlight">\(k\)</span> compared to k-fold CV.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KNeighborsRegressor</span>
+<span class="kn">import</span> <span class="nn">statistics</span> <span class="k">as</span> <span class="nn">st</span>
+
+<span class="k">def</span> <span class="nf">hyperparam_run</span><span class="p">(</span><span class="n">k_vals</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> 
+                   <span class="n">method</span><span class="o">=</span><span class="s1">&#39;kfold&#39;</span><span class="p">,</span> <span class="c1"># kfold or kfold2</span>
+                   <span class="n">trials</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">k_folds</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>    
+    <span class="n">opt_ks</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># optimal ks</span>
+    <span class="n">mse_means_test</span> <span class="o">=</span> <span class="p">[]</span>    
+    <span class="k">for</span> <span class="n">seed</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">trials</span><span class="p">):</span>
+        <span class="n">mse_means_valid</span> <span class="o">=</span> <span class="p">[]</span>    
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">k_vals</span><span class="p">:</span>
+            <span class="c1"># do standard k-fold cross validation</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="n">KNeighborsRegressor</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>        
+            <span class="n">trials</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;kfold&#39;</span><span class="p">:</span>
+                <span class="n">mse_means_</span><span class="p">,</span> <span class="n">mse_stds_</span> <span class="o">=</span> <span class="n">run_kfold_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;kfold2&#39;</span><span class="p">:</span>
+                <span class="n">mse_means_</span><span class="p">,</span> <span class="n">mse_stds_</span> <span class="o">=</span> <span class="n">run_kfold2_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+            <span class="n">mse_means_valid</span> <span class="o">+=</span> <span class="n">mse_means_</span>
+
+            <span class="c1"># test mse</span>
+            <span class="c1"># train on all</span>
+            <span class="k">if</span> <span class="n">seed</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># just once</span>
+                <span class="n">func</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+                <span class="c1"># Make predictions using the testing set</span>
+                <span class="n">y_pred</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+                <span class="n">mse_gt</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+                <span class="n">mse_means_test</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mse_gt</span><span class="p">]</span>
+
+        <span class="n">k_min_mse_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">mse_means_valid</span><span class="p">)</span>
+        <span class="n">opt_ks</span> <span class="o">+=</span> <span class="p">[</span><span class="n">k_min_mse_valid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">k_vals</span><span class="p">,</span> <span class="n">mse_means_valid</span><span class="p">)</span> <span class="c1">#label=&#39;validation&#39;)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">k_min_mse_valid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">mse_means_valid</span><span class="p">[</span><span class="n">k_min_mse_valid</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    
+    <span class="n">k_min_mse_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">mse_means_test</span><span class="p">)</span>
+    <span class="n">opt_k_test</span> <span class="o">=</span> <span class="n">k_min_mse_test</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">opt_k</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="n">opt_ks</span><span class="p">)</span> <span class="c1"># get the most frequent one, which is the likeliest the method will return        </span>
+    
+    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Count Neighbors (k)&quot;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Mean of MSE&quot;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation MSE </span><span class="si">{</span><span class="n">trials</span><span class="si">}</span><span class="s2"> Trials | Most likely optimal k = </span><span class="si">{</span><span class="n">opt_k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                
+    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">k_vals</span><span class="p">,</span> <span class="n">mse_means_test</span><span class="p">)</span> <span class="c1">#label=&#39;test&#39;)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">opt_k_test</span><span class="p">,</span> <span class="n">mse_means_test</span><span class="p">[</span><span class="n">k_min_mse_test</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Count Neighbors (k)&quot;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;MSE&quot;</span><span class="p">)</span> 
+    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test MSE | Optimal k = </span><span class="si">{</span><span class="n">opt_k_test</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>       
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">opt_k</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>We show the results using 5-fold CV. For the MSE vs k curves, we run 10 trials and indicate the minimum MSE with a red X in each trial (top charts). The middle charts show the distribution MSE per fold from a single trial of validation run, while the bottom charts show the distribution of the estimated <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> over 100 trials.</p>
+<p>We find that <span class="math notranslate nohighlight">\(k=3\)</span> is the likeliest hyperparameter to be chosen, while the ground truth value is <span class="math notranslate nohighlight">\(k=4\)</span>.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k_folds</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">k_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">opt_k</span> <span class="o">=</span> <span class="n">hyperparam_run</span><span class="p">(</span><span class="n">k_vals</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;kfold&#39;</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">k_folds</span><span class="o">=</span><span class="n">k_folds</span><span class="p">)</span>
+
+<span class="n">trials</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">func</span> <span class="o">=</span> <span class="n">KNeighborsRegressor</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">opt_k</span><span class="p">)</span>
+<span class="n">mse_means</span><span class="p">,</span> <span class="n">mse_stds</span> <span class="o">=</span> <span class="n">run_kfold_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+<span class="n">plot_mse_dists</span><span class="p">(</span><span class="n">mse_means</span><span class="p">)</span>
+<span class="n">compare_w_test_mse</span><span class="p">(</span><span class="n">mse_means</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../_images/0e0e4fb86596caaeda8e529e2d70da67ad89334d37df7613bf22231c1d17e88f.png" src="../_images/0e0e4fb86596caaeda8e529e2d70da67ad89334d37df7613bf22231c1d17e88f.png" />
+<img alt="../_images/c25a9af33c4233b443fc448ef63c69eefaffc4dfb1a00311a0320e38af275012.png" src="../_images/c25a9af33c4233b443fc448ef63c69eefaffc4dfb1a00311a0320e38af275012.png" />
+<img alt="../_images/2b775a362de785b7d1ee762449c96ee5cad89bcbd7a4eef39283af86309a6cd3.png" src="../_images/2b775a362de785b7d1ee762449c96ee5cad89bcbd7a4eef39283af86309a6cd3.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          0.7305736586480543
+Std Dev MSE       0.012843940843275855
+Ground truth MSE  0.6389746721462332
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.6389746721462332
+</pre></div>
+</div>
+</div>
+</div>
+<p>We show the results using the second approach with 5 “fold” validation runs. For the MSE vs k curves, we run 10 trials of this validation approach, and indicate the minimum MSE with a red X in each trial (top charts). The middle charts show the distribution MSE per fold from a single trial of validation run, while the bottom charts show the distribution of the estimated <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> over 100 trials.</p>
+<p>We find that <span class="math notranslate nohighlight">\(k=4\)</span> is the likeliest hyperparameter to be chosen, which is the same as the ground truth value. However, there are still chances to pick <span class="math notranslate nohighlight">\(k=3\)</span></p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k_folds</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">k_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">opt_k</span> <span class="o">=</span> <span class="n">hyperparam_run</span><span class="p">(</span><span class="n">k_vals</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;kfold2&#39;</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">k_folds</span><span class="o">=</span><span class="n">k_folds</span><span class="p">)</span>
+
+<span class="n">trials</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">func</span> <span class="o">=</span> <span class="n">KNeighborsRegressor</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">opt_k</span><span class="p">)</span>
+<span class="n">mse_means</span><span class="p">,</span> <span class="n">mse_stds</span> <span class="o">=</span> <span class="n">run_kfold_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+<span class="n">plot_mse_dists</span><span class="p">(</span><span class="n">mse_means</span><span class="p">)</span>
+<span class="n">compare_w_test_mse</span><span class="p">(</span><span class="n">mse_means</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../_images/97ebc407c8c9a3d374e237d28d6fad6e72ee7edf5d3b772dab2f58f6da762f1a.png" src="../_images/97ebc407c8c9a3d374e237d28d6fad6e72ee7edf5d3b772dab2f58f6da762f1a.png" />
+<img alt="../_images/33873ba270703c0df898ba7fe70c4e58365cd191516db0c522a56ab9cd7ee2fb.png" src="../_images/33873ba270703c0df898ba7fe70c4e58365cd191516db0c522a56ab9cd7ee2fb.png" />
+<img alt="../_images/f20a7b00bbafbf41d8d92a15a81be87d784439236d0e021b52f107f7da287b06.png" src="../_images/f20a7b00bbafbf41d8d92a15a81be87d784439236d0e021b52f107f7da287b06.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          0.7382083355193587
+Std Dev MSE       0.012025683367967064
+Ground truth MSE  0.6343301684055197
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.6343301684055197
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="with-outliers">
+<h4>With Outliers<a class="headerlink" href="#with-outliers" title="Permalink to this heading">#</a></h4>
+<p>Next we analyze the dataset with outliers.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">1000000</span>
+<span class="n">N_train</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">n_predictors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">p_leverage</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">mult_leverage</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="n">gen_train_test</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">N_train</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">plot_data</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Coefficients:                 [ 0.49671415 -0.1382643   0.64768854  1.52302986 -0.23415337]
+len(X_train), len(X_test):    10000 990000
+len (Y_train), len(Y_test):   10000 990000
+</pre></div>
+</div>
+<img alt="../_images/5363e7597d867229f67b829697475668d2d0d92cd1a0eef2d03ba016e959b7ea.png" src="../_images/5363e7597d867229f67b829697475668d2d0d92cd1a0eef2d03ba016e959b7ea.png" />
+</div>
+</div>
+<p>In the presence of outliers, the second approach of T trials of simple validation yields highly variable MSE vs <span class="math notranslate nohighlight">\(k\)</span> curves and can sometimes yield <span class="math notranslate nohighlight">\(k\)</span> values that are widely different from the ground truth optimal value (in this case <span class="math notranslate nohighlight">\(k=1\)</span>).</p>
+<p>Meanwhile, k-fold CV yields a more stable set of MSE vs <span class="math notranslate nohighlight">\(k\)</span> curves and mostly returned <span class="math notranslate nohighlight">\(k=2\)</span> and rarely returned <span class="math notranslate nohighlight">\(k=1\)</span>. It seems in the presence of outliers, k-fold CV is more reliable.</p>
+<p>We show the results using 5-fold CV</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k_folds</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">k_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">opt_k</span> <span class="o">=</span> <span class="n">hyperparam_run</span><span class="p">(</span><span class="n">k_vals</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;kfold&#39;</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">k_folds</span><span class="o">=</span><span class="n">k_folds</span><span class="p">)</span>
+
+<span class="n">trials</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">func</span> <span class="o">=</span> <span class="n">KNeighborsRegressor</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">opt_k</span><span class="p">)</span>
+<span class="n">mse_means</span><span class="p">,</span> <span class="n">mse_stds</span> <span class="o">=</span> <span class="n">run_kfold_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+<span class="n">plot_mse_dists</span><span class="p">(</span><span class="n">mse_means</span><span class="p">)</span>
+<span class="n">compare_w_test_mse</span><span class="p">(</span><span class="n">mse_means</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../_images/525bd761c15fb32c57c9b50b2c9932e00355a33cd0e5e950dd1b986e52204531.png" src="../_images/525bd761c15fb32c57c9b50b2c9932e00355a33cd0e5e950dd1b986e52204531.png" />
+<img alt="../_images/571a3907b10c12f79e1ac5ee3782b5efd7df61e6730f4750ec0c61bee41662de.png" src="../_images/571a3907b10c12f79e1ac5ee3782b5efd7df61e6730f4750ec0c61bee41662de.png" />
+<img alt="../_images/15eb2a0132906c8bfc54a0e2eb69d48c1864fd9b66f65b5d049afffb7b02ad13.png" src="../_images/15eb2a0132906c8bfc54a0e2eb69d48c1864fd9b66f65b5d049afffb7b02ad13.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          51.95621758878725
+Std Dev MSE       0.26409296852545755
+Ground truth MSE  33.439163683759844
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>33.439163683759844
+</pre></div>
+</div>
+</div>
+</div>
+<p>We show the results using the second approach with 5 “fold” validation runs. We note the highly variable MSE vs <span class="math notranslate nohighlight">\(k\)</span> curves.</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k_folds</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">k_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">opt_k</span> <span class="o">=</span> <span class="n">hyperparam_run</span><span class="p">(</span><span class="n">k_vals</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;kfold2&#39;</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">k_folds</span><span class="o">=</span><span class="n">k_folds</span><span class="p">)</span>
+
+<span class="n">trials</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">func</span> <span class="o">=</span> <span class="n">KNeighborsRegressor</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">opt_k</span><span class="p">)</span>
+<span class="n">mse_means</span><span class="p">,</span> <span class="n">mse_stds</span> <span class="o">=</span> <span class="n">run_kfold_trials</span><span class="p">(</span><span class="n">k_folds</span><span class="p">,</span> <span class="n">trials</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+<span class="n">plot_mse_dists</span><span class="p">(</span><span class="n">mse_means</span><span class="p">)</span>
+<span class="n">compare_w_test_mse</span><span class="p">(</span><span class="n">mse_means</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../_images/e2e40224999f6fab3656727ee6e35c00a0446251a59a0d5a89c933d4bbc0d31b.png" src="../_images/e2e40224999f6fab3656727ee6e35c00a0446251a59a0d5a89c933d4bbc0d31b.png" />
+<img alt="../_images/571a3907b10c12f79e1ac5ee3782b5efd7df61e6730f4750ec0c61bee41662de.png" src="../_images/571a3907b10c12f79e1ac5ee3782b5efd7df61e6730f4750ec0c61bee41662de.png" />
+<img alt="../_images/15eb2a0132906c8bfc54a0e2eb69d48c1864fd9b66f65b5d049afffb7b02ad13.png" src="../_images/15eb2a0132906c8bfc54a0e2eb69d48c1864fd9b66f65b5d049afffb7b02ad13.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          51.95621758878725
+Std Dev MSE       0.26409296852545755
+Ground truth MSE  33.439163683759844
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>33.439163683759844
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 </section>
@@ -827,7 +1199,11 @@ Ground truth MSE  6.108880543132803
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">10-fold CV</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">5-fold CV</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-no-outliers">What if no outliers?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-in-hyperparameter-tuning">Use in Hyperparameter Tuning</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-in-hyperparameter-tuning">Use in Hyperparameter Tuning</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#without-outliers">Without Outliers</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#with-outliers">With Outliers</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
