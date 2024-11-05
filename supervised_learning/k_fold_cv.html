@@ -315,7 +315,9 @@ document.write(`
 <p>We first checked the reliability of k-fold CV on this dataset. We chose <span class="math notranslate nohighlight">\(k=100\)</span>. We shuffled the train data, then we split into 100 folds/groups. Then we apply k-fold CV, getting a total of 100 MSEs. We then compute the mean of these MSEs and that becomes the k-fold MSE estimate. But we are not concerned with this particular estimate. We are concerned with the reliability of k-fold CV as a method, so we run 100 trials of 100-fold CV. Each trial we get the mean MSE, each of which is an estimate of the test MSE,</p>
 <p><span class="math notranslate nohighlight">\(\hat{\text{MSE}} = \text{mean}({\text{MSE}_{CV}}) \approx \text{MSE}_{test}\)</span>.</p>
 <p>We then analyzed the mean and standard deviation of these estimates and found that the standard deviation of the estimate is low and <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> does not cover the ground truth test MSE. The ground truth test MSE is computed by fitting on the entire train set and testing on the test set.</p>
+<p>We find that <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> has low variance as an estimator, so running different trials of k-fold CV will more or less yield the same result. So while we will rarely have a case where we will more closely match the <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>, the consistency of the results is an advantage of k-fold CV in this case.</p>
 <p>We then speculated an alternative method that does not suffer the iid violation of k-fold CV. The approach is we simply do a simple validation split, but do it 100 times which we’ll call “fold” for consistency. Each time, we shuffle the data and split into 99% training and 1% validation. This no longer violates the iid assumption because each fold does not rob the other folds of the possibility of picking particular datapoints. We then get the mean of the 100 MSEs. Then again, we are concerned with the reliability of the approach, so we ran 100 trials, with each trial computing the mean of 100 MSEs. We then analyzed the distribution of MSEs and found that the <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> now captures the ground truth test MSE.</p>
+<p>However, the new approach has an increased variance such that running any of this 100-“fold” validation to estimate <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> will more likely yield much more varied results.</p>
 </section>
 <section id="some-questions">
 <h2>Some Questions<a class="headerlink" href="#some-questions" title="Permalink to this heading">#</a></h2>
@@ -481,7 +483,7 @@ len (Y_train), len(Y_test):   10000 990000
 <img alt="../_images/9903cef409112f640668aaffebbe4cf4ee1a609788d4fe7c521689278515afa4.png" src="../_images/9903cef409112f640668aaffebbe4cf4ee1a609788d4fe7c521689278515afa4.png" />
 </div>
 </div>
-<p>We computed the ground truth <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span> as well as the mean and standard deviation of <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span>. We find that <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> does not cover <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span></p>
+<p>We computed the ground truth <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span> as well as the mean and standard deviation of <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span>. We find that <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> does not cover <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>. However, the estimated <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> has low variance so it speaks about the consistency of the results when using k-fold CV for this problem.</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          63.75660471426123
@@ -573,7 +575,8 @@ Ground truth MSE  53.04536320061062
 <img alt="../_images/698771966a6edfe02e22484d3f73c26c309951f028053aa9a1d7566fb64decd4.png" src="../_images/698771966a6edfe02e22484d3f73c26c309951f028053aa9a1d7566fb64decd4.png" />
 </div>
 </div>
-<p>We find that <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> covers <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>. Is this approach more reliable than conventional k-fold? How general is this result?</p>
+<p>We find that <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> covers <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>. But the increased variance means we expect different results each run of 100-“fold” validation.</p>
+<p>Is this approach more reliable than conventional k-fold? How general is this result?</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean MSE          62.99516870328772
