@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>k-Fold Cross-Validation Experiments with Outliers and High Leverage Samples &#8212; Prince&#39;s Data Science Blog</title>
+    <title>k-Fold Cross-Validation Experiments &#8212; Prince&#39;s Data Science Blog</title>
   
   
   
@@ -202,7 +202,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 <li class="toctree-l1"><a class="reference internal" href="bias_variance.html">The Bias-Variance Tradeoff</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nn_sine_experiments_1.html">Multilayer Perceptron Experiments on Sine Wave Part 1</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nn_sine_experiments_2.html">Multilayer Perceptron Experiments on Sine Wave Part 2</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">k-Fold Cross-Validation Experiments with Outliers and High Leverage Samples</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">k-Fold Cross-Validation Experiments</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Unsupervised Learning</span></p>
 <ul class="nav bd-sidenav">
@@ -304,7 +304,7 @@ commentsRunWhenDOMLoaded(addUtterances);
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>k-Fold Cross-Validation Experiments with Outliers and High Leverage Samples</h1>
+    <h1>k-Fold Cross-Validation Experiments</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -344,8 +344,8 @@ commentsRunWhenDOMLoaded(addUtterances);
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="k-fold-cross-validation-experiments-with-outliers-and-high-leverage-samples">
-<h1>k-Fold Cross-Validation Experiments with Outliers and High Leverage Samples<a class="headerlink" href="#k-fold-cross-validation-experiments-with-outliers-and-high-leverage-samples" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="k-fold-cross-validation-experiments">
+<h1>k-Fold Cross-Validation Experiments<a class="headerlink" href="#k-fold-cross-validation-experiments" title="Link to this heading">#</a></h1>
 <section id="k-fold-cross-validation">
 <h2>k-Fold Cross Validation<a class="headerlink" href="#k-fold-cross-validation" title="Link to this heading">#</a></h2>
 <p>When selecting models or model hyperparameters, we wish to ideally select based on which model performs best on all possible values of the data. However, usually, we are only given training data, which do not cover the full support of our data distribution. k-Fold Cross-Validation (k-fold CV) is a technique for estimating the error we expect on data that go beyond the training data (which we’ll call test set) but still come from the same distribution of the training set.</p>
