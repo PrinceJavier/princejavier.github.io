@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>k-Fold Cross-Validation Experiments with Outliers and High Leverage Samples &#8212; Prince&#39;s Data Science Blog</title>
   
@@ -15,44 +14,46 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
 
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
-
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
-  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/clipboard.min.js"></script>
-    <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
     <script kind="utterances">
 
     var commentsRunWhenDOMLoaded = cb => {
@@ -88,13 +89,11 @@ var addUtterances = () => {
 commentsRunWhenDOMLoaded(addUtterances);
 </script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'supervised_learning/k_fold_cv';</script>
@@ -104,6 +103,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="prev" title="Multilayer Perceptron Experiments on Sine Wave Part 2" href="nn_sine_experiments_2.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -111,23 +111,16 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+  <div id="pst-scroll-pixel-helper"></div>
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
   
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../search.html"
       method="get">
@@ -135,7 +128,6 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -143,16 +135,25 @@ const thebe_selector_output = ".output, .cell_output"
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -165,6 +166,9 @@ const thebe_selector_output = ".output, .cell_output"
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="../intro.html">
@@ -173,10 +177,18 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
+  
     <p class="title logo__title">Prince's Data Science Blog</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
 <ul class="nav bd-sidenav">
@@ -225,7 +237,7 @@ const thebe_selector_output = ".output, .cell_output"
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -234,14 +246,14 @@ const thebe_selector_output = ".output, .cell_output"
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -268,26 +280,20 @@ const thebe_selector_output = ".output, .cell_output"
 </button>
 
 
-<script>
-document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
-  </button>
-`);
-</script>
 
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -336,21 +342,21 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="k-fold-cross-validation-experiments-with-outliers-and-high-leverage-samples">
-<h1>k-Fold Cross-Validation Experiments with Outliers and High Leverage Samples<a class="headerlink" href="#k-fold-cross-validation-experiments-with-outliers-and-high-leverage-samples" title="Permalink to this heading">#</a></h1>
+<h1>k-Fold Cross-Validation Experiments with Outliers and High Leverage Samples<a class="headerlink" href="#k-fold-cross-validation-experiments-with-outliers-and-high-leverage-samples" title="Link to this heading">#</a></h1>
 <section id="k-fold-cross-validation">
-<h2>k-Fold Cross Validation<a class="headerlink" href="#k-fold-cross-validation" title="Permalink to this heading">#</a></h2>
+<h2>k-Fold Cross Validation<a class="headerlink" href="#k-fold-cross-validation" title="Link to this heading">#</a></h2>
 <p>When selecting models or model hyperparameters, we wish to ideally select based on which model performs best on all possible values of the data. However, usually, we are only given training data, which do not cover the full support of our data distribution. k-Fold Cross-Validation (k-fold CV) is a technique for estimating the error we expect on data that go beyond the training data (which we’ll call test set) but still come from the same distribution of the training set.</p>
 <p>However, because of the way k-fold CV works (which is you shuffle then split into k-groups), it’s possible this becomes problematic for estimating the test performance (or error) when we have rare extreme values of input <span class="math notranslate nohighlight">\(X\)</span> (high leverage datapoints) that result in extreme values of response <span class="math notranslate nohighlight">\(Y\)</span> (outliers). We will use “high-leverage points” and “outliers” interchangeably.</p>
 </section>
 <section id="violation-of-the-iid-assumption">
-<h2>Violation of the iid Assumption<a class="headerlink" href="#violation-of-the-iid-assumption" title="Permalink to this heading">#</a></h2>
+<h2>Violation of the iid Assumption<a class="headerlink" href="#violation-of-the-iid-assumption" title="Link to this heading">#</a></h2>
 <p>k-fold CV splits the training data in a way that violates the iid (independent, indentically-distributed) assumption when we estimate the error, e.g. MSE. Why? Because it splits the data into k-folds without replacement. And putting high leverage/outlier points in one validation fold/group essentially removes the probability it gets selected for the other folds. This could potentially limit its applicability as an estimator of test set error.</p>
 </section>
 <section id="synthetic-dataset">
-<h2>Synthetic Dataset<a class="headerlink" href="#synthetic-dataset" title="Permalink to this heading">#</a></h2>
+<h2>Synthetic Dataset<a class="headerlink" href="#synthetic-dataset" title="Link to this heading">#</a></h2>
 <p>To test our speculation, we experiment on a synthetic dataset of the form</p>
 <p><span class="math notranslate nohighlight">\(Y = \beta_0 + \beta_1 X_1^2 + \beta_2 X_2^2 ... + \beta_p X_p^2 + \epsilon\)</span></p>
 <p>where <span class="math notranslate nohighlight">\(\epsilon\)</span> is an independent error term taken from a normal distribution <span class="math notranslate nohighlight">\(N(0, 1)\)</span>. Why square the predictors instead of just keep it linear? Making it a simple linear sum will make the problem trivial for a linear regression model, which is the model we use in these experiments. We want to fit a linear model on this quadratic function.</p>
@@ -358,12 +364,12 @@ document.write(`
 <p>We generated 1 million datapoints, 10,000 of these were randomly selected for the train set, while the rest were used for the test set.</p>
 </section>
 <section id="experiment-setup">
-<h2>Experiment Setup<a class="headerlink" href="#experiment-setup" title="Permalink to this heading">#</a></h2>
+<h2>Experiment Setup<a class="headerlink" href="#experiment-setup" title="Link to this heading">#</a></h2>
 <p>We first checked the reliability of k-fold CV on this dataset. We chose <span class="math notranslate nohighlight">\(k=100\)</span>. We shuffled the train data, then we split into 100 folds/groups. Then we apply k-fold CV, getting a total of 100 MSEs. We then compute the mean of these MSEs and that becomes the k-fold MSE estimate. But we are not concerned with this particular estimate. We are concerned with the reliability of k-fold CV as a method, so we run 100 trials of 100-fold CV. Each trial we get the mean MSE, each of which is an estimate of the test MSE,</p>
 <p><span class="math notranslate nohighlight">\(\hat{\text{MSE}} = \text{mean}({\text{MSE}_{CV}}) \approx \text{MSE}_{test}\)</span>.</p>
 </section>
 <section id="results">
-<h2>Results<a class="headerlink" href="#results" title="Permalink to this heading">#</a></h2>
+<h2>Results<a class="headerlink" href="#results" title="Link to this heading">#</a></h2>
 <p>We then analyzed the mean and standard deviation of these estimates and found that the standard deviation of the estimate is low and <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> does not cover the ground truth test MSE. The ground truth test MSE is computed by fitting on the entire train set and testing on the test set.</p>
 <p>We find that <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> has low variance as an estimator, so running different trials of k-fold CV will more or less yield the same result. So while we will rarely have a case where we will more closely match the <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>, the consistency of the results is an advantage of k-fold CV in this case.</p>
 <p>We then speculated an alternative method that does not suffer the iid violation of k-fold CV. The approach is we simply do a simple validation split, but do it 100 times which we’ll call “fold” for consistency. Each time, we shuffle the data and split into 99% training and 1% validation. This no longer violates the iid assumption because each fold does not rob the other folds of the possibility of picking particular datapoints. We then get the mean of the 100 MSEs. Then again, we are concerned with the reliability of the approach, so we ran 100 trials, with each trial computing the mean of 100 MSEs. We then analyzed the distribution of MSEs and found that the <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}}) \pm \text{std}(\hat{\text{MSE}})\)</span> now captures the ground truth test MSE.</p>
@@ -373,17 +379,17 @@ document.write(`
 <p>Using k-Nearest Neighbors (kNN) regression to investigate the reliability of these two validation approaches to finding the optimal <span class="math notranslate nohighlight">\(k\)</span>, we find that when the data does not contain outliers, the second approach where we do simple random validation T times seems marginally more reliable than k-fold CV. However, we find that in the presence of outliers, simple validation yields high variation in the <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> vs <span class="math notranslate nohighlight">\(k\)</span> charts and yields high variation in the selected optimal <span class="math notranslate nohighlight">\(k\)</span>.</p>
 </section>
 <section id="take-aways">
-<h2>Take-aways<a class="headerlink" href="#take-aways" title="Permalink to this heading">#</a></h2>
+<h2>Take-aways<a class="headerlink" href="#take-aways" title="Link to this heading">#</a></h2>
 <p>Using linear regression, both k-fold CV and our alternative k-validation method seem to be biased estimates of the <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span> in this particular example. However, k-fold CV has much lower variance than the alternative method with or without outliers. This speaks about its stability as a method.</p>
 <p>The second approach is more prone to high variance of predictions especially in the presence of outliers, which may not be desirable. And despite supposedly being more aligned with the iid assumption when estimating a statistic, it seems to be still a biased estimate of <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>. In our experiments, it also entails high variability in terms of hyperparameter selection, which is not a problem for k-fold CV.</p>
 </section>
 <section id="some-questions">
-<h2>Some Questions<a class="headerlink" href="#some-questions" title="Permalink to this heading">#</a></h2>
+<h2>Some Questions<a class="headerlink" href="#some-questions" title="Link to this heading">#</a></h2>
 <p>We find that it seems k-fold CV has low variance, even if it’s far from the true test MSE. Doing simple validation many times and averaging the results yield similar results as k-fold CV but with higher variance. What’s the explanation for these?</p>
 <p>We’re not sure how general these results are or if there are flaws in how we set up these experiments.</p>
 </section>
 <section id="experiment-details">
-<h2>Experiment Details<a class="headerlink" href="#experiment-details" title="Permalink to this heading">#</a></h2>
+<h2>Experiment Details<a class="headerlink" href="#experiment-details" title="Link to this heading">#</a></h2>
 <p>We define our function as a linear model of <span class="math notranslate nohighlight">\(X_j^2\)</span> predictors with some random noise. In this toy example, we sample the ground truth coefficients from a normal distribution, and we sample <span class="math notranslate nohighlight">\(X\)</span> from a normal distribution as well. A certain proportion of each predictor <span class="math notranslate nohighlight">\(X_j\)</span> is independently chosen and multiplied by a multiplier to serve as high leverage data points.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -484,7 +490,7 @@ len (Y_train), len(Y_test):   10000 990000
 </div>
 </div>
 <section id="fold-cv">
-<h3>100-fold CV<a class="headerlink" href="#fold-cv" title="Permalink to this heading">#</a></h3>
+<h3>100-fold CV<a class="headerlink" href="#fold-cv" title="Link to this heading">#</a></h3>
 <p>We run k-fold CV over many trials using linear regression. Each k-fold CV trial yields an estimate <span class="math notranslate nohighlight">\(\hat{\text{MSE}} = \text{mean}({\text{MSE}_{CV}}) \approx \text{MSE}_{test}\)</span>. Running many trials, we can get a mean and standard deviation of the <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> estimates, which we compare with the ground truth <span class="math notranslate nohighlight">\(MSE_{test}\)</span></p>
 <p>The chart below shows the highly skewed <span class="math notranslate nohighlight">\({\text{MSE}_{CV}}\)</span> values for one trial of k-fold CV. This is due to the presence of high-leverage/outlier points in the training data. But we are not concerned with the distribution of errors in one trial of k-fold CV. We are concerned with the distribution of the estimates <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span></p>
 <div class="cell tag_hide-input docutils container">
@@ -771,7 +777,7 @@ Ground truth MSE  53.04536320061062
 </div>
 </section>
 <section id="id1">
-<h3>10-fold CV<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<h3>10-fold CV<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <p>The problem with our experiments above is that our training set is small yet we’re using 100-fold validation. This will make the validation runs correlated since chances are they will share much of the dataset with each other. So now, we experiment on the more realistic 10-fold validation. We still run over 100 trials.</p>
 <p>We show below the results of a sample MSE histogram for one trial of 10-fold CV (top charts) and we show the distribution of values of <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> over 100 trials of 10-fold CV. We find that we get more or less the same result as the 100-fold CV.</p>
 <div class="cell tag_remove-input docutils container">
@@ -799,7 +805,7 @@ Ground truth MSE  53.04536320061062
 </div>
 </section>
 <section id="id2">
-<h3>5-fold CV<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<h3>5-fold CV<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <p>There’s no marked changes when we use 5-fold CV. We show below the results of k-fold CV.</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
@@ -826,7 +832,7 @@ Ground truth MSE  53.04536320061062
 </div>
 </section>
 <section id="what-if-no-outliers">
-<h3>What if no outliers?<a class="headerlink" href="#what-if-no-outliers" title="Permalink to this heading">#</a></h3>
+<h3>What if no outliers?<a class="headerlink" href="#what-if-no-outliers" title="Link to this heading">#</a></h3>
 <p>We generate data with no outliers. We find that in both validaation approaches, the test MSE is over-estimated. Meanwhile the second approach’s standard deviation, relative to its mean, is much lower than when there are outliers. It seems the second approach is more sensitive to the presence of outliers.</p>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
@@ -878,9 +884,9 @@ Ground truth MSE  6.108880543132803
 </div>
 </section>
 <section id="use-in-hyperparameter-tuning">
-<h3>Use in Hyperparameter Tuning<a class="headerlink" href="#use-in-hyperparameter-tuning" title="Permalink to this heading">#</a></h3>
+<h3>Use in Hyperparameter Tuning<a class="headerlink" href="#use-in-hyperparameter-tuning" title="Link to this heading">#</a></h3>
 <section id="without-outliers">
-<h4>Without Outliers<a class="headerlink" href="#without-outliers" title="Permalink to this heading">#</a></h4>
+<h4>Without Outliers<a class="headerlink" href="#without-outliers" title="Link to this heading">#</a></h4>
 <p>Because linear regression has no hyperparameters, we experiment using kNN regressor instead. We first analyze the dataset without outliers.</p>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
@@ -1041,7 +1047,7 @@ Ground truth MSE  0.6343301684055197
 </div>
 </section>
 <section id="with-outliers">
-<h4>With Outliers<a class="headerlink" href="#with-outliers" title="Permalink to this heading">#</a></h4>
+<h4>With Outliers<a class="headerlink" href="#with-outliers" title="Link to this heading">#</a></h4>
 <p>Next we analyze the dataset with outliers.</p>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
@@ -1164,11 +1170,10 @@ Ground truth MSE  33.439163683759844
 
               
               
-                <footer class="bd-footer-article">
+              
+              
+                <footer class="prev-next-footer d-print-none">
                   
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="nn_sine_experiments_2.html"
@@ -1188,17 +1193,16 @@ Ground truth MSE  33.439163683759844
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -1246,9 +1250,10 @@ By Prince Javier
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -1272,8 +1277,8 @@ By Prince Javier
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
 
   <footer class="bd-footer">
   </footer>

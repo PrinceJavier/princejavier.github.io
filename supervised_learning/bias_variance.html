@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>The Bias-Variance Tradeoff &#8212; Prince&#39;s Data Science Blog</title>
   
@@ -15,44 +14,46 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
 
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
-
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
-  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/clipboard.min.js"></script>
-    <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
     <script kind="utterances">
 
     var commentsRunWhenDOMLoaded = cb => {
@@ -88,13 +89,11 @@ var addUtterances = () => {
 commentsRunWhenDOMLoaded(addUtterances);
 </script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'supervised_learning/bias_variance';</script>
@@ -104,6 +103,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="prev" title="Monte Carlo Control Experiments" href="../reinforcement_learning/mc_race_car.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -111,23 +111,16 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+  <div id="pst-scroll-pixel-helper"></div>
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
   
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../search.html"
       method="get">
@@ -135,7 +128,6 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -143,16 +135,25 @@ const thebe_selector_output = ".output, .cell_output"
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -165,6 +166,9 @@ const thebe_selector_output = ".output, .cell_output"
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="../intro.html">
@@ -173,10 +177,18 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
+  
     <p class="title logo__title">Prince's Data Science Blog</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
 <ul class="nav bd-sidenav">
@@ -225,7 +237,7 @@ const thebe_selector_output = ".output, .cell_output"
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -234,14 +246,14 @@ const thebe_selector_output = ".output, .cell_output"
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -268,26 +280,20 @@ const thebe_selector_output = ".output, .cell_output"
 </button>
 
 
-<script>
-document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
-  </button>
-`);
-</script>
 
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -322,13 +328,13 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="the-bias-variance-tradeoff">
-<h1>The Bias-Variance Tradeoff<a class="headerlink" href="#the-bias-variance-tradeoff" title="Permalink to this heading">#</a></h1>
+<h1>The Bias-Variance Tradeoff<a class="headerlink" href="#the-bias-variance-tradeoff" title="Link to this heading">#</a></h1>
 <p>October 13, 2024</p>
 <section id="quick-intro-to-statistical-learning">
-<h2>Quick Intro to Statistical Learning<a class="headerlink" href="#quick-intro-to-statistical-learning" title="Permalink to this heading">#</a></h2>
+<h2>Quick Intro to Statistical Learning<a class="headerlink" href="#quick-intro-to-statistical-learning" title="Link to this heading">#</a></h2>
 <p>In statistical learning, we assume that we are given a set of <span class="math notranslate nohighlight">\(n\)</span> datapoints <span class="math notranslate nohighlight">\(\{x_i, y_i\}_{i=1}^n\)</span> that are iid (independent and identically distributed) and sampled from <span class="math notranslate nohighlight">\((x_i, y_i) \sim \text{P}_{X,Y}\)</span>. We call this the “train set.” We use this set to learn a model <span class="math notranslate nohighlight">\(\hat{f}(x)\)</span> tha approximates the “true” mapping <span class="math notranslate nohighlight">\(f(x): X \rightarrow Y.\)</span> We assume that all other data within the support of our distribution <span class="math notranslate nohighlight">\(P_{XY}\)</span> but outside our training data are also iid. We call this set “test set.”</p>
 <p>We assume the general form of the “true” mapping <span class="math notranslate nohighlight">\(f(x): X \rightarrow Y\)</span> as:</p>
 <p><span class="math notranslate nohighlight">\(Y = f(x) + \epsilon\)</span></p>
@@ -336,7 +342,7 @@ document.write(`
 <p>Our goal is to use our train set to learn <span class="math notranslate nohighlight">\(\hat{f}(x)\)</span> such that it is close to the true function <span class="math notranslate nohighlight">\(f(x)\)</span>. What about the irreducible noise <span class="math notranslate nohighlight">\(\epsilon\)</span>? We want to avoid learning it because it does not inform us of the mapping <span class="math notranslate nohighlight">\(X \rightarrow Y\)</span>.</p>
 </section>
 <section id="mean-squared-error">
-<h2>Mean Squared Error<a class="headerlink" href="#mean-squared-error" title="Permalink to this heading">#</a></h2>
+<h2>Mean Squared Error<a class="headerlink" href="#mean-squared-error" title="Link to this heading">#</a></h2>
 <p>We focus on predicting a quantitative response variable or output <span class="math notranslate nohighlight">\(Y\)</span> from input variables <span class="math notranslate nohighlight">\(X\)</span>. This task is called “regression.” One way to compute the goodness of fit of our approximation <span class="math notranslate nohighlight">\(\hat{f}(x)\)</span> to <span class="math notranslate nohighlight">\(f(x)\)</span> is the expected value of the squared loss, which we call error or risk:</p>
 <p><span class="math notranslate nohighlight">\(\text{Error}(\hat{f}) = \mathbb{E}[(\hat{f}(x)) - f(x))^2]\)</span></p>
 <p>Where the expectation is computed over the underlying true distribution. However, in practice, we don’t have access to the true distribution. We are only given the training data. So how do we estimate this error?</p>
@@ -347,7 +353,7 @@ document.write(`
 <p>Our goal is to find a model <span class="math notranslate nohighlight">\(\hat{f}(x)\)</span> that minimizes the error (or its approximate MSE) on the test set (not the train set).</p>
 </section>
 <section id="bias-variance-trade-off">
-<h2>Bias-Variance Trade-off<a class="headerlink" href="#bias-variance-trade-off" title="Permalink to this heading">#</a></h2>
+<h2>Bias-Variance Trade-off<a class="headerlink" href="#bias-variance-trade-off" title="Link to this heading">#</a></h2>
 <p>It turns out, there’s a fundamental relationship between two metrics in statistical learning: the bias-variance trade-off. Let’s first look at the formula relating the (expected) test error (which is what we care about) to the bias and variance of our learned model <span class="math notranslate nohighlight">\(\hat{f}(x)\)</span>:</p>
 <p><span class="math notranslate nohighlight">\(\mathbb{E}[(\hat{f}(x)) - f(x))^2] = \text{bias}^2 + \text{variance} + \text{var}(\epsilon)\)</span></p>
 <p>Where</p>
@@ -364,7 +370,7 @@ document.write(`
 <p>Now, we fit a model <span class="math notranslate nohighlight">\(\hat{f}(x)\)</span> on each of the <span class="math notranslate nohighlight">\(k\)</span> train sets thus giving us a set of <span class="math notranslate nohighlight">\(k\)</span> fitted models. We can then approximate the expected value <span class="math notranslate nohighlight">\(\mathbb{E}[\hat{f}(x)] \approx \frac{1}{k}\sum_{i=1}^k(\hat{f}(x_k))\)</span> at <span class="math notranslate nohighlight">\(x\)</span> over the <span class="math notranslate nohighlight">\(k\)</span> training datasets. Now we can see how to compute the bias and variance from here.</p>
 </section>
 <section id="relation-to-model-flexibility">
-<h2>Relation to Model Flexibility<a class="headerlink" href="#relation-to-model-flexibility" title="Permalink to this heading">#</a></h2>
+<h2>Relation to Model Flexibility<a class="headerlink" href="#relation-to-model-flexibility" title="Link to this heading">#</a></h2>
 <p>Model flexibility is how much the model aligns with our training data. Linear regression has low flexibility because it will only fit a line even if the underlying function has curves. Meanwhile, a highly complex neural network can fit non-linear (curvy or wavy) relations between <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span>. However, if the model is too complex, it’s possible the model ends up fitting on the uninformative irreducible error <span class="math notranslate nohighlight">\(\epsilon\)</span> - in which case, overfitting happens. We want to find a sweet spot in terms of model flexibility where we reduce the “reducible error” <span class="math notranslate nohighlight">\((\hat{f}(x)) - f(x))^2\)</span> while discarding <span class="math notranslate nohighlight">\(\epsilon\)</span>.</p>
 <p>Intuitively, the more flexible the model, the mode “degrees of freedom” it has to fit the training data. But in doing so, it may be already fitting on the irreducible error. This will give us worse test set performance. Vapnik et al. provided a way to quantify the lower bound of the difference between the MSE based on the train set and the true expected error across all possible data in the underlying data distribution. Essentially, the more complex the model, the larger the lower bound of the difference between the train MSE and true expected error (See Vapnik et al on discussion about the VC dimension and its connection to model complexity).</p>
 <p>This is why there are many strategies that aim to balance too low vs too high flexibility such as regularization and architectural modifications.</p>
@@ -372,7 +378,7 @@ document.write(`
 <p>It turns out that the lower the flexibility of the model, the harder it is to reduce the reducible error between the fitted function and the underlying true function. But if your model is too flexible, it may fit the noise such that sure we may reduce the bias since we’re now able to fit the complicated function, but it may introduce more variance since we run the risk of overfitting on the noise of our train set. If we change train sets, we expect to learn another kind of function that is quite different from the first one.</p>
 </section>
 <section id="experiments">
-<h2>Experiments<a class="headerlink" href="#experiments" title="Permalink to this heading">#</a></h2>
+<h2>Experiments<a class="headerlink" href="#experiments" title="Link to this heading">#</a></h2>
 <p>We first define a synthetic dataset following <span class="math notranslate nohighlight">\(y = f(x) + \epsilon\)</span>. In our experiment, we use</p>
 <p><span class="math notranslate nohighlight">\(y = x + 20 sin(x/5) + \epsilon\)</span></p>
 <p>where <span class="math notranslate nohighlight">\(\epsilon \sim N(0, 20)\)</span></p>
@@ -554,11 +560,10 @@ document.write(`
 
               
               
-                <footer class="bd-footer-article">
+              
+              
+                <footer class="prev-next-footer d-print-none">
                   
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="../reinforcement_learning/mc_race_car.html"
@@ -578,17 +583,16 @@ document.write(`
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -622,9 +626,10 @@ By Prince Javier
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -648,8 +653,8 @@ By Prince Javier
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
 
   <footer class="bd-footer">
   </footer>
