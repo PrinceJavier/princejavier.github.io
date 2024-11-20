@@ -33,6 +33,7 @@ parts:
     chapters:
     - file: simulations/entropy_sim
     - file: simulations/success_sim    
+    - file: simulations/segregation_peer_effects
 
   - caption: Causal Inference
     numbered: False 
