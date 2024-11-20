@@ -214,6 +214,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../simulations/entropy_sim.html">Entropy Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../simulations/success_sim.html">Simulating Success</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulations/segregation_peer_effects.html">Segregation and Peer Effects</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Causal Inference</span></p>
 <ul class="nav bd-sidenav">
@@ -314,12 +315,12 @@ commentsRunWhenDOMLoaded(addUtterances);
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tldr">TLDR</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#k-fold-cross-validation">k-Fold Cross Validation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#violation-of-the-iid-assumption">Violation of the iid Assumption</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-dataset">Synthetic Dataset</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-setup">Experiment Setup</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#results">Results</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#take-aways">Take-aways</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-questions">Some Questions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-details">Experiment Details</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fold-cv">100-fold CV</a></li>
@@ -346,6 +347,16 @@ commentsRunWhenDOMLoaded(addUtterances);
                   
   <section class="tex2jax_ignore mathjax_ignore" id="k-fold-cross-validation-experiments">
 <h1>k-Fold Cross-Validation Experiments<a class="headerlink" href="#k-fold-cross-validation-experiments" title="Link to this heading">#</a></h1>
+<p>November 6, 2024</p>
+<section id="tldr">
+<h2>TLDR<a class="headerlink" href="#tldr" title="Link to this heading">#</a></h2>
+<p>Validation and k-fold Cross Validation are gold standard for getting a sense of test performance as well as for model selection or hyperparameter tuning.</p>
+<p>However, we have to be aware of some of their pitfalls. We can look at it through the context of the bias-variance trade-off.</p>
+<p>In the case of datasets with outliers or “high leverage” points, simple validation splits may lead to a bias (the expected validation set error tends to overestimate the test error) but also a high variance (the values of validation errors across many trials are widely different). This has implications in hyperparameter tuning where a simple validation split may yield inconsistent sets of optimal hyperparameters.</p>
+<p>However, when outliers are not present, simple validation yields consistent results.</p>
+<p>Meanwhile k-fold CV also has bias, tending to also overestimate the test error, but has much lower variance, yielding much more consistent results than simple validation. Hence, k-fold CV does seem to be a much more reliable approach to hyperparameter tuning than simple validation.</p>
+<p>Take-away: use k-fold CV as much as possible. Simple validation splits will tend to have high variance in its estimates when outlier or high leverage points are present. Alternatively, manage outlier or high leverage points by scaling or removing them altogether prior to validation split evaluation.</p>
+</section>
 <section id="k-fold-cross-validation">
 <h2>k-Fold Cross Validation<a class="headerlink" href="#k-fold-cross-validation" title="Link to this heading">#</a></h2>
 <p>When selecting models or model hyperparameters, we wish to ideally select based on which model performs best on all possible values of the data. However, usually, we are only given training data, which do not cover the full support of our data distribution. k-Fold Cross-Validation (k-fold CV) is a technique for estimating the error we expect on data that go beyond the training data (which we’ll call test set) but still come from the same distribution of the training set.</p>
@@ -377,11 +388,6 @@ commentsRunWhenDOMLoaded(addUtterances);
 <p>We tested on the more realistic 10-fold and 5-fold CV and we get similar results.</p>
 <p>In the absence of outliers, the two approaches still more or less have the same <span class="math notranslate nohighlight">\(\text{mean}(\hat{\text{MSE}})\)</span> which overestimate the ground truth <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>. But the standard deviation (relative to the mean) of the second approach is much lower when there are no outliers vs when there are outliers.</p>
 <p>Using k-Nearest Neighbors (kNN) regression to investigate the reliability of these two validation approaches to finding the optimal <span class="math notranslate nohighlight">\(k\)</span>, we find that when the data does not contain outliers, the second approach where we do simple random validation T times seems marginally more reliable than k-fold CV. However, we find that in the presence of outliers, simple validation yields high variation in the <span class="math notranslate nohighlight">\(\hat{\text{MSE}}\)</span> vs <span class="math notranslate nohighlight">\(k\)</span> charts and yields high variation in the selected optimal <span class="math notranslate nohighlight">\(k\)</span>.</p>
-</section>
-<section id="take-aways">
-<h2>Take-aways<a class="headerlink" href="#take-aways" title="Link to this heading">#</a></h2>
-<p>Using linear regression, both k-fold CV and our alternative k-validation method seem to be biased estimates of the <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span> in this particular example. However, k-fold CV has much lower variance than the alternative method with or without outliers. This speaks about its stability as a method.</p>
-<p>The second approach is more prone to high variance of predictions especially in the presence of outliers, which may not be desirable. And despite supposedly being more aligned with the iid assumption when estimating a statistic, it seems to be still a biased estimate of <span class="math notranslate nohighlight">\(\text{MSE}_{test}\)</span>. In our experiments, it also entails high variability in terms of hyperparameter selection, which is not a problem for k-fold CV.</p>
 </section>
 <section id="some-questions">
 <h2>Some Questions<a class="headerlink" href="#some-questions" title="Link to this heading">#</a></h2>
@@ -1210,12 +1216,12 @@ Ground truth MSE  33.439163683759844
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tldr">TLDR</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#k-fold-cross-validation">k-Fold Cross Validation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#violation-of-the-iid-assumption">Violation of the iid Assumption</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-dataset">Synthetic Dataset</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-setup">Experiment Setup</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#results">Results</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#take-aways">Take-aways</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-questions">Some Questions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-details">Experiment Details</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fold-cv">100-fold CV</a></li>
