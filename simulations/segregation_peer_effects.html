@@ -1,0 +1,1496 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Segregation and Peer Effects &#8212; Prince&#39;s Data Science Blog</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script kind="utterances">
+
+    var commentsRunWhenDOMLoaded = cb => {
+    if (document.readyState != 'loading') {
+        cb()
+    } else if (document.addEventListener) {
+        document.addEventListener('DOMContentLoaded', cb)
+    } else {
+        document.attachEvent('onreadystatechange', function() {
+        if (document.readyState == 'complete') cb()
+        })
+    }
+}
+
+var addUtterances = () => {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://utteranc.es/client.js";
+    script.async = "async";
+
+    script.setAttribute("repo", "github-org/github-repo");
+    script.setAttribute("issue-term", "pathname");
+    script.setAttribute("theme", "github-light");
+    script.setAttribute("label", "💬 comment");
+    script.setAttribute("crossorigin", "anonymous");
+
+    sections = document.querySelectorAll("div.section");
+    if (sections !== null) {
+        section = sections[sections.length-1];
+        section.appendChild(script);
+    }
+}
+commentsRunWhenDOMLoaded(addUtterances);
+</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'simulations/segregation_peer_effects';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Where Convergent Cross-Mapping Fails" href="../causal_inference/ccm_failure_cases.html" />
+    <link rel="prev" title="Simulating Success" href="success_sim.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Prince's Data Science Blog</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/k_armed_bandit_1.html">K-Armed Bandit Experiments Part 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/k_armed_bandit_2.html">K-Armed Bandit Experiments Part 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/db_asynchronous_dp.html">Asynchronous Dynamic Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/mc_race_car.html">Monte Carlo Control Experiments</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Supervised Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../supervised_learning/bias_variance.html">The Bias-Variance Tradeoff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supervised_learning/nn_sine_experiments_1.html">Multilayer Perceptron Experiments on Sine Wave Part 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supervised_learning/nn_sine_experiments_2.html">Multilayer Perceptron Experiments on Sine Wave Part 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../supervised_learning/k_fold_cv.html">k-Fold Cross-Validation Experiments</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Unsupervised Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unsupervised_learning/b_vae.html">Beta-Variational Autoencoder Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unsupervised_learning/kmeans.html">K-Means, Gaussian Mixtures, and the Expectation-Maximization Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unsupervised_learning/pca_autoencoder.html">PCA and Neural Network Autoencoder Connection</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulations</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="entropy_sim.html">Entropy Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="success_sim.html">Simulating Success</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Segregation and Peer Effects</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Causal Inference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../causal_inference/ccm_failure_cases.html">Where Convergent Cross-Mapping Fails</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Thoughts/Ideas/Opinions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../thoughts/language_llm.html">On language, LLMs, and why we think certain Egyptian hieroglyphs are about helicopters</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Segregation and Peer Effects</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#segregation">Segregation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#segregation-in-1d">Segregation in 1D</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#impact-of-thresholds">Impact of Thresholds</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#impact-of-having-a-minority-class">Impact of Having a Minority Class</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#travel-limits">Travel limits</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#segregation-in-2d">Segregation in 2D</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#demand-leads-to-how-much-segregation">50% demand leads to how much segregation?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-happens-if-we-impose-a-travel-limit-to-just-the-k-x-k-local-neighborhood">What happens if we impose a travel limit to just the k x k local neighborhood?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-we-increase-the-local-k-x-k-neighborhood-considered">What if we increase the local k x k neighborhood considered?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-we-initialized-from-a-semi-clustered-initialization-and-then-we-run-with-different-parameters">What if we initialized from a semi-clustered initialization and then we run with different parameters?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-agents-both-have-very-high-demands">What if agents both have very high demands?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-the-two-agent-classes-have-different-demands">What if the two agent classes have different demands?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-the-demands-are-the-same-but-the-proportions-of-the-classes-are-different">What if the demands are the same but the proportions of the classes are different?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#integrationist-preferences">Integrationist Preferences</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bounded-neighborhood-model">Bounded Neighborhood Model</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-happens-if-there-are-the-same-number-of-agents-1-and-agents-2">What happens if there are the same number of agents 1 and agents 2?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-the-numbers-of-agent-classes-are-slightly-imbalanced">What if the numbers of agent classes are slightly imbalanced?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-we-have-multiple-neighborhoods">What if we have multiple neighborhoods?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#threshold-models">Threshold Models</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thresholds-from-plots">Thresholds from Plots</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#how-can-we-find-the-equilibrium-from-these-plots">How can we find the equilibrium from these plots?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#observations-of-equilibrium-points-from-plots-below">Observations of Equilibrium Points from Plots Below</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exponential-distribution">Exponential Distribution</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#normal-distribution">Normal Distribution</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#inverse-normal-distribution">Inverse Normal Distribution</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stability-of-equilibrium-vs-threshold">Stability of Equilibrium vs Threshold</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standing-ovation-problem">Standing Ovation Problem</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="segregation-and-peer-effects">
+<h1>Segregation and Peer Effects<a class="headerlink" href="#segregation-and-peer-effects" title="Link to this heading">#</a></h1>
+<p>January 24, 2021
+<br>In this notebook we explore</p>
+<ul class="simple">
+<li><p>segregation model by Schelling (1971) <a class="reference external" href="https://www.stat.berkeley.edu/~aldous/157/Papers/Schelling_Seg_Models.pdf">https://www.stat.berkeley.edu/~aldous/157/Papers/Schelling_Seg_Models.pdf</a></p></li>
+<li><p>threshold models by Granovetter (1978) <a class="reference external" href="https://sociology.stanford.edu/publications/threshold-models-collective-behavior">https://sociology.stanford.edu/publications/threshold-models-collective-behavior</a></p></li>
+<li><p>standing ovation model by Miller and Page (2004) <a class="reference external" href="http://www2.econ.iastate.edu/tesfatsi/StandingOvation.MillerPage.pdf">http://www2.econ.iastate.edu/tesfatsi/StandingOvation.MillerPage.pdf</a></p></li>
+</ul>
+<p>Hopefully by doing experiments on these models, we get some new ways of thinking about collective behavior and how outcomes may not necessarily be intuitive by looking at average behaviors.</p>
+<section id="segregation">
+<h2>Segregation<a class="headerlink" href="#segregation" title="Link to this heading">#</a></h2>
+<p><br>Segregation between different people has always been and continue to be an interesting topic. Schelling in his 1971 paper, “Dynamic Models of Segregation” examined the dynamics of segregation via an agent-based modelling approach that led him to interesting insights.</p>
+<p>In this section, we will replicate his work. Here are some guide questions for this exercise:</p>
+<ul class="simple">
+<li><p>If individuals segregate into highly polarized groups, does that mean that they dislike the other group, e.g. racists?</p></li>
+<li><p>Is it possible for relatively tolerant individuals to form highly-segmented groupings?</p></li>
+<li><p>If say we have the same population for agents 1 and 2, and they both have a threshold of 20% (they need 20% of their neighbors to be like them for them to be happy), what do you think will be average proportions of like-neighbors per agent?</p></li>
+<li><p>If the populations of the two agents are not the same, e.g. we have a minority class, what will happen to the segregation patterns and proportions?</p></li>
+<li><p>What if we limit movement such that agents can only move into vacant areas in their vicinity, how will this affect segregation?</p></li>
+<li><p>Can we necessarily infer collective behavior from average statistics, e.g. average mixing preference/thresholds?</p></li>
+<li><p>Can we necessarily infer individual preferences/thresholds from collective behavior?</p></li>
+</ul>
+<section id="segregation-in-1d">
+<h3>Segregation in 1D<a class="headerlink" href="#segregation-in-1d" title="Link to this heading">#</a></h3>
+<p>Schelling began his model by introducing a 1-dimensional model with two types of agents (black and white) on a line.</p>
+<ul class="simple">
+<li><p>Objective - the agents will move into positions that will make all / most of them happy</p></li>
+<li><p>Rules</p>
+<ul>
+<li><p>From the current positions, an unhappy agent is randomly selected (Schelling selected from left to right)</p></li>
+<li><p>That agent will them randomly select a vacant position that will make the agent happy</p>
+<ul>
+<li><p>In Schelling’s 1D set up, there were no vacant areas and the agent looks for points between other agents where it can squeeze itself into</p></li>
+<li><p>Moving into vacant areas on the othat hand is more intuitive because we can think of them as empty houses people move into. You don’t really make your own space by squeezing into two occupied houses.</p></li>
+<li><p>This rule is applied in Schelling’s 2D model</p></li>
+</ul>
+</li>
+<li><p>We repeat until we reach stability (nobody moves) or few people move (if there’s no fixed stability)</p></li>
+</ul>
+</li>
+<li><p>Given</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">p</span></code> - a fixed proportion of agent 1, agent 2, and empty spaces (houses)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> - linear neighborhood (1 dimension) randomly populated by n agents and some empty spaces</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">thresholds</span></code> - A fixed set of thresholds of the minimum proportion of similar nearby neighbors for each agent that will make them happy</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">k</span></code> - The distance to the left and right, k, from the agent that defines nearby neighbors. Those at the far left, will have no nearby neighbors to the left and k nearby neighbors to the right</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">travel_lim</span></code> - True/False whether we limit the travel to k or not</p></li>
+</ul>
+</li>
+</ul>
+<section id="impact-of-thresholds">
+<h4>Impact of Thresholds<a class="headerlink" href="#impact-of-thresholds" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Given k=4, n=70 (Schelling’s params), and equal number of agents, Even if say, we fix at 50% thresholds to be in a neighborhood with similar neighbors (so they will be fine with a mixed neighborhood), they still tend tend to segregate so the average proportion of like neighbors in the vicinity of each agent become ~90% (Schelling saw 81%).</p></li>
+<li><p>To answer our question above, even if the thresholds are as low as 20% each, the average proportion of like neighbors become 60%-70%. Schelling called these results “striking”</p></li>
+</ul>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 30/30 [00:00&lt;00:00, 31.84it/s]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.980246913580247 0.9833333333333334 0.9816993464052288
+</pre></div>
+</div>
+<img alt="../_images/56d2694e2ff0143e00b9c1cd6fc255f3bb02e964cc6bafcba09b78900c5dba90.png" src="../_images/56d2694e2ff0143e00b9c1cd6fc255f3bb02e964cc6bafcba09b78900c5dba90.png" />
+<img alt="../_images/ce6b5d0e636c1c5448204e6d8ca16f1cb1030ec595ee50d065781c8b5f45f158.png" src="../_images/ce6b5d0e636c1c5448204e6d8ca16f1cb1030ec595ee50d065781c8b5f45f158.png" />
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 20/20 [00:00&lt;00:00, 71.15it/s]
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0.98, &#39;neighborhood similarity&#39;)
+</pre></div>
+</div>
+<img alt="../_images/87700e7129942bd9d6842fe42c0d9acc8e9400a5a9c398111b0556dea0c7db2f.png" src="../_images/87700e7129942bd9d6842fe42c0d9acc8e9400a5a9c398111b0556dea0c7db2f.png" />
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 30/30 [00:01&lt;00:00, 27.65it/s]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.7146825396825397 0.6895833333333333 0.7028711484593838
+</pre></div>
+</div>
+<img alt="../_images/e3de0455d399fd586c989d28b08a925657e1fe8989111e85dc7ceb369bc5e126.png" src="../_images/e3de0455d399fd586c989d28b08a925657e1fe8989111e85dc7ceb369bc5e126.png" />
+<img alt="../_images/a9b3204609cb4b4a6ee83987ed35858bb35d621e02f10d4cad1229f0fc3b5791.png" src="../_images/a9b3204609cb4b4a6ee83987ed35858bb35d621e02f10d4cad1229f0fc3b5791.png" />
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 20/20 [00:00&lt;00:00, 123.82it/s]
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0.98, &#39;neighborhood similarity&#39;)
+</pre></div>
+</div>
+<img alt="../_images/f6fc237a20d68cb38f8919ef10a0d07cd4bece97cc0c10f5dda56c1adacc516e.png" src="../_images/f6fc237a20d68cb38f8919ef10a0d07cd4bece97cc0c10f5dda56c1adacc516e.png" />
+</div>
+</div>
+</section>
+<section id="impact-of-having-a-minority-class">
+<h4>Impact of Having a Minority Class<a class="headerlink" href="#impact-of-having-a-minority-class" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>At 50% thresholds for all agents, the median neighborhood similarity for the minority is over 80% (the minority can aggregate) but there are outliers when the minority never aggregates (which is a case when the vacancies are uniformly spread apart)</p></li>
+<li><p>There is a large variation in outcomes for the minority group, which means the changing the initial state may result in very different outcomes, and hence the equilibrium is not as “stable”</p></li>
+<li><p>If we make the threshold conservative e.g. 20% for all, we find that the minority does not need to aggregate into one cluster and over 30% similarity is enough though still higher than the 20% value</p></li>
+</ul>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 30/30 [00:01&lt;00:00, 27.97it/s]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.9333333333333332 0.9888888888888889 0.9823529411764707
+</pre></div>
+</div>
+<img alt="../_images/65b7bd1f4844a51567a557f34cc7164d216bc99d15ce4bc8612356aebad2a6dd.png" src="../_images/65b7bd1f4844a51567a557f34cc7164d216bc99d15ce4bc8612356aebad2a6dd.png" />
+<img alt="../_images/4c0941f88876c3e8d8b4919d72ac978c7e069d4a65c9a3417d002d5215411820.png" src="../_images/4c0941f88876c3e8d8b4919d72ac978c7e069d4a65c9a3417d002d5215411820.png" />
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 20/20 [00:00&lt;00:00, 102.41it/s]
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0.98, &#39;neighborhood similarity&#39;)
+</pre></div>
+</div>
+<img alt="../_images/ed8169478b8320c12e5fd5844bf0145ba8d9fefa5d4416483fa8a76157e43f88.png" src="../_images/ed8169478b8320c12e5fd5844bf0145ba8d9fefa5d4416483fa8a76157e43f88.png" />
+</div>
+</div>
+</section>
+<section id="travel-limits">
+<h4>Travel limits<a class="headerlink" href="#travel-limits" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Even if we limit mobility to only the nearest vacant positions, we find that for a given threshold (50%) and proportion (1:1) of agents, we still reach around 80% similarity proportions per agent although convergence is much slower than without travel limits.</p></li>
+<li><p>Schelling claimed this can be a proxy for “organized movement” where individuals do not move too far apart and thus tend to cluster. He also claimed this can be a proxy for “anticipatory behavior” where agents can only move to nearby areas even if they’re not yet happy, in anticipation of more people coming in.</p></li>
+</ul>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 150/150 [00:05&lt;00:00, 28.29it/s]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.8587912087912088 0.8569444444444444 0.8579047619047618
+</pre></div>
+</div>
+<img alt="../_images/9dbe1b23b52a1725288a6324477a6637b4ca6431ab9a61866d37a2d1b9696796.png" src="../_images/9dbe1b23b52a1725288a6324477a6637b4ca6431ab9a61866d37a2d1b9696796.png" />
+<img alt="../_images/44a36151e35de01f271d8976b2204790d85ad8a20f1285772a42979c16fcf200.png" src="../_images/44a36151e35de01f271d8976b2204790d85ad8a20f1285772a42979c16fcf200.png" />
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 20/20 [00:01&lt;00:00, 17.25it/s]
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0.98, &#39;neighborhood similarity&#39;)
+</pre></div>
+</div>
+<img alt="../_images/362f18b422462f46109b1e06962b904ede8b24a3a607a4c047cf23cedca00530.png" src="../_images/362f18b422462f46109b1e06962b904ede8b24a3a607a4c047cf23cedca00530.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="segregation-in-2d">
+<h3>Segregation in 2D<a class="headerlink" href="#segregation-in-2d" title="Link to this heading">#</a></h3>
+<p>The 1D model already gives us insights on “emergent” properties of groups that cannot immediately be inferred from individual dispositions (thresholds). But things get much more interesting when we look at 2D models. Where we can see more interesting patterns. Besides, a 2D model arguably captures reality better since people move in space.</p>
+<p>An intuitive way to think about this model is that each cell is a house that’s either empty or occupied by an agent. Agents will then move from house to house in order to reach the set required proportion of nearby neighbors.</p>
+<ul class="simple">
+<li><p>Objective - the agents will move into positions that will make all / most of them happy</p></li>
+<li><p>Rules:</p>
+<ul>
+<li><p>There are two agents who can move around into vacant spaces</p></li>
+<li><p>Agents are either happy or unhappy</p>
+<ul>
+<li><p>They are happy if the mix neighbors surrounding them are at least as good as desired (threshold)</p></li>
+<li><p>If they are happy they will stay in their position</p></li>
+<li><p>Unhappy agents are selected randomly and</p></li>
+</ul>
+</li>
+<li><p>Agents belonging to the same class will all have the same threshold, but the two classes may have different thresholds - this was Schelling’s constraint for this exercise</p></li>
+</ul>
+</li>
+<li><p>Given</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">props</span></code> - a fixed proportion of agent 1, agent 2, and empty spaces (houses)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> - the dinemsion of one side of a square neighborhood randomly populated by n agents and some empty spaces</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">thresholds</span></code> - A fixed set of thresholds of the minimum proportion of similar nearby neighbors for each agent that will make them happy</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">thresholds_max</span></code> - the maximum proportion of like neighbors near an agent (default = None)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kernels</span></code> - the length of a side of a square matrix around an agent to identify nearby neighbors</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">travel_lim</span></code> - True/False whether we limit the travel to only within a kernel x kernel matrix around the agent or not</p></li>
+</ul>
+</li>
+</ul>
+<section id="demand-leads-to-how-much-segregation">
+<h4>50% demand leads to how much segregation?<a class="headerlink" href="#demand-leads-to-how-much-segregation" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>It leads to 90% segregation</p></li>
+<li><p>This is a non-intuitive outcome that we see. Despite each individual having only a requirement of 50% similar individuals in the neighborhood, the collective interaction leads to disproportionate segregation. Leading to large clusters of similar neighborhoods.</p></li>
+<li><p>Our agents are relatively tolerant yet the outcome’s not expected.</p></li>
+</ul>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 1000/1000 [00:01&lt;00:00, 649.98it/s]
+</pre></div>
+</div>
+<img alt="../_images/53e073cf23472b4f1cade2d2cc37d79d910caa2c37bd9da0b897376a5f24d433.png" src="../_images/53e073cf23472b4f1cade2d2cc37d79d910caa2c37bd9da0b897376a5f24d433.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.9049760447002967 0.9075636736515167 0.9062952280871933
+</pre></div>
+</div>
+<img alt="../_images/a5ec10a8eb667b09b4f2e0323b032e1cd7a9afe6baf1cc34fe69a9461dcba0ad.png" src="../_images/a5ec10a8eb667b09b4f2e0323b032e1cd7a9afe6baf1cc34fe69a9461dcba0ad.png" />
+<img alt="../_images/898216b9ffa4135d4b964de3b767edd8f96aa1b578b8067b23db9b1f112a180b.png" src="../_images/898216b9ffa4135d4b964de3b767edd8f96aa1b578b8067b23db9b1f112a180b.png" />
+<img alt="../_images/0105a6017daf273a0d51b17fdbb5aff962d3af76fcbbed56b0ebfa7e85d2de10.png" src="../_images/0105a6017daf273a0d51b17fdbb5aff962d3af76fcbbed56b0ebfa7e85d2de10.png" />
+</div>
+</div>
+<p>We visualize below the phase spaces showing how the similarity threshold requirements of agent 1 and agent 2 affect neighborhood similarities. We also show how the thresholds affect how large the similar clusters of neighborhoods are. The most segregated neighborhoods come from agents that have ~50% similarity threshold requirements.</p>
+<p>What’s interesting is if all agents have 90% similarity requirement, they end up being unsegregated. So less tolerant agents become less segregated or more integrated. That is odd!</p>
+<p>We will see in the experiments below what happens when agents are relatively intolerant (requiring 80% of their neighbors to be similar to them)</p>
+<p>But first, let’s see what happens if we impose a travel limit on our agents with 50% similarity requirement.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [01:12&lt;00:00,  7.28s/it]
+</pre></div>
+</div>
+<img alt="../_images/2fddf757a7c4e6f49c650bf6c226299c264e90dbc9863f55b118bfdd8c994104.png" src="../_images/2fddf757a7c4e6f49c650bf6c226299c264e90dbc9863f55b118bfdd8c994104.png" />
+<img alt="../_images/7a0b48521784e1679926462a4d939492b59c771acaadb955fbe2319114a1741c.png" src="../_images/7a0b48521784e1679926462a4d939492b59c771acaadb955fbe2319114a1741c.png" />
+<img alt="../_images/d7c7c1b2a039d3734f31452535baff57d6186046ce4bb5fb5aec7cfa7d6fcb72.png" src="../_images/d7c7c1b2a039d3734f31452535baff57d6186046ce4bb5fb5aec7cfa7d6fcb72.png" />
+</div>
+</div>
+</section>
+<section id="what-happens-if-we-impose-a-travel-limit-to-just-the-k-x-k-local-neighborhood">
+<h4>What happens if we impose a travel limit to just the k x k local neighborhood?<a class="headerlink" href="#what-happens-if-we-impose-a-travel-limit-to-just-the-k-x-k-local-neighborhood" title="Link to this heading">#</a></h4>
+<p>If we limit movement to the kernel size (local neighborhood) at a time, we still get clustering though slower. Here our kernel/local neighborhood is a 5x5 grid.
+<br>More but smaller clusters tend to form compared to no travel restrictions.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 1000/1000 [00:01&lt;00:00, 580.43it/s]
+</pre></div>
+</div>
+<img alt="../_images/3cf764820cf7b7f9550b78fb70beb0abd045cf4847c7990154e2f7674c680fe6.png" src="../_images/3cf764820cf7b7f9550b78fb70beb0abd045cf4847c7990154e2f7674c680fe6.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.5759549874488213 0.5934919689215339 0.5848012721460831
+</pre></div>
+</div>
+<img alt="../_images/b2b0b97fee51e56449d54b448a3bf44c169bdacbc622419315a09d9087c9a894.png" src="../_images/b2b0b97fee51e56449d54b448a3bf44c169bdacbc622419315a09d9087c9a894.png" />
+<img alt="../_images/3fc45bc85dc801d84205e43e49f5264ec00909218440118a7c229a8b13b61479.png" src="../_images/3fc45bc85dc801d84205e43e49f5264ec00909218440118a7c229a8b13b61479.png" />
+<img alt="../_images/710c1bbf12c0f0f114abfc402d6171ec637b34428562c52be6850b57536679f6.png" src="../_images/710c1bbf12c0f0f114abfc402d6171ec637b34428562c52be6850b57536679f6.png" />
+</div>
+</div>
+<p>We plot the phase spaces.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [01:22&lt;00:00,  8.22s/it]
+</pre></div>
+</div>
+<img alt="../_images/dbbe13e07dbe29534014a9468e08db7e76d338b03a4b26ef54aaaf868f0cc6e7.png" src="../_images/dbbe13e07dbe29534014a9468e08db7e76d338b03a4b26ef54aaaf868f0cc6e7.png" />
+<img alt="../_images/c9a7f4f81fcf8f0cf851035a3466152beefce927e3bbbfada671109bfaaa3e3e.png" src="../_images/c9a7f4f81fcf8f0cf851035a3466152beefce927e3bbbfada671109bfaaa3e3e.png" />
+<img alt="../_images/afd487b8abdf9c07843a4966c7df4c0366a56e47eb9f091beabbdac547493c34.png" src="../_images/afd487b8abdf9c07843a4966c7df4c0366a56e47eb9f091beabbdac547493c34.png" />
+</div>
+</div>
+</section>
+<section id="what-if-we-increase-the-local-k-x-k-neighborhood-considered">
+<h4>What if we increase the local k x k neighborhood considered?<a class="headerlink" href="#what-if-we-increase-the-local-k-x-k-neighborhood-considered" title="Link to this heading">#</a></h4>
+<p>We changed the kernel/local neighborhood to a 13x13 grid around the agent. If an agent’s demand/threshold is based on a larger area, they will tend to form larger clusters</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 1000/1000 [00:02&lt;00:00, 495.61it/s]
+</pre></div>
+</div>
+<img alt="../_images/c7ddad36336119cf80ab2078efa2e74ea092be58d03106da06be124022fbfb6d.png" src="../_images/c7ddad36336119cf80ab2078efa2e74ea092be58d03106da06be124022fbfb6d.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.8910577738738836 0.896696810404354 0.8939325768109861
+</pre></div>
+</div>
+<img alt="../_images/8333f2b85e31c9bf7e34f61e9ecb1c6db12d447cb4031704df19c5cf8ee2ca8e.png" src="../_images/8333f2b85e31c9bf7e34f61e9ecb1c6db12d447cb4031704df19c5cf8ee2ca8e.png" />
+<img alt="../_images/32501ade9cecdba543a2698a19c09f64ae5cd414cb6c9785608d311689971a00.png" src="../_images/32501ade9cecdba543a2698a19c09f64ae5cd414cb6c9785608d311689971a00.png" />
+<img alt="../_images/ad32f2562cdbb702da329ab88967e59ea31a36a5a2a94ef17892831bc373c478.png" src="../_images/ad32f2562cdbb702da329ab88967e59ea31a36a5a2a94ef17892831bc373c478.png" />
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [02:13&lt;00:00, 13.35s/it]
+</pre></div>
+</div>
+<img alt="../_images/d3afa2d1ecb1967e737a7799def1c11842a4801a0588f92b99ade9f2d7bd0be9.png" src="../_images/d3afa2d1ecb1967e737a7799def1c11842a4801a0588f92b99ade9f2d7bd0be9.png" />
+<img alt="../_images/9412d30ed64ea3e5b7c5e23f55db8508994ef87c66a1d97136289fe4503137d9.png" src="../_images/9412d30ed64ea3e5b7c5e23f55db8508994ef87c66a1d97136289fe4503137d9.png" />
+<img alt="../_images/141c4ba5115e523345a446e38f26d280aafc963f1e64bf170f905442ebd385d9.png" src="../_images/141c4ba5115e523345a446e38f26d280aafc963f1e64bf170f905442ebd385d9.png" />
+</div>
+</div>
+</section>
+<section id="what-if-we-initialized-from-a-semi-clustered-initialization-and-then-we-run-with-different-parameters">
+<h4>What if we initialized from a semi-clustered initialization and then we run with different parameters?<a class="headerlink" href="#what-if-we-initialized-from-a-semi-clustered-initialization-and-then-we-run-with-different-parameters" title="Link to this heading">#</a></h4>
+<p>We start by allowing the agents to cluster below. We restrict the agent’s movement to a 5x5 grid kernel around it.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 1000/1000 [00:01&lt;00:00, 512.76it/s]
+</pre></div>
+</div>
+<img alt="../_images/53e073cf23472b4f1cade2d2cc37d79d910caa2c37bd9da0b897376a5f24d433.png" src="../_images/53e073cf23472b4f1cade2d2cc37d79d910caa2c37bd9da0b897376a5f24d433.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.9049760447002967 0.9075636736515167 0.9062952280871933
+</pre></div>
+</div>
+<img alt="../_images/a5ec10a8eb667b09b4f2e0323b032e1cd7a9afe6baf1cc34fe69a9461dcba0ad.png" src="../_images/a5ec10a8eb667b09b4f2e0323b032e1cd7a9afe6baf1cc34fe69a9461dcba0ad.png" />
+<img alt="../_images/898216b9ffa4135d4b964de3b767edd8f96aa1b578b8067b23db9b1f112a180b.png" src="../_images/898216b9ffa4135d4b964de3b767edd8f96aa1b578b8067b23db9b1f112a180b.png" />
+<img alt="../_images/0105a6017daf273a0d51b17fdbb5aff962d3af76fcbbed56b0ebfa7e85d2de10.png" src="../_images/0105a6017daf273a0d51b17fdbb5aff962d3af76fcbbed56b0ebfa7e85d2de10.png" />
+</div>
+</div>
+<p>Then we change the local neighborhood/kernel to a 13x13 grid. We notice that this destroys the existing communities and makes it quite difficult to rebuild it. Had the agents started from a random initialization, it would have been quick to form communities (experiments above). But starting from a pre-built community and switching to a different one with different parameters is much harder. This is interesting!</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 2000/2000 [00:02&lt;00:00, 904.46it/s] 
+100%|██████████| 2000/2000 [00:04&lt;00:00, 450.98it/s]
+</pre></div>
+</div>
+<img alt="../_images/7e3468e5ed610a6d881e5d381f18e3a46d4bab7d487fda7445a0bc9c798b7eff.png" src="../_images/7e3468e5ed610a6d881e5d381f18e3a46d4bab7d487fda7445a0bc9c798b7eff.png" />
+<img alt="../_images/d68430510066273f55b94a08e54c0b6b33911b301f900f924e26887d784ec987.png" src="../_images/d68430510066273f55b94a08e54c0b6b33911b301f900f924e26887d784ec987.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.9049760447002967 0.9075636736515167 0.9062952280871933
+</pre></div>
+</div>
+<img alt="../_images/fc1c61ce4ea61b17649843bd4c0d73d685973ae11d4546bc14fa894bc6eeb990.png" src="../_images/fc1c61ce4ea61b17649843bd4c0d73d685973ae11d4546bc14fa894bc6eeb990.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.506894464171793 0.5191034455374173 0.5131186507503466
+</pre></div>
+</div>
+<img alt="../_images/568e25f75933dd5f161b4bb84eb29f2871f2dd1f18d195858ab8a31ffb3d93b1.png" src="../_images/568e25f75933dd5f161b4bb84eb29f2871f2dd1f18d195858ab8a31ffb3d93b1.png" />
+</div>
+</div>
+</section>
+<section id="what-if-agents-both-have-very-high-demands">
+<h4>What if agents both have very high demands?<a class="headerlink" href="#what-if-agents-both-have-very-high-demands" title="Link to this heading">#</a></h4>
+<p>Now we explore what if agents have very high demands in terms of similarity of agents in their neighborhoods? For example, we try 80% threshold requirement for agent 1 and agent 2. We find that:</p>
+<ul class="simple">
+<li><p>It’s hard to find an “equilibrium” if both agents have high demands</p></li>
+<li><p>This is especially the case if there’s limited free space.
+And because the agents dont find an equilibrium, they tend to constant move around causing a decrease in segregation.</p></li>
+</ul>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 1000/1000 [00:01&lt;00:00, 504.93it/s]
+</pre></div>
+</div>
+<img alt="../_images/4305ded4c33059147594312d9ad7d7ab6b08711e0bbfd41d792f37ea2ead8587.png" src="../_images/4305ded4c33059147594312d9ad7d7ab6b08711e0bbfd41d792f37ea2ead8587.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.48939976715190414 0.5163469525273853 0.5031375479315612
+</pre></div>
+</div>
+<img alt="../_images/33e412acff0864e2fe87024480ea3753075639c0776d94680e8317b6b9f8a3cb.png" src="../_images/33e412acff0864e2fe87024480ea3753075639c0776d94680e8317b6b9f8a3cb.png" />
+<img alt="../_images/483bf5be0297d6036fa769f0887768ae9c92afe8cbc092bdbe27573b78ba495d.png" src="../_images/483bf5be0297d6036fa769f0887768ae9c92afe8cbc092bdbe27573b78ba495d.png" />
+<img alt="../_images/052a7f3d2cde447d6aef9a07571536f23889048bc903830b15b3602e59b5f6cb.png" src="../_images/052a7f3d2cde447d6aef9a07571536f23889048bc903830b15b3602e59b5f6cb.png" />
+</div>
+</div>
+<p>However, if we increase the space, the agents get to a stable state of segregation more easily, but they tend to be highly sparse.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 5000/5000 [00:21&lt;00:00, 235.43it/s]
+</pre></div>
+</div>
+<img alt="../_images/d847f1a80bba0bb4b8e85a3be4f0554b064a58cdaaaa8c9f550e98e5b49f4314.png" src="../_images/d847f1a80bba0bb4b8e85a3be4f0554b064a58cdaaaa8c9f550e98e5b49f4314.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.563269623927012 0.5656334212355428 0.5644585160644388
+</pre></div>
+</div>
+<img alt="../_images/e64488741adc7178e6832fdd3b234a982c2acded21ae2db999c68a2d57ceebc5.png" src="../_images/e64488741adc7178e6832fdd3b234a982c2acded21ae2db999c68a2d57ceebc5.png" />
+<img alt="../_images/6786eebdc03a08d40011859a27bcb5eafc07ac2cdb36e883cb176fba89add12d.png" src="../_images/6786eebdc03a08d40011859a27bcb5eafc07ac2cdb36e883cb176fba89add12d.png" />
+<img alt="../_images/6ee660d3580e41047769a3e28210aeb811c41e160c6a520be99d20a0aee7daa6.png" src="../_images/6ee660d3580e41047769a3e28210aeb811c41e160c6a520be99d20a0aee7daa6.png" />
+</div>
+</div>
+<p>We show the phase space diagrams</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [02:57&lt;00:00, 17.74s/it]
+</pre></div>
+</div>
+<img alt="../_images/8672e7b1697aff33f82fa344b6dab73baf894d11f549e4a36b1e980092c0cb6b.png" src="../_images/8672e7b1697aff33f82fa344b6dab73baf894d11f549e4a36b1e980092c0cb6b.png" />
+<img alt="../_images/4363a6056e2c0fde066d998313ddd8b9a9bd5676c73e13ed20661abd742aeece.png" src="../_images/4363a6056e2c0fde066d998313ddd8b9a9bd5676c73e13ed20661abd742aeece.png" />
+<img alt="../_images/3375a7be4c013a25530009b85b6eeaa30ce7a31c50106c74c69a243ee73d97fc.png" src="../_images/3375a7be4c013a25530009b85b6eeaa30ce7a31c50106c74c69a243ee73d97fc.png" />
+</div>
+</div>
+</section>
+<section id="what-if-the-two-agent-classes-have-different-demands">
+<h4>What if the two agent classes have different demands?<a class="headerlink" href="#what-if-the-two-agent-classes-have-different-demands" title="Link to this heading">#</a></h4>
+<p>In this case, agent 1 has 30% threshold while agent 2 has 60% threshold</p>
+<ul class="simple">
+<li><p>A more demanding group will tend to form more compact clusters than a less demanding group</p></li>
+<li><p>An equilibrium might be harder to achieve with limited space.</p></li>
+<li><p>An equilibrium can be achieved faster with a lot of space</p></li>
+</ul>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 5000/5000 [00:06&lt;00:00, 824.66it/s]
+</pre></div>
+</div>
+<img alt="../_images/4ff22c417628ec02a586e06b25619919c0e9adebf7f6874437cb1899b8b6a995.png" src="../_images/4ff22c417628ec02a586e06b25619919c0e9adebf7f6874437cb1899b8b6a995.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.6115512491231043 0.6266706455153158 0.6192591766956044
+</pre></div>
+</div>
+<img alt="../_images/254e88e98021c3edf4f87d6a3636dddb8c0ae6a5174ac608af7cc4c45312a8e7.png" src="../_images/254e88e98021c3edf4f87d6a3636dddb8c0ae6a5174ac608af7cc4c45312a8e7.png" />
+<img alt="../_images/fa2279bc1a5aeb6c778bc077d52450f96f20069e94c614232e348caf22a255e5.png" src="../_images/fa2279bc1a5aeb6c778bc077d52450f96f20069e94c614232e348caf22a255e5.png" />
+<img alt="../_images/cb0abc41211def2da36aad64fb065ee659fd96172ccd15bcb45d4fa34b9e617f.png" src="../_images/cb0abc41211def2da36aad64fb065ee659fd96172ccd15bcb45d4fa34b9e617f.png" />
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [01:20&lt;00:00,  8.00s/it]
+</pre></div>
+</div>
+<img alt="../_images/2fddf757a7c4e6f49c650bf6c226299c264e90dbc9863f55b118bfdd8c994104.png" src="../_images/2fddf757a7c4e6f49c650bf6c226299c264e90dbc9863f55b118bfdd8c994104.png" />
+<img alt="../_images/7a0b48521784e1679926462a4d939492b59c771acaadb955fbe2319114a1741c.png" src="../_images/7a0b48521784e1679926462a4d939492b59c771acaadb955fbe2319114a1741c.png" />
+<img alt="../_images/d7c7c1b2a039d3734f31452535baff57d6186046ce4bb5fb5aec7cfa7d6fcb72.png" src="../_images/d7c7c1b2a039d3734f31452535baff57d6186046ce4bb5fb5aec7cfa7d6fcb72.png" />
+</div>
+</div>
+<p>What if we free some space? We find that the more demanding one will have a higher clustering density, as expected.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 1000/1000 [00:01&lt;00:00, 663.23it/s]
+</pre></div>
+</div>
+<img alt="../_images/6dc762732926a3d38cc54dfe3ab9a0969e04cb1333b83ecc0c4a5a1cd13c3fde.png" src="../_images/6dc762732926a3d38cc54dfe3ab9a0969e04cb1333b83ecc0c4a5a1cd13c3fde.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.8589989355479327 0.8897692453690753 0.874417463896488
+</pre></div>
+</div>
+<img alt="../_images/524852b3d8741d169fa1bd3f0bc7c13a5a98523906373166879b0a64df8bb3e8.png" src="../_images/524852b3d8741d169fa1bd3f0bc7c13a5a98523906373166879b0a64df8bb3e8.png" />
+<img alt="../_images/0c17c822bc76a9c5b891845734f9093ef624c30414b50f047f09fbc9a8af4dc8.png" src="../_images/0c17c822bc76a9c5b891845734f9093ef624c30414b50f047f09fbc9a8af4dc8.png" />
+<img alt="../_images/f5226ea8d4bf816aad58762fd08bdcca7cae9857af4400eb86d9552a23cb7bd4.png" src="../_images/f5226ea8d4bf816aad58762fd08bdcca7cae9857af4400eb86d9552a23cb7bd4.png" />
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [01:13&lt;00:00,  7.32s/it]
+</pre></div>
+</div>
+<img alt="../_images/a23979cdb84ba66f22ae1c5ce70f944267b68440575641e6d5c70fe52a171468.png" src="../_images/a23979cdb84ba66f22ae1c5ce70f944267b68440575641e6d5c70fe52a171468.png" />
+<img alt="../_images/3a9fdaa9f961607f0ed6349f311b07bbaadd53398e09b1350ec9d8e4c359afd8.png" src="../_images/3a9fdaa9f961607f0ed6349f311b07bbaadd53398e09b1350ec9d8e4c359afd8.png" />
+<img alt="../_images/76dd0a973fcf52a1877d61cb44577a24eab7e71d240b7d0ae6f5cc2ade51745a.png" src="../_images/76dd0a973fcf52a1877d61cb44577a24eab7e71d240b7d0ae6f5cc2ade51745a.png" />
+</div>
+</div>
+</section>
+<section id="what-if-the-demands-are-the-same-but-the-proportions-of-the-classes-are-different">
+<h4>What if the demands are the same but the proportions of the classes are different?<a class="headerlink" href="#what-if-the-demands-are-the-same-but-the-proportions-of-the-classes-are-different" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>The minority, requiring similar neighbors, will thus cluster together into fewer but more dense clusters. The minority will start from being sparse into larger and larger groups.</p></li>
+<li><p>Schelling also observed this noting that “The minority tends to accumulate in denser neighborhoods than the majority”</p></li>
+</ul>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 5000/5000 [00:05&lt;00:00, 974.34it/s] 
+</pre></div>
+</div>
+<img alt="../_images/e8d54b92828ace9b41bb110e9cde20df16f2c3412894ea945073e741bf68ee94.png" src="../_images/e8d54b92828ace9b41bb110e9cde20df16f2c3412894ea945073e741bf68ee94.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.9049135782865446 0.9689199991652309 0.9558687983786873
+</pre></div>
+</div>
+<img alt="../_images/ea8d790851059eb2f8e6061f764c14dc1127affaf5d017f51ebf5a41e04c6a0e.png" src="../_images/ea8d790851059eb2f8e6061f764c14dc1127affaf5d017f51ebf5a41e04c6a0e.png" />
+<img alt="../_images/0581d92dd95be46ff56338970897a7bc50bef98165f27b02b3a238640bf5421e.png" src="../_images/0581d92dd95be46ff56338970897a7bc50bef98165f27b02b3a238640bf5421e.png" />
+<img alt="../_images/5e276cb1cb68c33bb747757b4fdffe778b197eb86454c9521ac8376f3b87bc19.png" src="../_images/5e276cb1cb68c33bb747757b4fdffe778b197eb86454c9521ac8376f3b87bc19.png" />
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [01:10&lt;00:00,  7.04s/it]
+</pre></div>
+</div>
+<img alt="../_images/818f312e02a33abcf2f8bf8a1e953f90fae0f9c700faef5411d98525b86cad9e.png" src="../_images/818f312e02a33abcf2f8bf8a1e953f90fae0f9c700faef5411d98525b86cad9e.png" />
+<img alt="../_images/e9cd1e8e5e375dd29a20b7c8d104a218211559d796a610b1e11937d87e711d59.png" src="../_images/e9cd1e8e5e375dd29a20b7c8d104a218211559d796a610b1e11937d87e711d59.png" />
+<img alt="../_images/51fe30538d105f3d32b11a1ce66eba1e64627b815579fc8faf2a8fed42950259.png" src="../_images/51fe30538d105f3d32b11a1ce66eba1e64627b815579fc8faf2a8fed42950259.png" />
+</div>
+</div>
+</section>
+<section id="integrationist-preferences">
+<h4>Integrationist Preferences<a class="headerlink" href="#integrationist-preferences" title="Link to this heading">#</a></h4>
+<p>Here, we add a limit to the maximum proportion desired around the agent, meaning, the agent does not like if say &gt; X% of the neighborhood is similar to it. In this case, we define our threshold to be between 20% to 90% similar.</p>
+<p><br>We observe some aspects that Schelling also observed</p>
+<ul class="simple">
+<li><p>Schelling noted “More individuals may be incapable of being satisfied” or an equilibrium is harder to reach</p></li>
+<li><p>If there is a minority, they are “rationed” or shared among the majority members. Thus no big clusters form</p></li>
+<li><p>It might seem that segregation is much more “static” or “stable” than integration</p></li>
+</ul>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 100/100 [00:03&lt;00:00, 30.63it/s]
+</pre></div>
+</div>
+<img alt="../_images/bbf40771bebbdd65f1759d8812e7429ed19498d7eae1670d5b098fb5f1db21ac.png" src="../_images/bbf40771bebbdd65f1759d8812e7429ed19498d7eae1670d5b098fb5f1db21ac.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.50076872921975 0.5145692112651683 0.507739100840569
+</pre></div>
+</div>
+<img alt="../_images/363d8b69f1f3e98c4dc2f24f55fa7ee4cdf4fa46c149aa86eaaaef38859a3e05.png" src="../_images/363d8b69f1f3e98c4dc2f24f55fa7ee4cdf4fa46c149aa86eaaaef38859a3e05.png" />
+<img alt="../_images/cc2f147fdecfd6f4d9e77562500b8a9c47c0c58a945cfed2f60981c08cf6d054.png" src="../_images/cc2f147fdecfd6f4d9e77562500b8a9c47c0c58a945cfed2f60981c08cf6d054.png" />
+<img alt="../_images/f8a0e70e4b51cd7baf58777c2df482339db2c28ab75e975cb65bbb6bda5d4a1f.png" src="../_images/f8a0e70e4b51cd7baf58777c2df482339db2c28ab75e975cb65bbb6bda5d4a1f.png" />
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [02:40&lt;00:00, 16.03s/it]
+</pre></div>
+</div>
+<img alt="../_images/666b22e1cfb17eae9445af517cd75f0b4ffbedbe18e1f9dedbb6245e70dcd52a.png" src="../_images/666b22e1cfb17eae9445af517cd75f0b4ffbedbe18e1f9dedbb6245e70dcd52a.png" />
+<img alt="../_images/4537a6b754455a3601b8e330ba3d2cc4ef5b35384bdaf4cda0592f79a48860d5.png" src="../_images/4537a6b754455a3601b8e330ba3d2cc4ef5b35384bdaf4cda0592f79a48860d5.png" />
+<img alt="../_images/0322d9a48c2441e56c6be4a4b35f8f1237012040356f4585381cb7fa3b31d68d.png" src="../_images/0322d9a48c2441e56c6be4a4b35f8f1237012040356f4585381cb7fa3b31d68d.png" />
+</div>
+</div>
+<p>If we make the agents sparse and allow for more empty space, an equilibrium is reached where the two agent classes are integrated with one another, with little clumping or clustering of similar agents.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 100/100 [00:03&lt;00:00, 31.49it/s]
+</pre></div>
+</div>
+<img alt="../_images/9f693a9fdc10b4b817579e9207b2c5100fc8c00f76516389497a8bc546eccf64.png" src="../_images/9f693a9fdc10b4b817579e9207b2c5100fc8c00f76516389497a8bc546eccf64.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.5182092538592996 0.5087099110627543 0.5134857411548018
+</pre></div>
+</div>
+<img alt="../_images/2cb106055a7a3e3004efd90d34ce6448457f97f24903a4bc265793212363155b.png" src="../_images/2cb106055a7a3e3004efd90d34ce6448457f97f24903a4bc265793212363155b.png" />
+<img alt="../_images/62f08c75e116e286aeec049dcf966a5314e55fad02c4ef5b366c074bd2a419ea.png" src="../_images/62f08c75e116e286aeec049dcf966a5314e55fad02c4ef5b366c074bd2a419ea.png" />
+<img alt="../_images/4622d0e33e97a10fa2f4dce865fe996ad05d21715737cd64501f7c0989e2dc21.png" src="../_images/4622d0e33e97a10fa2f4dce865fe996ad05d21715737cd64501f7c0989e2dc21.png" />
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [03:01&lt;00:00, 18.19s/it]
+</pre></div>
+</div>
+<img alt="../_images/bca6798b70dfbbe66ceb9859c65e3878dd7363e67ceb07a21e832272c9492b2c.png" src="../_images/bca6798b70dfbbe66ceb9859c65e3878dd7363e67ceb07a21e832272c9492b2c.png" />
+<img alt="../_images/cd8c1ffb8e8f1e7ab0125aea45ac3b550622875c7d333ff178747223c28c9d02.png" src="../_images/cd8c1ffb8e8f1e7ab0125aea45ac3b550622875c7d333ff178747223c28c9d02.png" />
+<img alt="../_images/e6ba63d71f6eca501dd5433f381081acd0d35adc574508280544edb2eabb1dae.png" src="../_images/e6ba63d71f6eca501dd5433f381081acd0d35adc574508280544edb2eabb1dae.png" />
+</div>
+</div>
+<p>Even if we add more space, if there is a minority, they will be “rationed” among the majority so the minority will keep switching places.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 100/100 [00:03&lt;00:00, 28.52it/s]
+</pre></div>
+</div>
+<img alt="../_images/f3e8d37830945282b331556aabbafac8d4f9f381e76b231bb3786fb8d048cc93.png" src="../_images/f3e8d37830945282b331556aabbafac8d4f9f381e76b231bb3786fb8d048cc93.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>final avg similarities agent 1, agent 2, all  0.21644608470104487 0.7961650148914287 0.6789441139796044
+</pre></div>
+</div>
+<img alt="../_images/f13e6fa9e28c43982dc585884c9af2d66d0849d93e95fe267b049f308fea7921.png" src="../_images/f13e6fa9e28c43982dc585884c9af2d66d0849d93e95fe267b049f308fea7921.png" />
+<img alt="../_images/e89ac454b00b6a416ec574a08e61f75b21261f5d8d3c18354f9de63e0e45bb36.png" src="../_images/e89ac454b00b6a416ec574a08e61f75b21261f5d8d3c18354f9de63e0e45bb36.png" />
+<img alt="../_images/12e1c3deee008915bc1b06faa2d4b1d3e2c494ef5ca8e1937c4da6134a546dd3.png" src="../_images/12e1c3deee008915bc1b06faa2d4b1d3e2c494ef5ca8e1937c4da6134a546dd3.png" />
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [03:07&lt;00:00, 18.72s/it]
+</pre></div>
+</div>
+<img alt="../_images/9243f271ef0e97eb73ecd3fc043e5be61e89df551e8924f8d6914c659e024e4e.png" src="../_images/9243f271ef0e97eb73ecd3fc043e5be61e89df551e8924f8d6914c659e024e4e.png" />
+<img alt="../_images/8dac398b5c577f24d824eeca5b7e55bff8f9c5543ff8628be65901faebd50de7.png" src="../_images/8dac398b5c577f24d824eeca5b7e55bff8f9c5543ff8628be65901faebd50de7.png" />
+<img alt="../_images/8e75b4b9ca174685a7d85f239b00802b7b1d2b59ac6acf9555c0ff7d786d94a0.png" src="../_images/8e75b4b9ca174685a7d85f239b00802b7b1d2b59ac6acf9555c0ff7d786d94a0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="bounded-neighborhood-model">
+<h3>Bounded Neighborhood Model<a class="headerlink" href="#bounded-neighborhood-model" title="Link to this heading">#</a></h3>
+<p>This model sets a fixed boundary for a sub-neighborhood. Everyone is concerned about the color ratio inside the sub-neighborhood and make their decision based on this value. We can interpret this model as being analogous to becoming part of a physical space or organization e.g. a restaurant, company, school, or even riots (Granovetter).</p>
+<p>Here, Schelling introduced the concept of “tolerance” which is the proportion of same agents in the sub-neighborhood. Granovetter will later on expand on this concept which he would call “threshold.”</p>
+<p>In this variation of the model, Schelling introduced the possibility of each agent having different thresholds from each other. He further analyzed how the distributions of thresholds affect the stability and outcomes of the system i.e. proportions of agents in the sub-neighborhood.</p>
+<p>Here, agents can move out or move in depending on the proportion of like-agents in the sub-neighborhood. Movement is ordered by lowest threshold breached.</p>
+<ul class="simple">
+<li><p>Objective - the agents will move into positions that will make all / most of them happy</p></li>
+<li><p>Rules:</p>
+<ul>
+<li><p>There is/are a predefined neighborhood/s with set boundaries, we’ll refer to as subneighborhoods</p></li>
+<li><p>There are two agents who can move into and out these subneighborhoods</p>
+<ul>
+<li><p>They stay in the neighborhood if the mix neighbors inside the neighborhood are at least as good as desired (threshold)</p></li>
+<li><p>Agents leave the subneighborhood if the proportion of neighbors are no longer preferred</p></li>
+<li><p>Agents move one by one and the order by which agents leave or enter based on their preferences (thresholds)</p></li>
+</ul>
+</li>
+<li><p>Individual agents may have different thresholds following some predefined function - in this case, a linear function with thresholds from 100% (all like-neighbors needed) to 0% (no like neighbors needed)</p></li>
+<li><p>Threshold distributions may be different for the two agents - but for this exercise, we assume them to be the same</p></li>
+</ul>
+</li>
+<li><p>Given</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">props</span></code> - a fixed proportion of agent 1, agent 2, and empty spaces (houses)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> - the dinemsion of one side of a square neighborhood randomly populated by n agents and some empty spaces</p></li>
+</ul>
+</li>
+</ul>
+<p>We define below the function that determines the threshold of each agent. We define a smooth line from 100% to 0% and each agent will have a unique value in that range.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;threshold (like neighbors / total neighbors)&#39;)
+</pre></div>
+</div>
+<img alt="../_images/dedf1750e1c0c3a4854e08dae1c95e301b91cb0df07f7396b4e6dd614892ec83.png" src="../_images/dedf1750e1c0c3a4854e08dae1c95e301b91cb0df07f7396b4e6dd614892ec83.png" />
+</div>
+</div>
+<p>We define below the fixed subneighborhood. Yellow is the subneighborhood (imagine a town), and the dark magenta is outside the subneighborhood.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage at 0x7faba9a75390&gt;
+</pre></div>
+</div>
+<img alt="../_images/de77a76964ef410a64b2069e8a2f8828b384af20615b47d032351fcee1e33b81.png" src="../_images/de77a76964ef410a64b2069e8a2f8828b384af20615b47d032351fcee1e33b81.png" />
+</div>
+</div>
+<section id="what-happens-if-there-are-the-same-number-of-agents-1-and-agents-2">
+<h4>What happens if there are the same number of agents 1 and agents 2?<a class="headerlink" href="#what-happens-if-there-are-the-same-number-of-agents-1-and-agents-2" title="Link to this heading">#</a></h4>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>complete
+final avg similarities agent 1, agent 2  0.43434343434343436 0.5656565656565656
+</pre></div>
+</div>
+<img alt="../_images/07943634fe76d8eaab41356303b76a679b12e7fcb8d4bafef484f2d9ab734fe9.png" src="../_images/07943634fe76d8eaab41356303b76a679b12e7fcb8d4bafef484f2d9ab734fe9.png" />
+<img alt="../_images/aaa7503fe117941fd0c799ce180bf57abe3339c063814be408939dbb34c35c12.png" src="../_images/aaa7503fe117941fd0c799ce180bf57abe3339c063814be408939dbb34c35c12.png" />
+</div>
+</div>
+<p>We run another trial of the configuration above.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>complete
+final avg similarities agent 1, agent 2  0.4208754208754209 0.5791245791245792
+</pre></div>
+</div>
+<img alt="../_images/38d8503beec9d6bf2abdd0fb609fa97bf524450017b9263fc3faddb8f2f488e8.png" src="../_images/38d8503beec9d6bf2abdd0fb609fa97bf524450017b9263fc3faddb8f2f488e8.png" />
+<img alt="../_images/8876ed5e4238a61077200a37d5e9422df2f51a5859f038d0c805f26b3289192c.png" src="../_images/8876ed5e4238a61077200a37d5e9422df2f51a5859f038d0c805f26b3289192c.png" />
+</div>
+</div>
+</section>
+<section id="what-if-the-numbers-of-agent-classes-are-slightly-imbalanced">
+<h4>What if the numbers of agent classes are slightly imbalanced?<a class="headerlink" href="#what-if-the-numbers-of-agent-classes-are-slightly-imbalanced" title="Link to this heading">#</a></h4>
+<p>The minority will tend to occupy the subneighborhood.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>complete
+final avg similarities agent 1, agent 2  1.0 0.0
+</pre></div>
+</div>
+<img alt="../_images/17745191a5f6c58440d5b5d297edb36efdf6dea6ed872538efb34070611eac3a.png" src="../_images/17745191a5f6c58440d5b5d297edb36efdf6dea6ed872538efb34070611eac3a.png" />
+<img alt="../_images/862415661f96018882893d99482d2ababe64b60e718e47e2061fc9d434cebd2c.png" src="../_images/862415661f96018882893d99482d2ababe64b60e718e47e2061fc9d434cebd2c.png" />
+</div>
+</div>
+</section>
+<section id="what-if-we-have-multiple-neighborhoods">
+<h4>What if we have multiple neighborhoods?<a class="headerlink" href="#what-if-we-have-multiple-neighborhoods" title="Link to this heading">#</a></h4>
+<p>For the same proportions of agents 1 and agents 2, segregation easily arises.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>complete
+final avg similarities agent 1, agent 2  0.0 1.0
+</pre></div>
+</div>
+<img alt="../_images/b0ba8184f32c238243bcd35e9bfd1c8064f1f90307d5f99271abcaf460f6a663.png" src="../_images/b0ba8184f32c238243bcd35e9bfd1c8064f1f90307d5f99271abcaf460f6a663.png" />
+<img alt="../_images/4f8eeff60d6e4779264303f3605e24124c0611f81d9b01a53af583ee86c3b2c6.png" src="../_images/4f8eeff60d6e4779264303f3605e24124c0611f81d9b01a53af583ee86c3b2c6.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="threshold-models">
+<h2>Threshold Models<a class="headerlink" href="#threshold-models" title="Link to this heading">#</a></h2>
+<section id="thresholds-from-plots">
+<h3>Thresholds from Plots<a class="headerlink" href="#thresholds-from-plots" title="Link to this heading">#</a></h3>
+<p>We can now define a threshold function that is non-linear like in the distribution below, which is a truncated cumulative distribution function of an exponential distribution</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/9e73dd6603e639554d1731e3a4b392ffa852b7f0f9f1e4793aeb108ad5167932.png" src="../_images/9e73dd6603e639554d1731e3a4b392ffa852b7f0f9f1e4793aeb108ad5167932.png" />
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;cdf - prop. of population having &lt;= threshold&#39;)
+</pre></div>
+</div>
+<img alt="../_images/d3a7cb0e54c6736d55d90d00afbf23f0c630067b102d336b1878e5e4b2e53c50.png" src="../_images/d3a7cb0e54c6736d55d90d00afbf23f0c630067b102d336b1878e5e4b2e53c50.png" />
+</div>
+</div>
+<section id="how-can-we-find-the-equilibrium-from-these-plots">
+<h4>How can we find the equilibrium from these plots?<a class="headerlink" href="#how-can-we-find-the-equilibrium-from-these-plots" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Intuitively, we have a sense that the system is in equilibrium if the previous proportion of people is the same as the next proportion</p></li>
+<li><p>Analytically, that means that the proportion at time t <span class="math notranslate nohighlight">\(r(t) = r(t+1)\)</span></p></li>
+<li><p>Visually, we can plot from an initial proportion on the x-axis upwards to find the proportion of population with &lt;= threshold, then we can move to the 45 degree line, and back to the CDF, and so forth until we reach a stable point. The rationale is: if there are currently, 60% (x axis) activated and 80% (y-axis_ have thresholds less than or equal that, they will have to activate (move horizontally to an x-axis proportion equal to the y-axis value) and so on.</p></li>
+</ul>
+</section>
+<section id="observations-of-equilibrium-points-from-plots-below">
+<h4>Observations of Equilibrium Points from Plots Below<a class="headerlink" href="#observations-of-equilibrium-points-from-plots-below" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>For exponential distributions, we may find a stable equilibrium at a certain point between 0% and 100% activated</p></li>
+<li><p>For a normal distribution, equilibria tend to be either 0% or 100% activated</p></li>
+</ul>
+</section>
+<section id="exponential-distribution">
+<h4>Exponential Distribution<a class="headerlink" href="#exponential-distribution" title="Link to this heading">#</a></h4>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/007dbb5072f99a4f7d5a24d72cda0013dc70bd0436ccce07ffd6c74b2abe974f.png" src="../_images/007dbb5072f99a4f7d5a24d72cda0013dc70bd0436ccce07ffd6c74b2abe974f.png" />
+<img alt="../_images/482faf01991f3b629867efde2f4cd8f79aeae16d156da4219589f72241ecbaab.png" src="../_images/482faf01991f3b629867efde2f4cd8f79aeae16d156da4219589f72241ecbaab.png" />
+</div>
+</div>
+<p>In the cellular automata model below, we start with 0% activated. We find that the proportion of activated grows until it becomes ~60% as we have computed above.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>charts/threshold/1_dist_exp_r0_0.0/ exists
+</pre></div>
+</div>
+<img alt="../_images/b7cf1d1bb71ee29a11115504a78d7e45053584032b243b84f6d0f1dfb3664277.png" src="../_images/b7cf1d1bb71ee29a11115504a78d7e45053584032b243b84f6d0f1dfb3664277.png" />
+<img alt="../_images/e8122a44e8cf64d7d097994c65462a5f0c659f342895fff1664dddd5c6f69363.png" src="../_images/e8122a44e8cf64d7d097994c65462a5f0c659f342895fff1664dddd5c6f69363.png" />
+</div>
+</div>
+<p>If we start with 90% of the population activated, the number of activated declines until we reach only ~60% activated, which again, is the stable equilibrium.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>charts/threshold/1_dist_exp_r0_0.9/ exists
+</pre></div>
+</div>
+<img alt="../_images/83318d648aded19d0279a8b3e68de74bd4f572b012b48b5fb4b4bc77174b4ae0.png" src="../_images/83318d648aded19d0279a8b3e68de74bd4f572b012b48b5fb4b4bc77174b4ae0.png" />
+<img alt="../_images/232bd72966e4215bbc2a20c6fe1b7c2f1024df034b145a5d41cccd4486aa7930.png" src="../_images/232bd72966e4215bbc2a20c6fe1b7c2f1024df034b145a5d41cccd4486aa7930.png" />
+</div>
+</div>
+</section>
+<section id="normal-distribution">
+<h4>Normal Distribution<a class="headerlink" href="#normal-distribution" title="Link to this heading">#</a></h4>
+<p>We not investigate a threshold using the cumulative distribution function (CDF) of a normal distribution. From our analysis below, we expect either 100% activation or 0% activation depending on the starting point.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/64e27ce4b5e3e71c3143b3f8c7f34c22d620f88c10323315692bae407b273cf1.png" src="../_images/64e27ce4b5e3e71c3143b3f8c7f34c22d620f88c10323315692bae407b273cf1.png" />
+<img alt="../_images/c63653140570ca87c64f2ced4828854f9b42daa5cabd58ec9652828d9a1ac510.png" src="../_images/c63653140570ca87c64f2ced4828854f9b42daa5cabd58ec9652828d9a1ac510.png" />
+</div>
+</div>
+<p>Based on the cellular automata simulation, we find that the proportion of activated goes to 100% if we start with 60% activated.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>charts/threshold/1_dist_norm_r0_0.6/ exists
+</pre></div>
+</div>
+<img alt="../_images/bdb3c01daa429c7e1335043efbbc24c65806afb2a6da0e1119bb61933f8cb390.png" src="../_images/bdb3c01daa429c7e1335043efbbc24c65806afb2a6da0e1119bb61933f8cb390.png" />
+<img alt="../_images/7d6423249aec86ff3658ae05aa6cc421f3ac61c34c96c42a9740c69b4eaf7539.png" src="../_images/7d6423249aec86ff3658ae05aa6cc421f3ac61c34c96c42a9740c69b4eaf7539.png" />
+</div>
+</div>
+<p>Based on the cellular automata simulation, we find that the proportion of activated goes to 0% if we start with 45% activated.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>charts/threshold/1_dist_norm_r0_0.45/ exists
+</pre></div>
+</div>
+<img alt="../_images/c5b67337c2b670a5809009a2d9c2bb0dcc83c4655a564ec4d64579cbfcf4c179.png" src="../_images/c5b67337c2b670a5809009a2d9c2bb0dcc83c4655a564ec4d64579cbfcf4c179.png" />
+<img alt="../_images/0d980f3377664b4caf4c5fd5bb07c186fb21880cf113e05eee704f0d1d471881.png" src="../_images/0d980f3377664b4caf4c5fd5bb07c186fb21880cf113e05eee704f0d1d471881.png" />
+</div>
+</div>
+</section>
+<section id="inverse-normal-distribution">
+<h4>Inverse Normal Distribution<a class="headerlink" href="#inverse-normal-distribution" title="Link to this heading">#</a></h4>
+<p>Now let’s look at a threshold based on the inverse normal distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">thresh</span> <span class="o">=</span> <span class="n">inv_norm_dist</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">thresh</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;r--&#39;</span><span class="p">)</span>
+<span class="n">r1</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="c1"># proportion at time t</span>
+<span class="n">r0</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">r2</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">thresh</span> <span class="o">&lt;=</span> <span class="n">r1</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">thresh</span><span class="p">)</span> <span class="c1"># how many people will activate</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">r1</span><span class="p">,</span> <span class="n">r1</span><span class="p">],</span> <span class="p">[</span><span class="n">r0</span><span class="p">,</span> <span class="n">r2</span><span class="p">],</span> <span class="s1">&#39;g--&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">r2</span><span class="p">,</span> <span class="n">r1</span><span class="p">],</span> <span class="p">[</span><span class="n">r2</span><span class="p">,</span> <span class="n">r2</span><span class="p">],</span> <span class="s1">&#39;g--&#39;</span><span class="p">)</span>
+    
+    <span class="n">r1</span> <span class="o">=</span> <span class="n">r2</span> <span class="c1"># r1 is the new r2</span>
+    <span class="n">r0</span> <span class="o">=</span> <span class="n">r2</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;thresholds / prop people activated&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;cdf - prop. of population having &lt;= threshold&#39;</span><span class="p">)</span>    
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">thresh</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;r--&#39;</span><span class="p">)</span>
+<span class="n">r1</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="c1"># proportion at time t</span>
+<span class="n">r0</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">r2</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">thresh</span> <span class="o">&lt;=</span> <span class="n">r1</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">thresh</span><span class="p">)</span> <span class="c1"># how many people will activate</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">r1</span><span class="p">,</span> <span class="n">r1</span><span class="p">],</span> <span class="p">[</span><span class="n">r0</span><span class="p">,</span> <span class="n">r2</span><span class="p">],</span> <span class="s1">&#39;g--&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">r2</span><span class="p">,</span> <span class="n">r1</span><span class="p">],</span> <span class="p">[</span><span class="n">r2</span><span class="p">,</span> <span class="n">r2</span><span class="p">],</span> <span class="s1">&#39;g--&#39;</span><span class="p">)</span>   
+    <span class="n">r1</span> <span class="o">=</span> <span class="n">r2</span> <span class="c1"># r1 is the new r2</span>
+    <span class="n">r0</span> <span class="o">=</span> <span class="n">r2</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;thresholds / prop people activated&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;cdf - prop. of population having &lt;= threshold&#39;</span><span class="p">)</span>    
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>    
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/cc2f69b1b3bba359d15f39d90de4b3958c0b93e7089949b9129796d83d6c932f.png" src="../_images/cc2f69b1b3bba359d15f39d90de4b3958c0b93e7089949b9129796d83d6c932f.png" />
+<img alt="../_images/c409b96528b42702205fba6c3a80f8930a6bef75052aa833b79c529a3e03d125.png" src="../_images/c409b96528b42702205fba6c3a80f8930a6bef75052aa833b79c529a3e03d125.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># visualize with cellular automata model</span>
+
+<span class="n">props</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="c1"># agents are indices, value is the (cumulative proportion)</span>
+<span class="n">thresh</span> <span class="o">=</span> <span class="n">inv_norm_dist</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">r1</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="c1"># initial activated population</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+<span class="n">neighborhood</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="o">*</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="n">r1</span><span class="p">,</span> <span class="n">r1</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+
+<span class="n">new_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;charts/threshold/</span><span class="si">{</span><span class="n">seed</span><span class="si">}</span><span class="s1">_dist_norm_r0_</span><span class="si">{</span><span class="n">r1</span><span class="si">}</span><span class="s1">/&#39;</span>
+
+<span class="n">rs</span> <span class="o">=</span> <span class="n">run_thresh_sim</span><span class="p">(</span><span class="n">neighborhood</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">thresh</span><span class="p">,</span> <span class="n">new_dir</span><span class="p">)</span>
+<span class="n">plot_thresh_gif</span><span class="p">(</span><span class="n">new_dir</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>charts/threshold/1_dist_norm_r0_0.2/ exists
+</pre></div>
+</div>
+<img alt="../_images/1e4821c31ca83c39a92760c35f176b28703ccd4247e01429fece9572dc5bc622.png" src="../_images/1e4821c31ca83c39a92760c35f176b28703ccd4247e01429fece9572dc5bc622.png" />
+<img alt="../_images/117083b4fbf33daceddee9b58cc85caa70f25896da7333e8fa32b026a4f61529.png" src="../_images/117083b4fbf33daceddee9b58cc85caa70f25896da7333e8fa32b026a4f61529.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># visualize with cellular automata model</span>
+
+<span class="n">props</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="c1"># agents are indices, value is the (cumulative proportion)</span>
+<span class="n">thresh</span> <span class="o">=</span> <span class="n">inv_norm_dist</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">r1</span> <span class="o">=</span> <span class="mf">0.45</span> <span class="c1"># initial activated population</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+<span class="n">neighborhood</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="o">*</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="n">r1</span><span class="p">,</span> <span class="n">r1</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+
+<span class="n">new_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;charts/threshold/</span><span class="si">{</span><span class="n">seed</span><span class="si">}</span><span class="s1">_dist_norm_r0_</span><span class="si">{</span><span class="n">r1</span><span class="si">}</span><span class="s1">/&#39;</span>
+
+<span class="n">rs</span> <span class="o">=</span> <span class="n">run_thresh_sim</span><span class="p">(</span><span class="n">neighborhood</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">thresh</span><span class="p">,</span> <span class="n">new_dir</span><span class="p">)</span>
+<span class="n">plot_thresh_gif</span><span class="p">(</span><span class="n">new_dir</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>charts/threshold/1_dist_norm_r0_0.45/ exists
+</pre></div>
+</div>
+<img alt="../_images/e72660490144a6331b26c07f6079a44ada78c8e7b782dc35463195870cd0bce5.png" src="../_images/e72660490144a6331b26c07f6079a44ada78c8e7b782dc35463195870cd0bce5.png" />
+<img alt="../_images/a19cca70685b1d1338e13fb60a4f0d3f07dd035af215fa63eb780dafc73cb4ef.png" src="../_images/a19cca70685b1d1338e13fb60a4f0d3f07dd035af215fa63eb780dafc73cb4ef.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="stability-of-equilibrium-vs-threshold">
+<h3>Stability of Equilibrium vs Threshold<a class="headerlink" href="#stability-of-equilibrium-vs-threshold" title="Link to this heading">#</a></h3>
+<p>We test the stability of the equilibrium if we modify our thresholds a bit so that the mean stays the same but the standard deviation differs</p>
+<ul class="simple">
+<li><p>Even if our mean stays the same at 0.5, varying the standard deviation of thresholds varies the point at which the system reaches equilibrium</p></li>
+<li><p>The implication of this is we should be wary of merely looking at averages (say the average individual) to explain collective phenomena.</p></li>
+</ul>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;equilibrium proportion&#39;)
+</pre></div>
+</div>
+<img alt="../_images/ab492d85bc409276f0e335d04b164a2589211fcedc22a14bf89d85dac24884b8.png" src="../_images/ab492d85bc409276f0e335d04b164a2589211fcedc22a14bf89d85dac24884b8.png" />
+</div>
+</div>
+<p>We visualize the results above for standard deviation = 0.3 and equilibrium point ~ 0.08.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>charts/threshold/1_dist_norm_r0_0.2_0.3/ exists
+</pre></div>
+</div>
+<img alt="../_images/2989af78a98cb3247b7da74340294c13d4073d85e4a8a8efad07d0cdae1ba6bf.png" src="../_images/2989af78a98cb3247b7da74340294c13d4073d85e4a8a8efad07d0cdae1ba6bf.png" />
+<img alt="../_images/1ca51b9323247df786d737537be9d1dae7f7ff1766fbb810c78037b5a7b7445b.png" src="../_images/1ca51b9323247df786d737537be9d1dae7f7ff1766fbb810c78037b5a7b7445b.png" />
+</div>
+</div>
+<p>We visualize the results above for standard deviation = 0.5 and equilibrium point ~ 0.5.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>charts/threshold/1_dist_norm_r0_0.2_0.5/ exists
+</pre></div>
+</div>
+<img alt="../_images/83f17329aba0ffda32e33f73746e6d6ab3518a3b5bed0c756dccdd6f8425f7b6.png" src="../_images/83f17329aba0ffda32e33f73746e6d6ab3518a3b5bed0c756dccdd6f8425f7b6.png" />
+<img alt="../_images/95bda675b931d20c8d79f95b6a4cd0cea3c465fb5cf09924e9ef417b9bfbb2a0.png" src="../_images/95bda675b931d20c8d79f95b6a4cd0cea3c465fb5cf09924e9ef417b9bfbb2a0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="standing-ovation-problem">
+<h2>Standing Ovation Problem<a class="headerlink" href="#standing-ovation-problem" title="Link to this heading">#</a></h2>
+<p>Here’s a modification of Granovetter’s activation model. We incorporate some rules that intuitively exist when we’re simulating a standard ovation after a performance. These rules are:</p>
+<ul class="simple">
+<li><p>Objective - simulate a standing ovation process</p></li>
+<li><p>Rules</p>
+<ul>
+<li><p>The audience only sees agents within a field of view. The implications are:</p>
+<ul>
+<li><p>Those at the front may have the least information about the true proportion of activated users</p></li>
+<li><p>Those at the far back may have the greatest information</p></li>
+</ul>
+</li>
+<li><p>Agents have a defined field of view that can be patterned after some shape e.g. cone-shaped</p></li>
+<li><p>The audience can be heterogenous</p>
+<ul>
+<li><p>Like in Schelling’s and Granovetter’s models, we can apply a threshold value to indicate</p>
+<ul>
+<li><p>the proportion of agents perceived to activate that will cause an agent to activate.</p></li>
+<li><p>the threshold for the quality of the performance</p></li>
+</ul>
+</li>
+<li><p>We will follow Miller and Page’s model where the quality threshold is fixed at 0.5</p></li>
+</ul>
+</li>
+<li><p>Agents cannot switch seats</p></li>
+<li><p>Agents can change decisions based on new information</p></li>
+<li><p>The agent stands up based on some factors</p>
+<ul>
+<li><p>Each agent assesses (here, randomly generated) the quality of the performance</p></li>
+<li><p>If the quality exceeds the agent’s threshold the agent stands up</p></li>
+<li><p>The agent who stands up from quality will remain standing</p></li>
+<li><p>At t+1 onwards, agents will decide whether to stand up or not based on the proportion of agents standing up that they see</p></li>
+</ul>
+</li>
+<li><p>“Synchronous” updating is used - per time step, all agents whose thresholds are breached all stand up (or sit down)</p></li>
+</ul>
+</li>
+<li><p>Notes: Our quality assessments and threshold for peer-pressure are drawn from a normal distirbution given mean and standard deviation as parameters</p></li>
+<li><p>Parameters</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> - for an n x n matrix representing audience</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">q_thresh</span></code> - quality threshold exceeding which means the agent will stand up no matter what (one threshold for all users)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kernel</span></code> - the field of view of each agent indicated by zeros and ones on an m x m matrix</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p_mean</span></code> - the mean of a normal distribution of peer-pressure thresholds</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p_stdev</span></code> - the standard dev of a normal distribution of peer-pressure thresholds</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">q_mean</span></code> - the mean of the normal distribution of performance quality assessments</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">q_stdev</span></code> - the standard deviation of the normal distribution of performance quality assessments</p></li>
+</ul>
+</li>
+</ul>
+<p>We’d like to check:</p>
+<ul class="simple">
+<li><p>Is it possible for majority to stand up even if most agents did not like the performance?</p></li>
+<li><p>Stable equilibrium, i.e. proportion standing up</p></li>
+<li><p>Number of iterations before reaching the stable equilibrium</p></li>
+<li><p>Proportion of agents standing over time or the reverse: “Stick in the Muds” - proportion of people that did the opposite of the majority at steady state</p></li>
+</ul>
+<div class="cell tag_remove-input docutils container">
+</div>
+<p>Below is each agent’s cone of vision. The agent sees others in the bright triangle or cone of vision in front of it.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/1d5ef0db93e5a6e1f513c7dbe58f239b10e408ce3dcdd235cd8c718e4555da30.png" src="../_images/1d5ef0db93e5a6e1f513c7dbe58f239b10e408ce3dcdd235cd8c718e4555da30.png" />
+</div>
+</div>
+<p>We then define the “peer pressure” threshold parameters to be the CDF of a normal distribution. There’s one threshold for peer pressure and another for how they assessed the play.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="../_images/83ce14e6fe4ad9859ef07f5b6b6e222c90498dfa5d6761966d2241403a4aa276.png" src="../_images/83ce14e6fe4ad9859ef07f5b6b6e222c90498dfa5d6761966d2241403a4aa276.png" />
+<img alt="../_images/1073fc57e58b6ec62da31809c54c0811ba620c144601956c3d7469641cf7e811.png" src="../_images/1073fc57e58b6ec62da31809c54c0811ba620c144601956c3d7469641cf7e811.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>sanity check prop people having thresh &lt; 0.6  0.0172
+</pre></div>
+</div>
+</div>
+</div>
+<p>We show the evolution of proportion of people who do the standing ovation. Peer pressure plays a huge role.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>sim complete
+</pre></div>
+</div>
+<img alt="../_images/09f3af2966d53d0bb25498d5b5fa1eebabd3c6fadddb4fba868b6bdc9374910c.png" src="../_images/09f3af2966d53d0bb25498d5b5fa1eebabd3c6fadddb4fba868b6bdc9374910c.png" />
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;proportion of users standing up&#39;)
+</pre></div>
+</div>
+<img alt="../_images/d7fd49a44f9bbbecab42769bbada43375f4fc7bd7e29fe7fa34465ffc667b642.png" src="../_images/d7fd49a44f9bbbecab42769bbada43375f4fc7bd7e29fe7fa34465ffc667b642.png" />
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./simulations"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="success_sim.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Simulating Success</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../causal_inference/ccm_failure_cases.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Where Convergent Cross-Mapping Fails</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#segregation">Segregation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#segregation-in-1d">Segregation in 1D</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#impact-of-thresholds">Impact of Thresholds</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#impact-of-having-a-minority-class">Impact of Having a Minority Class</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#travel-limits">Travel limits</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#segregation-in-2d">Segregation in 2D</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#demand-leads-to-how-much-segregation">50% demand leads to how much segregation?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-happens-if-we-impose-a-travel-limit-to-just-the-k-x-k-local-neighborhood">What happens if we impose a travel limit to just the k x k local neighborhood?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-we-increase-the-local-k-x-k-neighborhood-considered">What if we increase the local k x k neighborhood considered?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-we-initialized-from-a-semi-clustered-initialization-and-then-we-run-with-different-parameters">What if we initialized from a semi-clustered initialization and then we run with different parameters?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-agents-both-have-very-high-demands">What if agents both have very high demands?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-the-two-agent-classes-have-different-demands">What if the two agent classes have different demands?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-the-demands-are-the-same-but-the-proportions-of-the-classes-are-different">What if the demands are the same but the proportions of the classes are different?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#integrationist-preferences">Integrationist Preferences</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bounded-neighborhood-model">Bounded Neighborhood Model</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-happens-if-there-are-the-same-number-of-agents-1-and-agents-2">What happens if there are the same number of agents 1 and agents 2?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-the-numbers-of-agent-classes-are-slightly-imbalanced">What if the numbers of agent classes are slightly imbalanced?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#what-if-we-have-multiple-neighborhoods">What if we have multiple neighborhoods?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#threshold-models">Threshold Models</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thresholds-from-plots">Thresholds from Plots</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#how-can-we-find-the-equilibrium-from-these-plots">How can we find the equilibrium from these plots?</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#observations-of-equilibrium-points-from-plots-below">Observations of Equilibrium Points from Plots Below</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exponential-distribution">Exponential Distribution</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#normal-distribution">Normal Distribution</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#inverse-normal-distribution">Inverse Normal Distribution</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stability-of-equilibrium-vs-threshold">Stability of Equilibrium vs Threshold</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standing-ovation-problem">Standing Ovation Problem</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Prince Javier
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
