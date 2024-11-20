@@ -315,6 +315,7 @@ commentsRunWhenDOMLoaded(addUtterances);
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tldr">TLDR</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#segregation">Segregation</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#segregation-in-1d">Segregation in 1D</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#impact-of-thresholds">Impact of Thresholds</a></li>
@@ -367,20 +368,27 @@ commentsRunWhenDOMLoaded(addUtterances);
                   
   <section class="tex2jax_ignore mathjax_ignore" id="segregation-and-peer-effects">
 <h1>Segregation and Peer Effects<a class="headerlink" href="#segregation-and-peer-effects" title="Link to this heading">#</a></h1>
-<p>January 24, 2021
-<br>In this notebook we explore</p>
+<p>January 24, 2021</p>
+<p><br>In this notebook we explore</p>
 <ul class="simple">
 <li><p>segregation model by Schelling (1971) <a class="reference external" href="https://www.stat.berkeley.edu/~aldous/157/Papers/Schelling_Seg_Models.pdf">https://www.stat.berkeley.edu/~aldous/157/Papers/Schelling_Seg_Models.pdf</a></p></li>
 <li><p>threshold models by Granovetter (1978) <a class="reference external" href="https://sociology.stanford.edu/publications/threshold-models-collective-behavior">https://sociology.stanford.edu/publications/threshold-models-collective-behavior</a></p></li>
-<li><p>standing ovation model by Miller and Page (2004) <a class="reference external" href="http://www2.econ.iastate.edu/tesfatsi/StandingOvation.MillerPage.pdf">http://www2.econ.iastate.edu/tesfatsi/StandingOvation.MillerPage.pdf</a></p></li>
 </ul>
 <p>Hopefully by doing experiments on these models, we get some new ways of thinking about collective behavior and how outcomes may not necessarily be intuitive by looking at average behaviors.</p>
+<section id="tldr">
+<h2>TLDR<a class="headerlink" href="#tldr" title="Link to this heading">#</a></h2>
+<p>These are highly simplified models of segregation and how communities of similar individuals tend to form.</p>
+<p>For individuals more tolerant of others that are different from them, will they tend to form more “integrated” or mixed communities? How about individuals that are highly intolerant?</p>
+<p>Paradoxically, relatively tolerant digital agents tend to want to segregate and form communities of similar individuals. While in some cases, highly intolerant digital agents tend to integrate and form an unstable mixture of different individuals.</p>
+<p>These are simplified and do not represent actual people moving around. So it’s definitely something we shouldn’t take too seriously.</p>
+<p>However, these are interesting mental models. One takeaway is when you deal with many things interacting with each other, it’s hard to predict what will happen.</p>
+</section>
 <section id="segregation">
 <h2>Segregation<a class="headerlink" href="#segregation" title="Link to this heading">#</a></h2>
 <p><br>Segregation between different people has always been and continue to be an interesting topic. Schelling in his 1971 paper, “Dynamic Models of Segregation” examined the dynamics of segregation via an agent-based modelling approach that led him to interesting insights.</p>
 <p>In this section, we will replicate his work. Here are some guide questions for this exercise:</p>
 <ul class="simple">
-<li><p>If individuals segregate into highly polarized groups, does that mean that they dislike the other group, e.g. racists?</p></li>
+<li><p>If individuals segregate into highly polarized groups, does that mean that they dislike the other group, e.g. racists or intolerant?</p></li>
 <li><p>Is it possible for relatively tolerant individuals to form highly-segmented groupings?</p></li>
 <li><p>If say we have the same population for agents 1 and 2, and they both have a threshold of 20% (they need 20% of their neighbors to be like them for them to be happy), what do you think will be average proportions of like-neighbors per agent?</p></li>
 <li><p>If the populations of the two agents are not the same, e.g. we have a minority class, what will happen to the segregation patterns and proportions?</p></li>
@@ -1400,6 +1408,7 @@ final avg similarities agent 1, agent 2  0.0 1.0
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tldr">TLDR</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#segregation">Segregation</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#segregation-in-1d">Segregation in 1D</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#impact-of-thresholds">Impact of Thresholds</a></li>
