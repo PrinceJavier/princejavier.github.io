@@ -34,6 +34,7 @@ parts:
     - file: simulations/entropy_sim
     - file: simulations/success_sim    
     - file: simulations/segregation_peer_effects
+    - file: simulations/geocentric_heliocentric
 
   - caption: Causal Inference
     numbered: False 
