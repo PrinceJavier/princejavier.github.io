@@ -330,11 +330,11 @@ commentsRunWhenDOMLoaded(addUtterances);
 <li><p><span class="math notranslate nohighlight">\(p(x + y) \neq p(x) + p(y)\)</span></p></li>
 </ul>
 <p>We generate <span class="math notranslate nohighlight">\(N\)</span> random samples for two independent random variables <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span> that follow two Gaussian distributions with different means and standard deviations.</p>
-<div class="cell tag_hide-cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -360,17 +360,17 @@ commentsRunWhenDOMLoaded(addUtterances);
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <img alt="../_images/d7673883ea88b3a9ba6d7abf2438e2dfc1e05e301da0c4a259557732460030a6.png" src="../_images/d7673883ea88b3a9ba6d7abf2438e2dfc1e05e301da0c4a259557732460030a6.png" />
 </div>
-</details>
 </div>
 <p>We show the sum of the densities below <span class="math notranslate nohighlight">\(p(x) + p(y)\)</span>. It has two peaks and is clearly not a Gaussian distribution.</p>
-<div class="cell tag_hide-cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
@@ -390,17 +390,17 @@ commentsRunWhenDOMLoaded(addUtterances);
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <img alt="../_images/252d87ea25249a28ce83a1206b9646550a455617845296462e498bee1d277e72.png" src="../_images/252d87ea25249a28ce83a1206b9646550a455617845296462e498bee1d277e72.png" />
 </div>
-</details>
 </div>
 <p>Meanwhile below is the density of the sum of random variables <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span>: <span class="math notranslate nohighlight">\(p(x+y)\)</span>. The resulting density is also a Gaussian distribution, <span class="math notranslate nohighlight">\(p(x + y) =\mathcal{N}(\mu_1 + \mu_2, \sigma_1^2 + \sigma_2^2)\)</span>. We show below the alignment between the empirical density and theoretical density.</p>
-<div class="cell tag_hide-cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># sum of variables</span>
@@ -419,10 +419,10 @@ commentsRunWhenDOMLoaded(addUtterances);
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
 <img alt="../_images/9e45369d388851fce75b2901852615dbf9b38feea619d721e9f469786b5677b2.png" src="../_images/9e45369d388851fce75b2901852615dbf9b38feea619d721e9f469786b5677b2.png" />
 </div>
-</details>
 </div>
 </section>
 
