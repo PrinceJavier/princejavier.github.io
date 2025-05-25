@@ -36,6 +36,11 @@ parts:
     - file: simulations/segregation_peer_effects
     - file: simulations/geocentric_heliocentric
 
+  - caption: Probability
+    numbered: False 
+    chapters:    
+    - file: probability/sum_gaussians_vs_sum_rand_vars
+
   - caption: Causal Inference
     numbered: False 
     chapters:    
