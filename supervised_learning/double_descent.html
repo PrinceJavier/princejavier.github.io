@@ -324,7 +324,7 @@ commentsRunWhenDOMLoaded(addUtterances);
                   
   <section class="tex2jax_ignore mathjax_ignore" id="double-descent-in-polynomial-fitting">
 <h1>Double Descent In Polynomial Fitting<a class="headerlink" href="#double-descent-in-polynomial-fitting" title="Link to this heading">#</a></h1>
-<p>Conventional wisdom in machine learning tells us that test error follows a U-curve with as model flexibility goes up. The rise in error after reaching the bottom of the U-curve is called in machine learning literature as “overfitting.”</p>
+<p>Conventional wisdom in machine learning tells us that test error follows a U-curve as model flexibility goes up. The rise in error after reaching the bottom of the U-curve is called in machine learning literature as “overfitting.”</p>
 <p>A phenomenon popularly observed in neural networks that have more parameters than datapoints (overparameterized) is “double descent” that on the surface seems to defy the conventional wisdom. If we increase the model flexibility (more parameters) further, we may see a second decline in the test error, hence the term “double descent.” How is this so?</p>
 <p>For one, number of parameters in neural networks do not necessarily translate to model complexity. In fact, models with far more parameters can be simpler than those with fewer parameters! (<a class="reference external" href="https://arxiv.org/abs/2503.02113">https://arxiv.org/abs/2503.02113</a>)</p>
 <p>Overflexible models, while they have the capacity to adapt to learn highly complicated functions, do not need to be overly complicated when fit on the data - the model can still end up learning a simpler function.</p>
