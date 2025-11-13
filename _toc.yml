@@ -20,6 +20,7 @@ parts:
     - file: supervised_learning/nn_sine_experiments_1
     - file: supervised_learning/nn_sine_experiments_2
     - file: supervised_learning/k_fold_cv
+    - file: supervised_learning/double_descent
 
   - caption: Unsupervised Learning
     numbered: False 
@@ -35,6 +36,7 @@ parts:
     - file: simulations/success_sim    
     - file: simulations/segregation_peer_effects
     - file: simulations/geocentric_heliocentric
+    - file: simulations/gdp_per_capita
 
   - caption: Probability
     numbered: False 
