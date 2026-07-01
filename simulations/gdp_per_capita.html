@@ -326,8 +326,112 @@ commentsRunWhenDOMLoaded(addUtterances);
 <h1>GDP per Capita Projections<a class="headerlink" href="#gdp-per-capita-projections" title="Link to this heading">#</a></h1>
 <p>When will the Philippines overtake other Southeast Asian countries?</p>
 <div class="cell tag_remove-input docutils container">
+</div>
+<div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "063cc1c35977437d88ee93007b1f47f9", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "9803ed11da1a43e28887aea8dfdfbec2", "version_major": 2, "version_minor": 0}</script></div>
+<div class="output text_html">
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<div id="plotly-div" style="width: 100%; height: 500px; margin-bottom: 20px;"></div>
+
+<div id="controls-div" style="display: flex; flex-direction: column; gap: 10px; font-family: sans-serif; max-width: 600px; margin: 0 auto;"></div>
+
+<script>
+// Baseline Data
+const baseGdp = {"Philippines": 4320, "Singapore": 90670, "Thailand": 7940, "Vietnam": 4740, "Malaysia": 13900, "Indonesia": 5070};
+const defaultRates = {"Philippines": 4.8, "Singapore": 2.0, "Thailand": 2.5, "Vietnam": 4.0, "Malaysia": 3.0, "Indonesia": 3.5};
+const countries = Object.keys(baseGdp);
+const years = Array.from({length: 150}, (_, i) => i);
+
+const controlsDiv = document.getElementById('controls-div');
+const inputs = {};
+
+// Generate Widgets
+countries.forEach(country => {
+    const row = document.createElement('div');
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
+    row.style.gap = '15px';
+    
+    // GDP Text Input
+    const gdpLabel = document.createElement('label');
+    gdpLabel.innerText = `${country} GDP:`;
+    gdpLabel.style.width = '120px';
+    
+    const gdpInput = document.createElement('input');
+    gdpInput.type = 'number';
+    gdpInput.value = baseGdp[country];
+    gdpInput.style.width = '80px';
+    gdpInput.style.padding = '4px';
+
+    // Rate Slider
+    const rateLabel = document.createElement('label');
+    rateLabel.innerText = `Rate %:`;
+    rateLabel.style.width = '60px';
+    
+    const rateInput = document.createElement('input');
+    rateInput.type = 'range';
+    rateInput.min = '0';
+    rateInput.max = '10';
+    rateInput.step = '0.1';
+    rateInput.value = defaultRates[country];
+    rateInput.style.flexGrow = '1';
+
+    // Rate Display Text
+    const rateValue = document.createElement('span');
+    rateValue.innerText = rateInput.value;
+    rateValue.style.width = '40px';
+    rateValue.style.textAlign = 'right';
+
+    // Event Listeners
+    rateInput.oninput = (e) => {
+        rateValue.innerText = e.target.value;
+        updatePlot();
+    };
+    gdpInput.oninput = updatePlot;
+
+    // Store references
+    inputs[country] = { gdp: gdpInput, rate: rateInput };
+
+    // Append to row
+    row.append(gdpLabel, gdpInput, rateLabel, rateInput, rateValue);
+    controlsDiv.appendChild(row);
+});
+
+// Plotting Function
+function updatePlot() {
+    const data = countries.map(country => {
+        const g = parseFloat(inputs[country].gdp.value) || 0;
+        const r = parseFloat(inputs[country].rate.value) || 0;
+        
+        // Calculate projection
+        const y_vals = years.map(y => g * Math.pow(1 + r / 100, y));
+
+        return {
+            x: years,
+            y: y_vals,
+            mode: 'lines',
+            name: country,
+            line: { width: country === 'Philippines' ? 4 : 2 }
+        };
+    });
+
+    const layout = {
+        title: "Projected GDP per Capita (USD)",
+        xaxis: { title: "Years from Now", showgrid: false },
+        yaxis: { title: "GDP per Capita (USD) – Log Scale", type: "log", showgrid: false },
+        margin: { l: 60, r: 30, t: 50, b: 50 },
+        plot_bgcolor: "white",
+        paper_bgcolor: "white"
+    };
+
+    Plotly.newPlot('plotly-div', data, layout, {responsive: true});
+}
+
+// Initial Plot
+updatePlot();
+</script>
+</div></div>
 </div>
 </section>
 
