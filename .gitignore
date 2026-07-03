@@ -7,3 +7,6 @@ __pycache__
 data/img_align_celeba
 data/MNIST
 .venv/
+data/cifar10
+data/mnist
+data/fashionmnist

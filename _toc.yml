@@ -21,6 +21,7 @@ parts:
     - file: supervised_learning/nn_sine_experiments_2
     - file: supervised_learning/k_fold_cv
     - file: supervised_learning/double_descent
+    - file: supervised_learning/task_arithmetic
 
   - caption: Unsupervised Learning
     numbered: False 
