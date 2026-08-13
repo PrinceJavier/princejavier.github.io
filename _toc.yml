@@ -22,6 +22,7 @@ parts:
     - file: supervised_learning/k_fold_cv
     - file: supervised_learning/double_descent
     - file: supervised_learning/task_arithmetic
+    - file: supervised_learning/functional_attention
 
   - caption: Unsupervised Learning
     numbered: False 
