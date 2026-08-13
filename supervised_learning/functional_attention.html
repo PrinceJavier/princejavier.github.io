@@ -362,9 +362,9 @@ commentsRunWhenDOMLoaded(addUtterances);
 <section id="architecture">
 <h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">#</a></h2>
 <p>We show below the architecture diagram</p>
-<img src=/Users/princejavier/Desktop/princejavier-github-io/supervised_learning/images/functional_attention/functional_attention.png width=80%>
+<img src="https://github.com/PrinceJavier/princejavier.github.io/blob/main/supervised_learning/images/functional_attention/functional_attention.png?raw=true" width=80%>
 <p>Below is a screenshot of the details of the sinusoidal regression task:</p>
-<img src="/Users/princejavier/Desktop/princejavier-github-io/supervised_learning/images/functional_attention/func attention regression task.png" width=80%>
+<img src="https://github.com/PrinceJavier/princejavier.github.io/blob/main/supervised_learning/images/functional_attention/func%20attention%20regression%20task.png?raw=true" width=80%>
 </section>
 <section id="experiment">
 <h2>Experiment<a class="headerlink" href="#experiment" title="Link to this heading">#</a></h2>
@@ -374,26 +374,26 @@ commentsRunWhenDOMLoaded(addUtterances);
 <li><p><span class="math notranslate nohighlight">\(\gamma \in [0, \pi]\)</span></p></li>
 </ul>
 <p>Then we only show 4 values of y as the context. Then the model needs to predict all the other y in the range of x.</p>
-<img src=/Users/princejavier/Desktop/princejavier-github-io/supervised_learning/images/functional_attention/sine_dataset.png width=50%>
+<img src="https://github.com/PrinceJavier/princejavier.github.io/blob/main/supervised_learning/images/functional_attention/sine_dataset.png?raw=true" width=50%>
 <p>We trained for 500 epochs.</p>
 <p>We see that it performs well on the train set, as expected:</p>
-<img src=/Users/princejavier/Desktop/princejavier-github-io/supervised_learning/images/functional_attention/trained_model_train_set.png width=50%>
+<img src="https://github.com/PrinceJavier/princejavier.github.io/blob/main/supervised_learning/images/functional_attention/trained_model_train_set.png?raw=true" width=50%>
 <p>We first tested on a test set generated as another set of 1000 functions generated from the same ranges of parameters above.</p>
-<img src=/Users/princejavier/Desktop/princejavier-github-io/supervised_learning/images/functional_attention/trained_model_test_set_in_dist.png width=50%>
+<img src="https://github.com/PrinceJavier/princejavier.github.io/blob/main/supervised_learning/images/functional_attention/trained_model_test_set_in_dist.png?raw=true" width=50%>
 <p>We then tested on a test set generated from a different set of ranges to test out of distribution (OOD) generalization:</p>
 <p>Case 1 OOD <span class="math notranslate nohighlight">\(\alpha\)</span>:</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\alpha \in [5, 10]\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(\gamma \in [0, \pi]\)</span></p></li>
 </ul>
-<img src=/Users/princejavier/Desktop/princejavier-github-io/supervised_learning/images/functional_attention/trained_model_test_set_ood_alpha.png width=50%>
+<img src="https://github.com/PrinceJavier/princejavier.github.io/blob/main/supervised_learning/images/functional_attention/trained_model_test_set_ood_alpha.png?raw=true" width=50%>
 <p>Case 2 OOD <span class="math notranslate nohighlight">\(x\)</span>:</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\alpha \in [0.1, 5]\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(\gamma \in [0, \pi]\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(x \in [-3, 15]\)</span></p></li>
 </ul>
-<img src=/Users/princejavier/Desktop/princejavier-github-io/supervised_learning/images/functional_attention/trained_model_test_set_ood_x.png width=50%></section>
+<img src="https://github.com/PrinceJavier/princejavier.github.io/blob/main/supervised_learning/images/functional_attention/trained_model_test_set_ood_x.png?raw=true" width=50%></section>
 <section id="implementation">
 <h2>Implementation<a class="headerlink" href="#implementation" title="Link to this heading">#</a></h2>
 <section id="functional-attention">
