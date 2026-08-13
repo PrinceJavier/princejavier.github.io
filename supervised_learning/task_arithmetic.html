@@ -99,7 +99,7 @@ commentsRunWhenDOMLoaded(addUtterances);
     <script>DOCUMENTATION_OPTIONS.pagename = 'supervised_learning/task_arithmetic';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Beta-Variational Autoencoder Experiments" href="../unsupervised_learning/b_vae.html" />
+    <link rel="next" title="Functional Attention Experiments" href="functional_attention.html" />
     <link rel="prev" title="Double Descent In Polynomial Fitting" href="double_descent.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -205,6 +205,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 <li class="toctree-l1"><a class="reference internal" href="k_fold_cv.html">k-Fold Cross-Validation Experiments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="double_descent.html">Double Descent In Polynomial Fitting</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Experiments: Editing Models with Task Arithmetic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functional_attention.html">Functional Attention Experiments</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Unsupervised Learning</span></p>
 <ul class="nav bd-sidenav">
@@ -327,7 +328,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tldr-results">TLDR Results</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computing-and-applying-task-vector-on-the-same-model">Computing and applying task vector on the same model</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computing-the-task-vector-on-one-base-model-and-applying-it-on-a-different-model">Computing the task vector on one base model and applying it on a different model</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-task-vectors-for-different-parameters-of-the-same-architecture">Comparing task vectors for different parameters of the same architecture</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-parameters-with-the-same-architecture-and-training-configuration">Comparing parameters with the same architecture and training configuration</a></li>
 </ul>
             </nav>
         </div>
@@ -355,24 +356,25 @@ commentsRunWhenDOMLoaded(addUtterances);
 <section id="tldr-results">
 <h2>TLDR Results<a class="headerlink" href="#tldr-results" title="Link to this heading">#</a></h2>
 <p>The task vectors worked to improve the performance of the 1st base model on MNIST and FashionMNIST. However, as expected, it did not work for the 2nd base model. These are the accuracies on the train set. (Note we are not concerned with test performance at this point. We only care about the applicability of task vectors across networks)</p>
-<div class="highlight-Model: notranslate"><div class="highlight"><pre><span></span>CIFAR10: 0.984375
-MNIST: 0.078125
-Fasion MNIST: 0.078125
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Model</span><span class="p">:</span> <span class="n">CIFAR10</span>
+<span class="n">CIFAR10</span><span class="p">:</span> <span class="mf">0.984375</span>
+<span class="n">MNIST</span><span class="p">:</span> <span class="mf">0.078125</span>
+<span class="n">Fasion</span> <span class="n">MNIST</span><span class="p">:</span> <span class="mf">0.078125</span>
 
-Model: CIFAR10 (diff init)
-CIFAR10: 0.96875
-MNIST: 0.0625
-Fasion MNIST: 0.078125
+<span class="n">Model</span><span class="p">:</span> <span class="n">CIFAR10</span> <span class="p">(</span><span class="n">diff</span> <span class="n">init</span><span class="p">)</span>
+<span class="n">CIFAR10</span><span class="p">:</span> <span class="mf">0.96875</span>
+<span class="n">MNIST</span><span class="p">:</span> <span class="mf">0.0625</span>
+<span class="n">Fasion</span> <span class="n">MNIST</span><span class="p">:</span> <span class="mf">0.078125</span>
 
-Model: CIFAR10 + MNIST task vector + FashionMNIST task vector
-CIFAR10: 0.859375
-MNIST: 0.296875
-Fasion MNIST: 0.421875
+<span class="n">Model</span><span class="p">:</span> <span class="n">CIFAR10</span> <span class="o">+</span> <span class="n">MNIST</span> <span class="n">task</span> <span class="n">vector</span> <span class="o">+</span> <span class="n">FashionMNIST</span> <span class="n">task</span> <span class="n">vector</span>
+<span class="n">CIFAR10</span><span class="p">:</span> <span class="mf">0.859375</span>
+<span class="n">MNIST</span><span class="p">:</span> <span class="mf">0.296875</span>
+<span class="n">Fasion</span> <span class="n">MNIST</span><span class="p">:</span> <span class="mf">0.421875</span>
 
-Model: CIFAR10 (diff init) + MNIST task vector + FashionMNIST task vector
-CIFAR10: 0.71875
-MNIST: 0.046875
-Fasion MNIST: 0.078125
+<span class="n">Model</span><span class="p">:</span> <span class="n">CIFAR10</span> <span class="p">(</span><span class="n">diff</span> <span class="n">init</span><span class="p">)</span> <span class="o">+</span> <span class="n">MNIST</span> <span class="n">task</span> <span class="n">vector</span> <span class="o">+</span> <span class="n">FashionMNIST</span> <span class="n">task</span> <span class="n">vector</span>
+<span class="n">CIFAR10</span><span class="p">:</span> <span class="mf">0.71875</span>
+<span class="n">MNIST</span><span class="p">:</span> <span class="mf">0.046875</span>
+<span class="n">Fasion</span> <span class="n">MNIST</span><span class="p">:</span> <span class="mf">0.078125</span>
 </pre></div>
 </div>
 <p>We compared the parameters of the two base networks and their cosine similarity is only 0.09. Therefore they are very different and we don’t expect the same task vector to work for both models</p>
@@ -816,8 +818,8 @@ Fasion MNIST: 0.078125
 </div>
 </div>
 </section>
-<section id="comparing-task-vectors-for-different-parameters-of-the-same-architecture">
-<h2>Comparing task vectors for different parameters of the same architecture<a class="headerlink" href="#comparing-task-vectors-for-different-parameters-of-the-same-architecture" title="Link to this heading">#</a></h2>
+<section id="comparing-parameters-with-the-same-architecture-and-training-configuration">
+<h2>Comparing parameters with the same architecture and training configuration<a class="headerlink" href="#comparing-parameters-with-the-same-architecture-and-training-configuration" title="Link to this heading">#</a></h2>
 <p>There is very low cosine similarity between the parameters. Therefore we don’t expect the same task vector for one model with one set of parameters to apply to another model with a different set of parameters</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -887,11 +889,11 @@ Fasion MNIST: 0.078125
       </div>
     </a>
     <a class="right-next"
-       href="../unsupervised_learning/b_vae.html"
+       href="functional_attention.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Beta-Variational Autoencoder Experiments</p>
+        <p class="prev-next-title">Functional Attention Experiments</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -916,7 +918,7 @@ Fasion MNIST: 0.078125
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tldr-results">TLDR Results</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computing-and-applying-task-vector-on-the-same-model">Computing and applying task vector on the same model</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computing-the-task-vector-on-one-base-model-and-applying-it-on-a-different-model">Computing the task vector on one base model and applying it on a different model</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-task-vectors-for-different-parameters-of-the-same-architecture">Comparing task vectors for different parameters of the same architecture</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-parameters-with-the-same-architecture-and-training-configuration">Comparing parameters with the same architecture and training configuration</a></li>
 </ul>
   </nav></div>
 
