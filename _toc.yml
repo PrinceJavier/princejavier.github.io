@@ -50,8 +50,9 @@ parts:
     chapters:    
     - file: causal_inference/ccm_failure_cases
 
-  - caption: Thoughts/Ideas/Opinions
+  - caption: Thoughts and Short Stories
     numbered: False
     chapters:    
+    - file: thoughts/the_birth
     - file: thoughts/language_llm
     - file: thoughts/exponential_tech
