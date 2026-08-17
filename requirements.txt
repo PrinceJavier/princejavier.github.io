@@ -6,3 +6,4 @@ ipywidgets
 ghp-import
 torch
 torchvision
+sphinx-last-updated-by-git
