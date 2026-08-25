@@ -8,6 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <meta property="article:modified_time" content="2026-08-25T13:16:56+08:00" />
     <title>Simulating Risk of a Portfolio of Securities &#8212; Prince&#39;s Data Science Blog</title>
   
   
@@ -104,6 +105,7 @@ commentsRunWhenDOMLoaded(addUtterances);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
+    <meta name="docbuild:last-update" content="2026-08-25 13:16:56"/>
   </head>
   
   
@@ -289,6 +291,54 @@ commentsRunWhenDOMLoaded(addUtterances);
 
 
 
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/finance/portfolio_risk.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
 <button onclick="toggleFullScreen()"
   class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
@@ -355,7 +405,9 @@ commentsRunWhenDOMLoaded(addUtterances);
   <section class="tex2jax_ignore mathjax_ignore" id="simulating-risk-of-a-portfolio-of-securities">
 <h1>Simulating Risk of a Portfolio of Securities<a class="headerlink" href="#simulating-risk-of-a-portfolio-of-securities" title="Link to this heading">#</a></h1>
 <p>We simulate different stocks and check if the simulations align with portfolio theory. In particular, we check if by diversifying a portfolio of stocks, we do indeed get the L-curve when we plot risk vs number of stocks as predicted by the theory.</p>
-<p>We generated N stock prices via geometric Brownian motion to represent the stock market. We simulated random correlations between stock prices as well.</p>
+<p>In other words, in this simulation, will we see this curve that is used in standard finance textbooks?
+<img src=https://www.researchgate.net/profile/Tarek-Hoteit-2/publication/328150141/figure/fig2/AS:679575126298625@1539034744598/Diversification-process-in-portfolio-theory-Adapted-from-Handbook-of-Quantitative.png width=500></p>
+<p>To explore this, we simulated N stock prices via geometric Brownian motion to represent the stock market. We simulated random correlations between stock prices as well.</p>
 <p>The portfolio is made up of <span class="math notranslate nohighlight">\(K &lt; N\)</span> randomly selected stocks. We then assume we have a portfolio of <span class="math notranslate nohighlight">\(K\)</span> stocks whith equal fund allocations so each stock will have an allocation of <span class="math notranslate nohighlight">\(1/K\)</span> of the total portfolio. We then compute the portfolio return standard deviation (risk) two ways:</p>
 <blockquote>
 <div><p>A) Using the formula <span class="math notranslate nohighlight">\(\sigma^2_{p} = \sum p_i * p_j * \sigma_{ij}\)</span> for stock combinations <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> where if <span class="math notranslate nohighlight">\(i = j\)</span> then <span class="math notranslate nohighlight">\(\sigma_{ij} = \sigma{ii} = \sigma^2_{i}\)</span> which is the variance of returns of stock <span class="math notranslate nohighlight">\(i\)</span>, else for <span class="math notranslate nohighlight">\(i \neq j\)</span>, <span class="math notranslate nohighlight">\(\sigma_{ij}\)</span> is the covariance of returns between stocks <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span></p>
@@ -733,7 +785,10 @@ By Prince Javier
   </div>
   
   <div class="footer-item">
-    
+    <p class="last-updated">
+  Last updated on 2026-08-25 13:16:56.
+  <br/>
+</p>
   </div>
   
   <div class="footer-item">
