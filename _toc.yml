@@ -45,6 +45,11 @@ parts:
     chapters:    
     - file: probability/sum_gaussians_vs_sum_rand_vars
 
+  - caption: Finance
+    numbered: False 
+    chapters:    
+    - file: finance/portfolio_risk    
+
   - caption: Causal Inference
     numbered: False 
     chapters:    
