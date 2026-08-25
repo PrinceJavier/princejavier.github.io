@@ -30,6 +30,10 @@ repository:
 html:
   use_issues_button: false
   use_repository_button: false
+  use_download_button: false
+  # last_updated: true
+  extra_css:
+    - _static/custom.css
   comments:
     utterances:
       repo: "github-org/github-repo"  
@@ -37,8 +41,5 @@ html:
 sphinx: 
   extra_extensions:
     - sphinx_last_updated_by_git      
-  config: 
-    html_theme_options: 
-      use_download_button: false
   config:
     html_last_updated_fmt: '%Y-%m-%d %H:%M:%S'    

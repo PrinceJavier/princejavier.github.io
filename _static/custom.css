@@ -1,0 +1,6 @@
+/* Targets and completely removes the download dropdown and its buttons */
+.dropdown-downloadbuttons,
+.article-header-buttons .dropdown,
+button[aria-label="Download this page"] {
+    display: none !important;
+}
